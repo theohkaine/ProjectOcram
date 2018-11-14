@@ -114,6 +114,8 @@ namespace ProjectOcram
             }
         }
 
+        int xw = 2;
+
         /// <summary>
         /// Définition de fonction déléguée permettant de valider un déplacement d'une position
         /// à une autre dans le monde. La fonction retourne le point le plus près de 
