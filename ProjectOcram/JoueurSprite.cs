@@ -67,6 +67,12 @@ namespace ProjectOcram
     public delegate void ValiderDeplacement(Vector2 posSource, ref int deltaX, ref int deltaY, float resistanceMax);
 
     /// <summary>
+    /// Définition de fonction déléguée permettant de lancer un nouvel obus.
+    /// </summary>
+    /// <param name="obus">Nouvel obus à être géré par le jeu.</param>
+    public delegate void LancerObus(Obus obus);
+
+    /// <summary>
     /// Classe implantant le sprite représentant le soldat contrôlé par le joueur. Ce sprite
     /// animé peut être stationnaire, marcher et courir dans huit directions.
     /// </summary>
@@ -118,6 +124,13 @@ namespace ProjectOcram
         /// dans Update (1 par défaut).
         /// </summary>
         private int indexPeripherique = 1;
+
+        /// <summary>
+        /// Fonction déléguée permettant de lancer un nouvel obus. Cette fonction est invoquée
+        /// par this à chaque fois qu'un nouvel obus est lancé. C'est via cette fonction que
+        /// le nouvel obus est remis à la classe ayant la responsabilité de gérer les obus.
+        /// </summary>
+        private LancerObus getLancerObus;
 
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
@@ -288,6 +301,17 @@ namespace ProjectOcram
         }
 
         /// <summary>
+        /// Propriété (accesseur pour getLancerObus) retournant ou changeant la fonction déléguée 
+        /// gérant les nouveaux obus.
+        /// </summary>
+        /// <value>Fonction de gestion des nouveaux obus.</value>
+        public LancerObus GetLancerObus
+        {
+            get { return this.getLancerObus; }
+            set { this.getLancerObus = value; }
+        }
+
+        /// <summary>
         /// Charge les images associées au sprite du joueur.
         /// </summary>
         /// <param name="content">Gestionnaire de contenu permettant de charger les images du vaisseau.</param>
@@ -421,8 +445,20 @@ namespace ProjectOcram
                 Vector2 newPos = this.PositionPourCollisions;
                 newPos.Y += 1;
 
+                Vector2 newPosition = this.PositionPourCollisions;
+                newPosition.Y += 1;
+
+                if(this.directionDeplacement == Direction.Droite)
+                {
+                    newPosition.X -= (this.Width) / 1.9f;
+                }
+                else if (this.directionDeplacement == Direction.Gauche)
+                {
+                    newPosition.X += (this.Width)/1.9f;
+                }
+                     
                 // Calculer la résistance à la position du sprite.
-                float resistance = this.getResistanceAuMouvement(newPos);
+                float resistance = this.getResistanceAuMouvement(newPos) + this.getResistanceAuMouvement(newPosition);
 
                 // Déterminer si le sol est solide à la position du sprite. Sinon activer l'état de
                 // saut pour simuler la chute du sprite
@@ -448,8 +484,37 @@ namespace ProjectOcram
                 this.Etat = Etats.Stationnaire;    // aucun mouvement: le joueur est stationnaire
             }
 
-            // La fonction de base s'occupe de l'animation.
-            base.Update(gameTime, graphics);
+            // Déterminer si un obus doit être lancé
+            if (ServiceHelper.Get<IInputService>().TirerObus(this.indexPeripherique) && this.getLancerObus != null)
+            {
+                
+                
+                if (this.directionDeplacement == Direction.Gauche)
+                {
+
+                   
+                    // Créer le nouvel obus et le passer (via la déléguée) au gestionnaire d'obus
+                    JoueurObus obusGauche = new JoueurObus(this.Position.X, this.Position.Y - (this.Width / 3), new Vector2(-1.0f, 0f));
+                    obusGauche.Source = this;
+
+                    this.getLancerObus(obusGauche);
+                }
+
+                else if (this.directionDeplacement == Direction.Droite)
+                {
+                    // Créer le nouvel obus et le passer (via la déléguée) au gestionnaire d'obus
+                    JoueurObus obusDroite = new JoueurObus(this.Position.X, this.Position.Y - (this.Width / 3), new Vector2(1.0f, 0f));
+                    obusDroite.Source = this;
+                    this.getLancerObus(obusDroite);
+
+                }
+
+
+
+            }
+
+                // La fonction de base s'occupe de l'animation.
+                base.Update(gameTime, graphics);
         }
     }
 }
