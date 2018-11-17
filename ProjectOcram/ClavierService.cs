@@ -53,6 +53,18 @@ namespace IFM20884
         private KeyboardState etatClavier;
 
         /// <summary>
+        /// Tableau stockant l'heure à laquelle chaque touche fut pressée pour la dernière fois. Ce
+        /// tableau permet de prévenir la répétition automatisée des touches au besoin.
+        /// </summary>
+        private DateTime[] heureDernierePression;
+
+        /// <summary>
+        /// Tableau stockant l'état (pressée ou pas) de chaque touche. Ce
+        /// tableau permet de prévenir la répétition automatisée des touches au besoin.
+        /// </summary>
+        private bool[] etatPrecedent;
+
+        /// <summary>
         /// Heure à laquelle un premier saut (d'une série de sauts continue) est occasionné.
         /// </summary>
         private DateTime heureSaut;
@@ -69,11 +81,28 @@ namespace IFM20884
         public ClavierService(Game game)
             : base(game)
         {
+            // Initialise les tableaux des heures de dernière pression et d'état des touches
+            this.heureDernierePression = new DateTime[this.NombreMaxTouches];
+            this.etatPrecedent = new bool[this.NombreMaxTouches];
+            for (int key = 0; key < this.NombreMaxTouches; key++)
+            {
+                this.heureDernierePression[key] = new DateTime(0);
+                this.etatPrecedent[key] = false;
+            }
             this.heureSaut = new DateTime(0);           // initialisé l'objet
 
             ServiceHelper.Add<IInputService>(this);
         }
 
+        /// <summary>
+        /// Retourne le nombre maximum de touches qu'on retrouve sur un clavier. Cette valeur est
+        /// extraite de l'énumération Keys.
+        /// </summary>
+        /// <returns>Nombre maximum de boutons sur une manette.</returns>
+        private int NombreMaxTouches
+        {
+            get { return (int)Keys.Zoom + 1; }
+        }
         /// <summary>
         /// Retourne 1.0f si la flèche gauche du clavier est pressée, 0.0 sinon.
         /// Le paramètre device est ignoré (un seul clavier).
@@ -194,6 +223,19 @@ namespace IFM20884
             return this.etatClavier.IsKeyDown(Keys.Escape);
         }
 
+
+        /// <summary>
+        /// Indique si la barre d'espacement fut pressée.
+        /// Le paramètre device est ignoré (un seul clavier).
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai la barre d'espacement est pressée; faux sinon.</returns>
+        public bool TirerObus(int device)
+        {
+            // Ralentir les répétitions de pressions (200 millisecondes de délai)
+            return this.DelaiDuplicationExpire(Keys.W, 300);
+        }
+
         /// <summary>
         /// Récupère l'état du clavier.
         /// </summary>
@@ -203,5 +245,52 @@ namespace IFM20884
             this.etatClavier = Keyboard.GetState();
             base.Update(gameTime);
         }
+
+        /// <summary>
+        /// Récupère l'état d'une touche du clavier tout en considérant un délai de temps minimum
+        /// entre deux pressions consécutives de cette touche.
+        /// </summary>
+        /// <param name="touche">Touche du clavier à considérer.</param>
+        /// <param name="delai">Délai d'expiration à considérer, en millisecondes.</param>
+        /// <returns>Vrai si la touche visée est pressée et que le délai minimum entre deux
+        /// pressions de cette touche est écoulé.</returns>
+        private bool DelaiDuplicationExpire(Keys touche, int delai)
+        {
+            // Premièrement s'assurer que la touche est pressée.
+            if (!this.etatClavier.IsKeyDown(touche))
+            {
+                return false;
+            }
+
+            // Vérifier si le délai minimum entre deux pressions de la touche est expiré.
+            DateTime now = DateTime.Now;        // heure courante
+            if ((now - this.heureDernierePression[(int)touche]).TotalMilliseconds < delai)
+            {
+                return false;
+            }
+
+            // Le délai étant expiré, on note l'heure de la pression de la touche.
+            this.heureDernierePression[(int)touche] = now;
+            return true;
+        }
+
+        /// <summary>
+        /// Récupère l'état d'une touche du clavier tout en considérant son état précédent
+        /// de façon à s'assurer que c'est une nouvelle pression de la touche.
+        /// </summary>
+        /// <param name="touche">Touche du clavier à considérer.</param>
+        /// <returns>Vrai si la touche visée est nouvellement pressée.</returns>
+        private bool NouvellePression(Keys touche)
+        {
+            bool etaitPressee = this.etatPrecedent[(int)touche];      // stocker l'état précédent
+            bool estPressee = this.etatClavier.IsKeyDown(touche);     // état actuel de la touche
+
+            // Mettre à jour le tableau d'états précédents.
+            this.etatPrecedent[(int)touche] = estPressee;
+
+            // La touche est pressée seulement si c'est une nouvelle pression.
+            return !etaitPressee && estPressee;
+        }
+
     }
 }

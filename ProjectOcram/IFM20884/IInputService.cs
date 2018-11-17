@@ -94,5 +94,12 @@ namespace IFM20884
         /// <param name="device">Le périphérique à lire.</param>
         /// <returns>Valeurs entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
         bool Quitter(int device);                 // pour quitter la partie
+
+        /// <summary>
+        /// Indique si un obus doit être tiré.
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si un obus doit être tiré; faux sinon.</returns>
+        bool TirerObus(int device);
     }
 }
