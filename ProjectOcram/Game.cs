@@ -85,6 +85,11 @@ namespace ProjectOcram
         private const int ScreenSizeW = 1280;
 
         /// <summary>
+        /// Liste des sprites représentant des obus.
+        /// </summary>
+        private List<Obus> listeObus;
+
+        /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
         /// par Visual Studio lors de la création du projet.
         /// </summary>
@@ -202,6 +207,9 @@ namespace ProjectOcram
 
             //this.monde = new MondeOcram();   // créer le monde
 
+            // Créer les attributs de gestion des obus.
+            this.listeObus = new List<Obus>();
+
             // Initialiser la vue de la caméra à la taille de l'écran.
             this.camera = new Camera(new Rectangle(0, 0, 1280, 450));
 
@@ -232,12 +240,21 @@ namespace ProjectOcram
             // Charger le sprite de personnages du joueur (statique).
             JoueurSprite.LoadContent(this.Content, this.graphics);
 
+
             this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
+
+            JoueurObus.LoadContent(this.Content, this.graphics);
+
+            
+
 
             // Créer et initialiser le sprite du joueur.
             this.joueur = new JoueurSprite(0, 0);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
 
+
+            // Associer la déléguée de gestion des obus du vaisseau à son sprite.
+            this.joueur.GetLancerObus = this.LancerObus;
 
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
@@ -271,10 +288,12 @@ namespace ProjectOcram
 
             // Mettre à jour le sprite du joueur puis centrer la camera sur celui-ci.
             this.joueur.Update(gameTime, this.graphics);
-            
+
 
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
+
+
 
             base.Update(gameTime);
         }
@@ -298,7 +317,7 @@ namespace ProjectOcram
 
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
-       
+
             this.spriteBatch.End();
 
             // Resize the game to fit the monitor's resolution
