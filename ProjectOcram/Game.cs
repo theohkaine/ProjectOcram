@@ -34,6 +34,7 @@
 
 namespace ProjectOcram
 {
+
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -49,6 +50,8 @@ namespace ProjectOcram
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
+
+
         /// <summary>
         /// Attribut permettant d'obtenir des infos sur la carte graphique et l'écran.
         /// </summary>
@@ -74,6 +77,13 @@ namespace ProjectOcram
         /// </summary>
         private Camera camera;
 
+        //Render the resolution variable
+        public static RenderTarget2D nativeRenderTarget;
+
+        private const int ScreenSizeH = 800;
+
+        private const int ScreenSizeW = 1280;
+
         /// <summary>
         /// Liste des sprites représentant des obus.
         /// </summary>
@@ -85,8 +95,20 @@ namespace ProjectOcram
         /// </summary>
         public Game()
         {
+
+
             this.graphics = new GraphicsDeviceManager(this);
+
             Content.RootDirectory = "Content";
+
+            //Resize the screen resolution
+            graphics.PreferredBackBufferWidth = ScreenSizeW;
+            graphics.PreferredBackBufferHeight = ScreenSizeH;
+            //Code to make it fullscreen
+            graphics.IsFullScreen = false;
+            graphics.PreferMultiSampling = false;
+            graphics.SynchronizeWithVerticalRetrace = true;
+
         }
 
         /// <summary>
@@ -180,13 +202,19 @@ namespace ProjectOcram
             ServiceHelper.Game = this;
             this.Components.Add(new ClavierService(this));
 
-            this.monde = new MondeNutzland();   // créer le monde
+            nativeRenderTarget = new RenderTarget2D(GraphicsDevice, 1280, 450);
+
+
+            //this.monde = new MondeOcram();   // créer le monde
 
             // Créer les attributs de gestion des obus.
             this.listeObus = new List<Obus>();
 
             // Initialiser la vue de la caméra à la taille de l'écran.
-            this.camera = new Camera(new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, this.graphics.GraphicsDevice.Viewport.Height));
+            this.camera = new Camera(new Rectangle(0, 0, 1280, 450));
+
+
+
 
             base.Initialize();
         }
@@ -200,19 +228,30 @@ namespace ProjectOcram
             // Créer un nouveau SpriteBatch, utilisée pour dessiner les textures.
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
+
+
             // Charger le monde.
-            MondeNutzland.LoadContent(this.Content);
+            MondeOcram.LoadContent(this.Content);
+
+            // Au départ, le monde de jour est exploité.
+            this.monde = new MondeOcram();
+
 
             // Charger le sprite de personnages du joueur (statique).
             JoueurSprite.LoadContent(this.Content, this.graphics);
 
+
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
+
             JoueurObus.LoadContent(this.Content, this.graphics);
 
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+            
+
 
             // Créer et initialiser le sprite du joueur.
-            this.joueur = new JoueurSprite(160, 550);
-            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+            this.joueur = new JoueurSprite(0, 0);
+            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
+
 
             // Associer la déléguée de gestion des obus du vaisseau à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;
@@ -220,6 +259,8 @@ namespace ProjectOcram
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+
+         
         }
 
         /// <summary>
@@ -247,8 +288,7 @@ namespace ProjectOcram
 
             // Mettre à jour le sprite du joueur puis centrer la camera sur celui-ci.
             this.joueur.Update(gameTime, this.graphics);
-            // Mettre à jour les obus
-            this.UpdateObus(gameTime);
+
 
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
@@ -265,69 +305,30 @@ namespace ProjectOcram
         /// <param name="gameTime">Fournie un instantané du temps de jeu.</param>
         protected override void Draw(GameTime gameTime)
         {
+            
             // On débute avec un écran vierge (au cas où il y aurait des trous dans le monde de tuiles, on va les voir).
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            GraphicsDevice.SetRenderTarget(nativeRenderTarget);
+
             // Activer le blending alpha (pour la transparence des sprites).
             this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            
 
-            this.monde.Draw(this.camera, this.spriteBatch);    // afficher le monde de tuiles
+            this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
 
-            // Afficher les obus.
-            foreach (Obus obus in this.listeObus)
-            {
-                obus.Draw(this.camera, this.spriteBatch);
-            }
-
             this.spriteBatch.End();
+
+            // Resize the game to fit the monitor's resolution
+            GraphicsDevice.SetRenderTarget(null);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Draw(nativeRenderTarget, new Rectangle(0, 0, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height), Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
-        /// <summary>
-        /// Fonction déléguée responsable de gérer les nouveaux obus lancés par le vaisseau du joueur.
-        /// Nous ne faisons qu'ajouter le nouvel obus à la liste des obus à gérer.
-        /// </summary>
-        /// <param name="obus">Nouvel obus à gérer.</param>
-        private void LancerObus(Obus obus)
-        {
-            // Ajouter l'obus à la liste des obus gérés par this.
-            this.listeObus.Add(obus);
-        }
 
-        /// <summary>
-        /// Routine mettant à jour les obus. Elle s'occupe de:
-        ///   1 - Détruire les obus ayant quitté l'écran sans collision
-        ///   2 - Déterminer si un des obus a frappé un sprite, et si c'est le cas
-        ///       détruire les deux sprites (probablement un astéroïde)
-        ///   3 - Mettre à jour la position des obus existants.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected void UpdateObus(GameTime gameTime)
-        {
-            // Identifier les obus ayant quitté l'écran.
-            List<Obus> obusFini = new List<Obus>();
-            foreach (Obus obus in this.listeObus)
-            {
-                if (obus.Position.Y + obus.Height < 0 ||
-                    obus.Position.Y - obus.Height > this.graphics.GraphicsDevice.Viewport.Height)
-                {
-                    obusFini.Add(obus);
-                }
-            }
-
-            // Se débarasser des obus n'étant plus d'aucune utilité.
-            foreach (Obus obus in obusFini)
-            {
-                this.listeObus.Remove(obus);
-            }
-
-            // Mettre à jour les obus existants.
-            foreach (Obus obus in this.listeObus)
-            {
-                obus.Update(gameTime, this.graphics);
-            }
-        }
     }
 }

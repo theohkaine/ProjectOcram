@@ -200,7 +200,7 @@ namespace IFM20884
         /// <param name="pos">Nouvelle position du centre de la caméra.</param>
         public void Centrer(Vector2 pos)
         {
-            this.cameraRect.X = (int)(pos.X - (this.cameraRect.Width / 2));
+            this.cameraRect.X = (int)(pos.X - (this.cameraRect.Width / 3));
             this.cameraRect.Y = (int)(pos.Y - (this.cameraRect.Height / 2));
 
             this.RestreindreCameraAuMonde();

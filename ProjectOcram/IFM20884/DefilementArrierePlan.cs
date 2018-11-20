@@ -63,8 +63,8 @@ namespace IFM20884
         /// </summary>
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public DefilementArrierePlan(GraphicsDeviceManager graphics)
-            : base(graphics.GraphicsDevice.Viewport.Width / 2f, graphics.GraphicsDevice.Viewport.Height / 2f) 
-        { 
+            : base(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height)
+        {
         }
 
         /// <summary>

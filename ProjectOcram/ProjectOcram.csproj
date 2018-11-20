@@ -43,14 +43,17 @@
     <Compile Include="ClavierService.cs" />
     <Compile Include="IFM20884\DefilementArrierePlan.cs" />
     <Compile Include="IFM20884\IInputService.cs" />
+    <Compile Include="IFM20884\MondeImages.cs" />
     <Compile Include="IFM20884\ServiceHelper.cs" />
     <Compile Include="JoueurObus.cs" />
     <Compile Include="JoueurSprite.cs" />
     <Compile Include="IFM20884\Monde.cs" />
-    <Compile Include="IFM20884\MondeDeTuiles.cs" />
-    <Compile Include="MondeNutzland.cs" />
     <Compile Include="IFM20884\Palette.cs" />
+
+    <Compile Include="MondeOcram.cs" />
+
     <Compile Include="Obus.cs" />
+
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IFM20884\Sprite.cs" />
