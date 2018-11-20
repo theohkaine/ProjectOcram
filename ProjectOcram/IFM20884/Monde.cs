@@ -66,6 +66,28 @@ namespace IFM20884
         }
 
         /// <summary>
+        /// Accesseur à surcharger retournant la position initiale du sprite 
+        /// du joueur dans le monde.
+        /// </summary>
+        public virtual Vector2 PositionInitiale
+        {
+            get { return Vector2.Zero; }
+        }
+
+        /// <summary>
+        /// Fonction membre surchargeable indiquant si le sprite donné a atteint une sortie
+        /// du monde. Par défaut, une sorite est positionnée à l'extrémité droite du monde.
+        /// Les classes dérivées peuvent surcharger cette fonction afin d'imposer leurs
+        /// propres sorties.
+        /// </summary>
+        /// <param name="sprite">Sprite dont on doit vérifier s'il a atteint une sortie.</param>
+        /// <returns>Vrai si le sprite a atteint une sorite; faux sinon.</returns>
+        public virtual bool AtteintUneSortie(Sprite sprite)
+        {
+            return sprite.Position.X > (this.Largeur - (2 * sprite.Width));
+        }
+
+        /// <summary>
         /// Retourne la couleur du pixel dont la position donnée dans le monde.
         /// </summary>
         /// <param name="position">Coordonnées du pixel dans le monde.</param>
@@ -73,10 +95,20 @@ namespace IFM20884
         public abstract Color CouleurDeCollision(Vector2 position);
 
         /// <summary>
-        /// Affiche à l'écran la partie du monde visible par la caméra.
+        /// Affiche à l'écran la partie de l'arrière plan du monde visible par la caméra.
         /// </summary>
         /// <param name="camera">Caméra à exploiter pour l'affichage.</param>
         /// <param name="spriteBatch">Gestionnaire d'affichage en batch aux périphériques.</param>
-        public abstract void Draw(Camera camera, SpriteBatch spriteBatch);
+        public abstract void DrawArrierePlan(Camera camera, SpriteBatch spriteBatch);
+
+        /// <summary>
+        /// Affiche à l'écran la partie de l'avant plan du monde visible par la caméra. Par défaut,
+        /// un monde n'a pas d'avant plan.
+        /// </summary>
+        /// <param name="camera">Caméra à exploiter pour l'affichage.</param>
+        /// <param name="spriteBatch">Gestionnaire d'affichage en batch aux périphériques.</param>
+        public virtual void DrawAvantPlan(Camera camera, SpriteBatch spriteBatch)
+        {
+        }
     }
 }

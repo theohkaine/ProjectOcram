@@ -316,8 +316,8 @@ namespace ProjectOcram
                 }
 
                 // Charger les différentes palettes du personnage selon les directions.
-                palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Right"), 79, 79));
-                palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Left"), 79, 79));
+                palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Right"), 39, 39));
+                palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Left"), 39, 39));
             }
         }
 

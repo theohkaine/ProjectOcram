@@ -34,6 +34,7 @@
 
 namespace ProjectOcram
 {
+
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -49,6 +50,8 @@ namespace ProjectOcram
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
+
+
         /// <summary>
         /// Attribut permettant d'obtenir des infos sur la carte graphique et l'écran.
         /// </summary>
@@ -74,14 +77,33 @@ namespace ProjectOcram
         /// </summary>
         private Camera camera;
 
+        //Render the resolution variable
+        public static RenderTarget2D nativeRenderTarget;
+
+        private const int ScreenSizeH = 800;
+
+        private const int ScreenSizeW = 1280;
+
         /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
         /// par Visual Studio lors de la création du projet.
         /// </summary>
         public Game()
         {
+
+
             this.graphics = new GraphicsDeviceManager(this);
+
             Content.RootDirectory = "Content";
+
+            //Resize the screen resolution
+            graphics.PreferredBackBufferWidth = ScreenSizeW;
+            graphics.PreferredBackBufferHeight = ScreenSizeH;
+            //Code to make it fullscreen
+            graphics.IsFullScreen = false;
+            graphics.PreferMultiSampling = false;
+            graphics.SynchronizeWithVerticalRetrace = true;
+
         }
 
         /// <summary>
@@ -175,10 +197,16 @@ namespace ProjectOcram
             ServiceHelper.Game = this;
             this.Components.Add(new ClavierService(this));
 
-            this.monde = new MondeNutzland();   // créer le monde
+            nativeRenderTarget = new RenderTarget2D(GraphicsDevice, 1280, 450);
+
+
+            //this.monde = new MondeOcram();   // créer le monde
 
             // Initialiser la vue de la caméra à la taille de l'écran.
-            this.camera = new Camera(new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, this.graphics.GraphicsDevice.Viewport.Height));
+            this.camera = new Camera(new Rectangle(0, 0, 1280, 450));
+
+
+
 
             base.Initialize();
         }
@@ -192,21 +220,30 @@ namespace ProjectOcram
             // Créer un nouveau SpriteBatch, utilisée pour dessiner les textures.
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
+
+
             // Charger le monde.
-            MondeNutzland.LoadContent(this.Content);
+            MondeOcram.LoadContent(this.Content);
+
+            // Au départ, le monde de jour est exploité.
+            this.monde = new MondeOcram();
+
 
             // Charger le sprite de personnages du joueur (statique).
             JoueurSprite.LoadContent(this.Content, this.graphics);
 
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
 
             // Créer et initialiser le sprite du joueur.
-            this.joueur = new JoueurSprite(160, 550);
-            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+            this.joueur = new JoueurSprite(0, 0);
+            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
+
 
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+
+         
         }
 
         /// <summary>
@@ -234,6 +271,7 @@ namespace ProjectOcram
 
             // Mettre à jour le sprite du joueur puis centrer la camera sur celui-ci.
             this.joueur.Update(gameTime, this.graphics);
+            
 
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
@@ -248,18 +286,30 @@ namespace ProjectOcram
         /// <param name="gameTime">Fournie un instantané du temps de jeu.</param>
         protected override void Draw(GameTime gameTime)
         {
+            
             // On débute avec un écran vierge (au cas où il y aurait des trous dans le monde de tuiles, on va les voir).
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            GraphicsDevice.SetRenderTarget(nativeRenderTarget);
+
             // Activer le blending alpha (pour la transparence des sprites).
             this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            
 
-            this.monde.Draw(this.camera, this.spriteBatch);    // afficher le monde de tuiles
+            this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
-
+       
             this.spriteBatch.End();
+
+            // Resize the game to fit the monitor's resolution
+            GraphicsDevice.SetRenderTarget(null);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Draw(nativeRenderTarget, new Rectangle(0, 0, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height), Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+
     }
 }
