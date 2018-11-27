@@ -253,14 +253,15 @@ namespace ProjectOcram
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
 
 
-            // Associer la déléguée de gestion des obus du vaisseau à son sprite.
-            this.joueur.GetLancerObus = this.LancerObus;
+            
 
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
 
-         
+            // Associer la déléguée de gestion des obus du vaisseau à son sprite.
+            this.joueur.GetLancerObus = this.LancerObus;
+
         }
 
         /// <summary>

@@ -28,7 +28,7 @@ namespace ProjectOcram
         public JoueurObus(float x, float y, Vector2 vitesses)
             : base(x, y, vitesses)
         {
-            this.VitessesPropulsion = vitesses/2f;
+            this.VitessesPropulsion = vitesses/1.5f;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace ProjectOcram
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
         {
             
-            bombe = content.Load<Texture2D>(@"Joueur\ObusDuJoueur\Sprite_Lazer");
+            bombe = content.Load<Texture2D>(@"Joueur\ObusDuJoueur\lol2");
            
         }
     }
