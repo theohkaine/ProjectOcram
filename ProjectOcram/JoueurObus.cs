@@ -58,8 +58,9 @@ namespace ProjectOcram
         /// les caractéristiques de celui-ci (p.ex. l'écran).</param>
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
         {
-            
-            bombe = content.Load<Texture2D>(@"Joueur\ObusDuJoueur\lol2");
+            //laserV2
+            //lol2
+            bombe = content.Load<Texture2D>(@"Joueur\ObusDuJoueur\laserV2");
            
         }
     }

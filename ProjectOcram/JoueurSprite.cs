@@ -352,6 +352,16 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
+
+
+            //int updateTime = gt.ElapsedGameTime.TotalMilliseconds - ElapsedGameTime.TotalMilliseconds;
+            //float timeScalar = updateTime / AVG_FRAME_TIME;
+            //this.velocity += this.acceleration * timeScalar;
+            //this.position += this.velocity;
+            //oldgt = gt;
+
+
+
             // Calcul de la vitesse de marche du joueur (indépendante du matériel)
             float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
             float vitesseV = 0.0f;
@@ -397,16 +407,22 @@ namespace ProjectOcram
                 this.Etat = Etats.Saut;
 
                 // Vitesse initiale vers le haut de l'écran
-                this.vitesseVerticale = -1.3f;
+                this.vitesseVerticale = -0.56f;
                 
             }
 
             // Si le sprite est en état de saut, modifier graduellement sa vitesse verticale
             if (this.Etat == Etats.Saut)
             {
-                this.vitesseVerticale += 0.098f;    // selon la constante de gravité (9.8 m/s2)
+                this.vitesseVerticale += 0.037f;    // selon la constante de gravité (9.8 m/s2)
                 
 
+            }
+
+            //Make falling more slower if the character vertical speed goes too high
+            if(this.vitesseVerticale > 0.4f)
+            {
+                this.vitesseVerticale = 0.35f;
             }
 
             // Moduler la vitesse verticale en fonction du matériel
@@ -465,7 +481,7 @@ namespace ProjectOcram
                 if (resistance < 0.95f)
                 {
                     this.Etat = Etats.Saut;
-                    this.vitesseVerticale = 0.0f;
+                    this.vitesseVerticale = 0.07f;
                 }
             }
 
