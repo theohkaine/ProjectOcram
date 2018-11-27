@@ -352,6 +352,7 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
+
             // Calcul de la vitesse de marche du joueur (indépendante du matériel)
             float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
             float vitesseV = 0.0f;
@@ -397,16 +398,22 @@ namespace ProjectOcram
                 this.Etat = Etats.Saut;
 
                 // Vitesse initiale vers le haut de l'écran
-                this.vitesseVerticale = -1.3f;
+                this.vitesseVerticale = -0.56f;
                 
             }
 
             // Si le sprite est en état de saut, modifier graduellement sa vitesse verticale
             if (this.Etat == Etats.Saut)
             {
-                this.vitesseVerticale += 0.098f;    // selon la constante de gravité (9.8 m/s2)
+                this.vitesseVerticale += 0.037f;    // selon la constante de gravité (9.8 m/s2)
                 
 
+            }
+
+            //Make falling more slower if the character vertical speed goes too high
+            if(this.vitesseVerticale > 0.4f)
+            {
+                this.vitesseVerticale = 0.35f;
             }
 
             // Moduler la vitesse verticale en fonction du matériel
@@ -418,19 +425,27 @@ namespace ProjectOcram
             bool sautTermine = false;
             if (this.getValiderDeplacement != null && (deltaX != 0.0 || deltaY != 0.0))
             {
+
+
                 // Déterminer le déplacement maximal permis vers la nouvelle position en fonction
                 // de la résistance des tuiles. Une résistance maximale de 0.95 est indiquée afin de
                 // permettre au sprite de traverser les tuiles n'étant pas complètement solides.
                 this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
+                
+
 
                 // Si aucun déplacement verticale n'est déterminé lors d'un saut (parce que le sprite 
                 // a rencontré une tuile solide), indiquer que le saut est terminé.
                 sautTermine = (this.Etat == Etats.Saut) && (deltaY == 0);
+                
+
             }
 
             // Si un saut est terminé, annuler la vitesse verticale et changer l'état du sprite
             if (sautTermine)
             {
+
+
                 this.Etat = Etats.Stationnaire;  // le prochain Update() le remettra en état
                                                  // de marche au besoin
                 this.vitesseVerticale = 0.0f;
@@ -442,6 +457,9 @@ namespace ProjectOcram
                 // Déterminer les coordonnées de destination et tenant compte que le sprite est
                 // centré sur Position, alors que ses mouvements doivent être autorisés en fonction
                 // de la position de ses pieds.
+
+
+                //CODE ALEX
                 Vector2 newPos = this.PositionPourCollisions;
                 newPos.Y += 1;
 
@@ -465,7 +483,7 @@ namespace ProjectOcram
                 if (resistance < 0.95f)
                 {
                     this.Etat = Etats.Saut;
-                    this.vitesseVerticale = 0.0f;
+                    this.vitesseVerticale = 0.07f;
                 }
             }
 

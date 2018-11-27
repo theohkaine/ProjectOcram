@@ -202,6 +202,7 @@ namespace ProjectOcram
             ServiceHelper.Game = this;
             this.Components.Add(new ClavierService(this));
 
+            // 1280 450
             nativeRenderTarget = new RenderTarget2D(GraphicsDevice, 1280, 450);
 
 
@@ -241,7 +242,7 @@ namespace ProjectOcram
             JoueurSprite.LoadContent(this.Content, this.graphics);
 
 
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur);
 
             JoueurObus.LoadContent(this.Content, this.graphics);
 
@@ -250,7 +251,7 @@ namespace ProjectOcram
 
             // Créer et initialiser le sprite du joueur.
             this.joueur = new JoueurSprite(0, 0);
-            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur + 410, this.monde.Hauteur);
+            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
 
             
