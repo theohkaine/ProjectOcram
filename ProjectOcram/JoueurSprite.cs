@@ -353,15 +353,6 @@ namespace ProjectOcram
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
 
-
-            //int updateTime = gt.ElapsedGameTime.TotalMilliseconds - ElapsedGameTime.TotalMilliseconds;
-            //float timeScalar = updateTime / AVG_FRAME_TIME;
-            //this.velocity += this.acceleration * timeScalar;
-            //this.position += this.velocity;
-            //oldgt = gt;
-
-
-
             // Calcul de la vitesse de marche du joueur (indépendante du matériel)
             float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
             float vitesseV = 0.0f;
@@ -434,19 +425,27 @@ namespace ProjectOcram
             bool sautTermine = false;
             if (this.getValiderDeplacement != null && (deltaX != 0.0 || deltaY != 0.0))
             {
+
+
                 // Déterminer le déplacement maximal permis vers la nouvelle position en fonction
                 // de la résistance des tuiles. Une résistance maximale de 0.95 est indiquée afin de
                 // permettre au sprite de traverser les tuiles n'étant pas complètement solides.
                 this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
+                
+
 
                 // Si aucun déplacement verticale n'est déterminé lors d'un saut (parce que le sprite 
                 // a rencontré une tuile solide), indiquer que le saut est terminé.
                 sautTermine = (this.Etat == Etats.Saut) && (deltaY == 0);
+                
+
             }
 
             // Si un saut est terminé, annuler la vitesse verticale et changer l'état du sprite
             if (sautTermine)
             {
+
+
                 this.Etat = Etats.Stationnaire;  // le prochain Update() le remettra en état
                                                  // de marche au besoin
                 this.vitesseVerticale = 0.0f;
@@ -458,6 +457,9 @@ namespace ProjectOcram
                 // Déterminer les coordonnées de destination et tenant compte que le sprite est
                 // centré sur Position, alors que ses mouvements doivent être autorisés en fonction
                 // de la position de ses pieds.
+
+
+                //CODE ALEX
                 Vector2 newPos = this.PositionPourCollisions;
                 newPos.Y += 1;
 
