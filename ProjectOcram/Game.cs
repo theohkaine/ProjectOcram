@@ -289,6 +289,7 @@ namespace ProjectOcram
             // Mettre à jour le sprite du joueur puis centrer la camera sur celui-ci.
             this.joueur.Update(gameTime, this.graphics);
 
+            this.UpdateObus(gameTime);
 
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
@@ -317,6 +318,16 @@ namespace ProjectOcram
 
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
+                                                               // Afficher les obus.
+
+            foreach (Obus obus in this.listeObus)
+
+            {
+
+                obus.Draw(this.camera, this.spriteBatch);
+
+            }
+
 
             this.spriteBatch.End();
 
@@ -329,6 +340,50 @@ namespace ProjectOcram
             base.Draw(gameTime);
         }
 
+        /// <summary>
+        /// Fonction déléguée responsable de gérer les nouveaux obus lancés par le vaisseau du joueur.
+        /// Nous ne faisons qu'ajouter le nouvel obus à la liste des obus à gérer.
+        /// </summary>
+        /// <param name="obus">Nouvel obus à gérer.</param>
+        private void LancerObus(Obus obus)
+        {
+            // Ajouter l'obus à la liste des obus gérés par this.
+            this.listeObus.Add(obus);
+        }
+
+        /// <summary>
+        /// Routine mettant à jour les obus. Elle s'occupe de:
+        ///   1 - Détruire les obus ayant quitté l'écran sans collision
+        ///   2 - Déterminer si un des obus a frappé un sprite, et si c'est le cas
+        ///       détruire les deux sprites (probablement un astéroïde)
+        ///   3 - Mettre à jour la position des obus existants.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected void UpdateObus(GameTime gameTime)
+        {
+            // Identifier les obus ayant quitté l'écran.
+            List<Obus> obusFini = new List<Obus>();
+            foreach (Obus obus in this.listeObus)
+            {
+                if (obus.Position.Y + obus.Height < 0 ||
+                    obus.Position.Y - obus.Height > this.graphics.GraphicsDevice.Viewport.Height)
+                {
+                    obusFini.Add(obus);
+                }
+            }
+
+            // Se débarasser des obus n'étant plus d'aucune utilité.
+            foreach (Obus obus in obusFini)
+            {
+                this.listeObus.Remove(obus);
+            }
+
+            // Mettre à jour les obus existants.
+            foreach (Obus obus in this.listeObus)
+            {
+                obus.Update(gameTime, this.graphics);
+            }
+        }
 
     }
 }
