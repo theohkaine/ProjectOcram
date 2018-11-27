@@ -13,30 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ../../../../aseprite sprites/Map/map01.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Map/map01.png;Monde/MondeOcram/map01.png
-
-#begin ../../../../aseprite sprites/Map/map02.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Map/map02.png;Monde/MondeOcram/map02.png
-
 #begin Joueur/Marche/Sprite_Left.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -145,7 +121,7 @@
 /processorParam:TextureFormat=Color
 /build:Joueur/Stationnaire/Sprite_Right.png
 
-#begin Monde/MondeOcram/map03.png
+#begin Monde/MondeOcram/map01.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -155,5 +131,17 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Monde/MondeOcram/map03.png
+/build:Monde/MondeOcram/map01.png
+
+#begin Monde/MondeOcram/map02.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Monde/MondeOcram/map02.png
 
