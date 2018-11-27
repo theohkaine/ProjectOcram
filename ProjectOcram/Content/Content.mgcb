@@ -37,7 +37,7 @@
 /processorParam:TextureFormat=Color
 /build:../../../../aseprite sprites/Map/map02.png;Monde/MondeOcram/map02.png
 
-#begin ../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/IdleV2/Sprite_Left.png
+#begin Joueur/Marche/Sprite_Left.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,9 +47,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/IdleV2/Sprite_Left.png;Joueur/Stationnaire/Sprite_Left.png
+/build:Joueur/Marche/Sprite_Left.png
 
-#begin ../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/IdleV2/Sprite_Right.png
+#begin Joueur/Marche/Sprite_Right.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -59,9 +59,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/IdleV2/Sprite_Right.png;Joueur/Stationnaire/Sprite_Right.png
+/build:Joueur/Marche/Sprite_Right.png
 
-#begin ../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/JumpingV2/Sprite_Left.png
+#begin Joueur/ObusDuJoueur/laserV2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -71,9 +71,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/JumpingV2/Sprite_Left.png;Joueur/Saut/Sprite_Left.png
+/build:Joueur/ObusDuJoueur/laserV2.png
 
-#begin ../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/JumpingV2/Sprite_Right.png
+#begin Joueur/ObusDuJoueur/lol2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -83,43 +83,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Monogame_Main_Character/Idle_Animation/Asepritefiles/JumpingV2/Sprite_Right.png;Joueur/Saut/Sprite_Right.png
-
-#begin ../../../../aseprite sprites/Monogame_Main_Character/Walking_Animation/chibiRUNINGG V2/Sprite_Left.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Monogame_Main_Character/Walking_Animation/chibiRUNINGG V2/Sprite_Left.png;Joueur/Marche/Sprite_Left.png
-
-#begin ../../../../aseprite sprites/Monogame_Main_Character/Walking_Animation/chibiRUNINGG V2/Sprite_Right.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:../../../../aseprite sprites/Monogame_Main_Character/Walking_Animation/chibiRUNINGG V2/Sprite_Right.png;Joueur/Marche/Sprite_Right.png
-
-#begin Monde/MondeOcram/map03.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Monde/MondeOcram/map03.png
+/build:Joueur/ObusDuJoueur/lol2.png
 
 #begin Joueur/ObusDuJoueur/Sprite_Lazer.png
 /importer:TextureImporter
@@ -132,4 +96,64 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Joueur/ObusDuJoueur/Sprite_Lazer.png
+
+#begin Joueur/Saut/Sprite_Left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Joueur/Saut/Sprite_Left.png
+
+#begin Joueur/Saut/Sprite_Right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Joueur/Saut/Sprite_Right.png
+
+#begin Joueur/Stationnaire/Sprite_Left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Joueur/Stationnaire/Sprite_Left.png
+
+#begin Joueur/Stationnaire/Sprite_Right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Joueur/Stationnaire/Sprite_Right.png
+
+#begin Monde/MondeOcram/map03.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Monde/MondeOcram/map03.png
 
