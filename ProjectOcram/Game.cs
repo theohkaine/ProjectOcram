@@ -203,18 +203,18 @@ namespace ProjectOcram
             this.Components.Add(new ClavierService(this));
 
             // 1280 450
-            nativeRenderTarget = new RenderTarget2D(GraphicsDevice, 1280, 450);
+            nativeRenderTarget = new RenderTarget2D(GraphicsDevice, this.graphics.GraphicsDevice.Viewport.Width, 450);
 
 
             //this.monde = new MondeOcram();   // créer le monde
 
-            // Créer les attributs de gestion des obus.
-            this.listeObus = new List<Obus>();
+            
 
             // Initialiser la vue de la caméra à la taille de l'écran.
-            this.camera = new Camera(new Rectangle(0, 0, 1280, 450));
+            this.camera = new Camera(new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, 450));
 
-
+            // Créer les attributs de gestion des obus.
+            this.listeObus = new List<Obus>();
 
 
             base.Initialize();
@@ -251,7 +251,7 @@ namespace ProjectOcram
 
             // Créer et initialiser le sprite du joueur.
             this.joueur = new JoueurSprite(0, 0);
-            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+            this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur , this.monde.Hauteur);
 
 
             
@@ -368,7 +368,7 @@ namespace ProjectOcram
             foreach (Obus obus in this.listeObus)
             {
                 if (obus.Position.Y + obus.Height < 0 ||
-                    obus.Position.Y - obus.Height > this.graphics.GraphicsDevice.Viewport.Height)
+                    obus.Position.Y - obus.Height > this.monde.Hauteur)
                 {
                     obusFini.Add(obus);
                 }
