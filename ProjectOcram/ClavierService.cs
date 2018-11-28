@@ -259,6 +259,7 @@ namespace IFM20884
             // Premièrement s'assurer que la touche est pressée.
             if (!this.etatClavier.IsKeyDown(touche))
             {
+
                 return false;
             }
 

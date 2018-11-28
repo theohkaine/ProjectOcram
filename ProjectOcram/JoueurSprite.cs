@@ -132,6 +132,10 @@ namespace ProjectOcram
         /// </summary>
         private LancerObus getLancerObus;
 
+        // Texture servant à afficher un rectangle de vitalité au-dessus de this.
+        private static Texture2D rectTexture;
+        private static Texture2D rectTextureOnTop;
+
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
         /// </summary>
@@ -343,6 +347,9 @@ namespace ProjectOcram
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Right"), 39, 39));
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Left"), 39, 39));
             }
+            // Charger la texture servant à l’affichage du rectangle de vitalité.
+            rectTexture = content.Load<Texture2D>(@"Extra\tankHP");
+            rectTextureOnTop = content.Load<Texture2D>(@"Extra\hp");
         }
 
         /// <summary>
@@ -512,7 +519,7 @@ namespace ProjectOcram
 
                    
                     // Créer le nouvel obus et le passer (via la déléguée) au gestionnaire d'obus
-                    JoueurObus obusGauche = new JoueurObus(this.Position.X, this.Position.Y - (this.Width / 3), new Vector2(-1.0f, 0f));
+                    JoueurObus obusGauche = new JoueurObus(this.Position.X - (this.Width *1.25f), this.Position.Y - (this.Width / 9), new Vector2(-1.0f, 0f));
                     obusGauche.Source = this;
 
                     this.getLancerObus(obusGauche);
@@ -521,18 +528,52 @@ namespace ProjectOcram
                 else if (this.directionDeplacement == Direction.Droite)
                 {
                     // Créer le nouvel obus et le passer (via la déléguée) au gestionnaire d'obus
-                    JoueurObus obusDroite = new JoueurObus(this.Position.X, this.Position.Y - (this.Width / 3), new Vector2(1.0f, 0f));
+                    JoueurObus obusDroite = new JoueurObus(this.Position.X + (this.Width * 1.25f), this.Position.Y - (this.Width / 9), new Vector2(1.0f, 0f));
                     obusDroite.Source = this;
                     this.getLancerObus(obusDroite);
 
                 }
-
-
 
             }
 
                 // La fonction de base s'occupe de l'animation.
                 base.Update(gameTime, graphics);
         }
+
+        // Fonction dessinant un rectangle de vitalité au-dessus du sprite.
+        private void DrawVitalite(Camera camera, SpriteBatch spriteBatch)
+        {
+            // Créer le rectangle à dessiner.
+            Rectangle rect = new Rectangle((int)(this.Position.X - 45),
+            (int)(this.Position.Y - this.Height / 2 - 23),
+            this.Width+55, 35);
+
+            // Créer le rectangle à dessiner.
+            Rectangle rectOnTop = new Rectangle((int)(this.Position.X - 27),
+            (int)(this.Position.Y - this.Height / 2 - 8),
+            this.Width/2 + 40, 4);
+
+
+            // Si nous avons une caméra, corriger le rectangle en conséquence.
+            if (camera != null)
+            {
+                camera.Monde2Camera(ref rect);
+                camera.Monde2Camera(ref rectOnTop);
+            }
+            // Afficher le rectangle.
+            spriteBatch.Draw(rectTexture, rect,Color.Black);
+            spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.MediumBlue);
+        }
+
+
+
+        // Surcharge afin d'afficher le rectangle de vitalité.
+        public override void Draw(Camera camera, SpriteBatch spriteBatch)
+        {
+            // Afficher le rectangle de vitalité.
+            this.DrawVitalite(camera, spriteBatch);
+            // Puis afficher le sprite.
+            base.Draw(camera, spriteBatch);
+        }
     }
 }
