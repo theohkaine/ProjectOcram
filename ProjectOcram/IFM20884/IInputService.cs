@@ -64,24 +64,6 @@ namespace IFM20884
         float DeplacementDroite(int device);      // pour tourner vers la droite
 
         /// <summary>
-        /// Retourne un entier entre 0.0 et 1.0 indiquant le facteur de vitesse à appliquer
-        /// durant le jeu pour diriger le sprite du joueur vers l'avant : 0.0 = aucun 
-        /// déplacement, 1.0 = vitesse maximale.
-        /// </summary>
-        /// <param name="device">Le périphérique à lire.</param>
-        /// <returns>Valeurs entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
-        float DeplacementAvant(int device);       // pour avancer
-
-        /// <summary>
-        /// Retourne un entier entre 0.0 et 1.0 indiquant le facteur de vitesse à appliquer
-        /// durant le jeu pour diriger le sprite du joueur vers l'arrière : 0.0 = aucun 
-        /// déplacement, 1.0 = vitesse maximale.
-        /// </summary>
-        /// <param name="device">Le périphérique à lire.</param>
-        /// <returns>Valeurs entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
-        float DeplacementArriere(int device);     // pour reculer
-
-        /// <summary>
         /// Retourne un booléen indiquant si un saut du personnage doit être effectue.
         /// </summary>
         /// <param name="device">Le périphérique à lire.</param>
@@ -101,5 +83,9 @@ namespace IFM20884
         /// <param name="device">Le périphérique à lire.</param>
         /// <returns>Vrai si un obus doit être tiré; faux sinon.</returns>
         bool TirerObus(int device);
+
+        float DashingDroite(int device);
+        float DashingGauche(int device);
+       
     }
 }
