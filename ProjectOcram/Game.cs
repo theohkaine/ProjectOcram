@@ -238,7 +238,7 @@ namespace ProjectOcram
             JoueurSprite.LoadContent(this.Content, this.graphics);
 
 
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur);
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur +(116));
 
             JoueurObus.LoadContent(this.Content, this.graphics);
 
