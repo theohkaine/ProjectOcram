@@ -139,41 +139,6 @@ namespace IFM20884
             }
         }
 
-        /// <summary>
-        /// Retourne 1.0f si la flèche en haut du clavier est pressée, 0.0 sinon.
-        /// Le paramètre device est ignoré (un seul clavier).
-        /// </summary>
-        /// <param name="device">Le périphérique à lire.</param>
-        /// <returns>Valeur entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
-        public float DeplacementAvant(int device)
-        {
-            if (this.etatClavier.IsKeyDown(Keys.Up))
-            {
-                return 1.0f;
-            }
-            else
-            {
-                return 0.0f;
-            }
-        }
-
-        /// <summary>
-        /// Retourne 1.0f si la flèche en bas du clavier est pressée, 0.0 sinon.
-        /// Le paramètre device est ignoré (un seul clavier).
-        /// </summary>
-        /// <param name="device">Le périphérique à lire.</param>
-        /// <returns>Valeur entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
-        public float DeplacementArriere(int device)
-        {
-            if (this.etatClavier.IsKeyDown(Keys.Down))
-            {
-                return 1.0f;
-            }
-            else
-            {
-                return 0.0f;
-            }
-        }
 
         /// <summary>
         /// Indique si le personnage doit sauter (si la barre d'espacement du clavier pressée). La
@@ -236,6 +201,32 @@ namespace IFM20884
             return this.DelaiDuplicationExpire(Keys.W, 300);
         }
 
+
+
+        public float DashingDroite(int device)
+        {
+            if (this.etatClavier.IsKeyDown(Keys.Q))
+            {
+                return 1.0f;
+            }
+            else
+            {
+                return 0.0f;
+            }
+        }
+
+        public float DashingGauche(int device)
+        {
+            if (this.etatClavier.IsKeyDown(Keys.E))
+            {
+                return 1.0f;
+            }
+            else
+            {
+                return 0.0f;
+            }
+        }
+
         /// <summary>
         /// Récupère l'état du clavier.
         /// </summary>
@@ -259,6 +250,7 @@ namespace IFM20884
             // Premièrement s'assurer que la touche est pressée.
             if (!this.etatClavier.IsKeyDown(touche))
             {
+
                 return false;
             }
 

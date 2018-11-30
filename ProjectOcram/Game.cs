@@ -121,24 +121,20 @@ namespace ProjectOcram
         {
             Color pixColor = Color.Black;
 
-            // Extraire la couleur du pixel correspondant à la position donnée.
+            // Extraire la couleur du pixel correspondant à la position.
             try
             {
-             pixColor = this.monde.CouleurDeCollision(position);
-            }            
-            catch(System.IndexOutOfRangeException)
+                pixColor = this.monde.CouleurDeCollision(position);
+            }
+            catch (System.IndexOutOfRangeException)
             {
                 this.Exit();
             }
-            // Déterminer le niveau de résistance en fonction de la couleur
-            if (pixColor == Color.Black)
-            {
-                return 1.0f;
-            }
-            else
-            {
+            // Déterminer le niveau de résistance en fonction de la couleur.
+            if (pixColor != Color.Black)
                 return 0.0f;
-            }
+            else
+                return 1.0f;
         }
 
         /// <summary>
@@ -242,7 +238,7 @@ namespace ProjectOcram
             JoueurSprite.LoadContent(this.Content, this.graphics);
 
 
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur);
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur +(116));
 
             JoueurObus.LoadContent(this.Content, this.graphics);
 
@@ -317,13 +313,11 @@ namespace ProjectOcram
             // Activer le blending alpha (pour la transparence des sprites).
             this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             
-
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
                                                                // Afficher les obus.
 
             foreach (Obus obus in this.listeObus)
-
             {
 
                 obus.Draw(this.camera, this.spriteBatch);
