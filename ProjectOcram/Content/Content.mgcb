@@ -241,3 +241,87 @@
 /processorParam:TextureFormat=Color
 /build:Monde/MondeOcram/map02.png
 
+#begin Music/DJMonogame.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/DJMonogame.mp3
+
+#begin Music/MonogameFinalSong.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/MonogameFinalSong.mp3
+
+#begin SoundFX/BossCry.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/BossCry.wav
+
+#begin SoundFX/BulletSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/BulletSound.wav
+
+#begin SoundFX/DashingSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/DashingSound.wav
+
+#begin SoundFX/DoorOpening.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/DoorOpening.wav
+
+#begin SoundFX/Laser_Shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/Laser_Shoot.wav
+
+#begin SoundFX/MainCharacterDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/MainCharacterDeath.wav
+
+#begin SoundFX/MainCharacterHurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/MainCharacterHurt.wav
+
+#begin SoundFX/MainMenuSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/MainMenuSound.wav
+
+#begin SoundFX/MiryorDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/MiryorDeath.wav
+
+#begin SoundFX/ScaryCry.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/ScaryCry.wav
+
+#begin SoundFX/SimeDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/SimeDeath.wav
+
+#begin SoundFX/TankDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:SoundFX/TankDeath.wav
+

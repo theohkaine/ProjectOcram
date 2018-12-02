@@ -45,6 +45,8 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Microsoft.Xna.Framework.Media;
+    using Microsoft.Xna.Framework.Audio;
 
     /// <summary>
     /// Définition de fonction déléguée permettant de calculer la résistance aux déplacements
@@ -138,6 +140,24 @@ namespace ProjectOcram
         private static Texture2D rectTexture;
         private static Texture2D rectTextureOnTop;
 
+
+        /// <summary>
+        /// Effet sonore joué lors de l'attaque.
+        /// </summary>
+        private static SoundEffect AttackFX;
+
+        private static SoundEffect DashingFX;
+
+        /// <summary>
+        /// Instance de bruitage des attaques en cours de sonorisation durant le jeu.
+        /// </summary>
+        private SoundEffectInstance AttackInstanceFX;
+
+
+        float volume = 0.59f;
+        float pitch = 0.0f;
+        float pan = 0.0f;
+
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
         /// </summary>
@@ -149,6 +169,9 @@ namespace ProjectOcram
             // Par défaut, le sprite est stationnaire et fait face au joueur.
             this.directionDeplacement = Direction.Droite;
             this.etat = Etats.Stationnaire;
+
+            // Sélectionner et paramétrer le bruitage d'effets sonores.
+            //this.AttackInstanceFX = AttackFX.CreateInstance();
         }
 
         /// <summary>
@@ -374,14 +397,18 @@ namespace ProjectOcram
             // Charger la texture servant à l’affichage du rectangle de vitalité.
             rectTexture = content.Load<Texture2D>(@"Extra\tankHP");
             rectTextureOnTop = content.Load<Texture2D>(@"Extra\hp");
+
+            // Charger les effets sonores
+            AttackFX = content.Load<SoundEffect>(@"SoundFX\Laser_Shoot");
+            DashingFX = content.Load<SoundEffect>(@"SoundFX\DashingSound");
         }
 
 
         int DashTime = 300;
         int DashCooldown = 500;
 
-        int currentDash = 0;
-        bool hasDashed = false;
+        int currentDashDroite = 0;
+        bool hasDashedDroite = false;
 
 
         int currentDashGauche = 0;
@@ -444,16 +471,16 @@ namespace ProjectOcram
             }
 
 
-
             //DASHING DROITE
-            if (vitesseDashingD == 1 && hasDashed == false)
+            if (vitesseDashingD == 1 && hasDashedDroite == false)
             {
-                currentDash = DashTime + DashCooldown;
-                hasDashed = true;
+                DashingFX.Play(volume, pan, pitch);
+                currentDashDroite = DashTime + DashCooldown;
+                hasDashedDroite = true;
             }
             else
             {
-                if (currentDash > DashCooldown)
+                if (currentDashDroite > DashCooldown)
                 {
                     // Movement code
 
@@ -461,18 +488,19 @@ namespace ProjectOcram
                     deltaX = (int)(-8);
 
                 }
-                else if (vitesseDashingD == 0 && currentDash <= 0)
+                else if (vitesseDashingD == 0 && currentDashDroite <= 0)
                 {
-                    hasDashed = false;
+                    hasDashedDroite = false;
                 }
 
-                currentDash -= gameTime.ElapsedGameTime.Milliseconds;
+                currentDashDroite -= gameTime.ElapsedGameTime.Milliseconds;
             }
 
 
             //DASHING GAUCHE
             if (vitesseDashingG == 1 && hasDashedGauche == false)
             {
+                DashingFX.Play(volume, pan, pitch);
                 currentDashGauche = DashTime + DashCooldown;
                 hasDashedGauche = true;
             }
@@ -623,7 +651,10 @@ namespace ProjectOcram
             // Déterminer si un obus doit être lancé
             if (ServiceHelper.Get<IInputService>().TirerObus(this.indexPeripherique) && this.getLancerObus != null)
             {
+               
 
+
+                AttackFX.Play(volume,pan,pitch);
 
                 if (this.directionDeplacement == Direction.Gauche)
                 {

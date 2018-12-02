@@ -44,6 +44,8 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Microsoft.Xna.Framework.Media;
+    using Microsoft.Xna.Framework.Audio;
 
     /// <summary>
     /// Classe principale du jeu.
@@ -84,10 +86,24 @@ namespace ProjectOcram
 
         private const int ScreenSizeW = 1280;
 
+        private Song music;
+
         /// <summary>
         /// Liste des sprites représentant des obus.
         /// </summary>
         private List<Obus> listeObus;
+
+
+        /// <summary>
+        /// Effet sonore joué lors de l'attaque.
+        /// </summary>
+        private static SoundEffect AttackFX;
+
+        /// <summary>
+        /// Instance de bruitage des attaques en cours de sonorisation durant le jeu.
+        /// </summary>
+        private SoundEffectInstance AttackInstanceFX;
+
 
         /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
@@ -256,6 +272,17 @@ namespace ProjectOcram
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
 
+
+            // Charger la musique de fond du jeu.
+            this.music = Content.Load<Song>(@"Music\MonogameFinalSong");
+
+
+            // Paramétrer la musique de fond et la démarrer.
+            MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
+            MediaPlayer.IsRepeating = true;    // jouer en boucle
+
+            MediaPlayer.Play(this.music);
+
             // Associer la déléguée de gestion des obus du vaisseau à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;
 
@@ -378,6 +405,7 @@ namespace ProjectOcram
             foreach (Obus obus in this.listeObus)
             {
                 obus.Update(gameTime, this.graphics);
+
             }
         }
 
