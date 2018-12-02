@@ -44,6 +44,8 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Microsoft.Xna.Framework.Media;
+    using Microsoft.Xna.Framework.Audio;
 
     /// <summary>
     /// Classe principale du jeu.
@@ -83,6 +85,8 @@ namespace ProjectOcram
         private const int ScreenSizeH = 800;
 
         private const int ScreenSizeW = 1280;
+
+        private Song music;
 
         /// <summary>
         /// Liste des sprites représentant des obus.
@@ -255,6 +259,16 @@ namespace ProjectOcram
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+
+
+            // Charger la musique de fond du jeu.
+            this.music = Content.Load<Song>(@"Music\MonogameFinalSong");
+
+            // Paramétrer la musique de fond et la démarrer.
+            MediaPlayer.Volume = 0.15f;         // valeur entre 0.0 et 1.0
+            MediaPlayer.IsRepeating = true;    // jouer en boucle
+
+            MediaPlayer.Play(this.music);
 
             // Associer la déléguée de gestion des obus du vaisseau à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;

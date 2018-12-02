@@ -45,6 +45,7 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Microsoft.Xna.Framework.Media;
 
     /// <summary>
     /// Définition de fonction déléguée permettant de calculer la résistance aux déplacements
@@ -137,6 +138,9 @@ namespace ProjectOcram
         // Texture servant à afficher un rectangle de vitalité au-dessus de this.
         private static Texture2D rectTexture;
         private static Texture2D rectTextureOnTop;
+
+
+        
 
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
@@ -380,8 +384,8 @@ namespace ProjectOcram
         int DashTime = 300;
         int DashCooldown = 500;
 
-        int currentDash = 0;
-        bool hasDashed = false;
+        int currentDashDroite = 0;
+        bool hasDashedDroite = false;
 
 
         int currentDashGauche = 0;
@@ -444,16 +448,15 @@ namespace ProjectOcram
             }
 
 
-
             //DASHING DROITE
-            if (vitesseDashingD == 1 && hasDashed == false)
+            if (vitesseDashingD == 1 && hasDashedDroite == false)
             {
-                currentDash = DashTime + DashCooldown;
-                hasDashed = true;
+                currentDashDroite = DashTime + DashCooldown;
+                hasDashedDroite = true;
             }
             else
             {
-                if (currentDash > DashCooldown)
+                if (currentDashDroite > DashCooldown)
                 {
                     // Movement code
 
@@ -461,12 +464,12 @@ namespace ProjectOcram
                     deltaX = (int)(-8);
 
                 }
-                else if (vitesseDashingD == 0 && currentDash <= 0)
+                else if (vitesseDashingD == 0 && currentDashDroite <= 0)
                 {
-                    hasDashed = false;
+                    hasDashedDroite = false;
                 }
 
-                currentDash -= gameTime.ElapsedGameTime.Milliseconds;
+                currentDashDroite -= gameTime.ElapsedGameTime.Milliseconds;
             }
 
 
