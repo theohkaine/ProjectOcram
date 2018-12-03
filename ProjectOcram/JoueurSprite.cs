@@ -306,6 +306,15 @@ namespace ProjectOcram
         {
             get
             {
+
+                int dx = 0, dy = (Height / 2)  -7;
+
+                // La position dépend de la vitesse verticale : si le sprite est en saut montant,
+                // le point de collision est sa tête, sinon ce sont ses pieds.
+                if (this.vitesseVerticale < 0.0f)
+                    dy *= -1;
+
+
                 int dx = 0, dy = (this.Height / 3) - 1;
 
                 /* if (this.directionDeplacement)
@@ -313,20 +322,30 @@ namespace ProjectOcram
                      dx = -dy;
                  }
                  */
+
                 // La position considérée est celle des pattes devant le personnage,
                 // ce qui dépend de la direction de déplacement
                 if (this.directionDeplacement == Direction.Droite)
                 {
+
+                    dx = +15;
+                }
+                else if (this.directionDeplacement == Direction.Gauche)
+                {
+                    dx = -15;
+
                     dx += (this.Width / 2) + 3;
                 }
                 else if (this.directionDeplacement == Direction.Gauche)
                 {
                     dx -= (this.Width / 2) + 3;
+
                 }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
             }
         }
+
 
         /// <summary>
         /// Surchargé afin de retourner la palette correspondant à la direction de 
@@ -596,7 +615,7 @@ namespace ProjectOcram
 
                 //CODE ALEX
                 Vector2 newPos = this.PositionPourCollisions;
-                newPos.Y += 1;
+                newPos.Y += 5;
 
                 Vector2 newPosition = this.PositionPourCollisions;
                 newPosition.Y += 1;
@@ -651,6 +670,12 @@ namespace ProjectOcram
             // Déterminer si un obus doit être lancé
             if (ServiceHelper.Get<IInputService>().TirerObus(this.indexPeripherique) && this.getLancerObus != null)
             {
+
+                
+                if (this.directionDeplacement == Direction.Gauche)
+                {
+
+
                
 
 
@@ -658,6 +683,7 @@ namespace ProjectOcram
 
                 if (this.directionDeplacement == Direction.Gauche)
                 {
+
 
 
                     // Créer le nouvel obus et le passer (via la déléguée) au gestionnaire d'obus
@@ -734,6 +760,11 @@ namespace ProjectOcram
             this.Width / 2 + 40, 4);
 
 
+            }
+                // La fonction de base s'occupe de l'animation.
+                base.Update(gameTime, graphics);
+
+
             // Si nous avons une caméra, corriger le rectangle en conséquence.
             if (camera != null)
             {
@@ -754,6 +785,27 @@ namespace ProjectOcram
             this.DrawVitalite(camera, spriteBatch);
             // Puis afficher le sprite.
             base.Draw(camera, spriteBatch);
+
+        }
+
+        /// <summary>
+        /// Indique si this se tient debout sur la plateforme donnée.
+        /// </summary>
+        /// <param name="plateforme">La plateforme sur laquelle il faut vérifier si this est debout.</param>
+        /// <returns>Vrai si this est debout sur la plateforme; faux sinon.</returns>
+        public bool SurPlateforme(Plateforme plateforme)
+        {
+            // Obtenir la position "sous" les pieds de this.
+            Vector2 pos = this.PositionPourCollisions;
+            pos.Y += 1;
+          
+
+            // This est "debout" sur la plateforme si le pixel sous son point de collision est
+            // dans la plateforme.
+            return pos.X >= plateforme.Position.X - (plateforme.Width/2) &&
+                   pos.X <= plateforme.Position.X + (plateforme.Width/2) &&
+                   pos.Y >= plateforme.Position.Y - (plateforme.Height/2) &&
+                   pos.Y <= plateforme.Position.Y + (plateforme.Height/2);
         }
     }
 }
