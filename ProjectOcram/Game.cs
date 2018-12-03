@@ -93,18 +93,6 @@ namespace ProjectOcram
         /// </summary>
         private List<Obus> listeObus;
 
-
-        /// <summary>
-        /// Effet sonore joué lors de l'attaque.
-        /// </summary>
-        private static SoundEffect AttackFX;
-
-        /// <summary>
-        /// Instance de bruitage des attaques en cours de sonorisation durant le jeu.
-        /// </summary>
-        private SoundEffectInstance AttackInstanceFX;
-
-
         /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
         /// par Visual Studio lors de la création du projet.
@@ -212,15 +200,18 @@ namespace ProjectOcram
         {
             // Activer le service de gestion du clavier
             ServiceHelper.Game = this;
-            this.Components.Add(new ClavierService(this));
+            GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
+            if (gamepadState.IsConnected)
+            {
+                this.Components.Add(new ManetteService(this));
+            }
+            else
+            {
+                this.Components.Add(new ClavierService(this));
+            }
 
             // 1280 450
             nativeRenderTarget = new RenderTarget2D(GraphicsDevice, this.graphics.GraphicsDevice.Viewport.Width, 450);
-
-
-            //this.monde = new MondeOcram();   // créer le monde
-
-            
 
             // Initialiser la vue de la caméra à la taille de l'écran.
             this.camera = new Camera(new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, 450));
@@ -271,7 +262,6 @@ namespace ProjectOcram
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
-
 
             // Charger la musique de fond du jeu.
             this.music = Content.Load<Song>(@"Music\MonogameFinalSong");
