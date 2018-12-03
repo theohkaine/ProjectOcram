@@ -45,6 +45,8 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Microsoft.Xna.Framework.Media;
+    using Microsoft.Xna.Framework.Audio;
 
     /// <summary>
     /// Définition de fonction déléguée permettant de calculer la résistance aux déplacements
@@ -132,17 +134,44 @@ namespace ProjectOcram
         /// </summary>
         private LancerObus getLancerObus;
 
+
+
+        // Texture servant à afficher un rectangle de vitalité au-dessus de this.
+        private static Texture2D rectTexture;
+        private static Texture2D rectTextureOnTop;
+
+
+        /// <summary>
+        /// Effet sonore joué lors de l'attaque.
+        /// </summary>
+        private static SoundEffect AttackFX;
+
+        private static SoundEffect DashingFX;
+
+        /// <summary>
+        /// Instance de bruitage des attaques en cours de sonorisation durant le jeu.
+        /// </summary>
+        private SoundEffectInstance AttackInstanceFX;
+
+
+        float volume = 0.59f;
+        float pitch = 0.0f;
+        float pan = 0.0f;
+
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
         /// </summary>
         /// <param name="x">Coordonnée initiale x (horizontale) du sprite.</param>
         /// <param name="y">Coordonnée initiale y (verticale) du sprite.</param>
         public JoueurSprite(float x, float y)
-            : base(x, y)  
+            : base(x, y)
         {
             // Par défaut, le sprite est stationnaire et fait face au joueur.
             this.directionDeplacement = Direction.Droite;
             this.etat = Etats.Stationnaire;
+
+            // Sélectionner et paramétrer le bruitage d'effets sonores.
+            //this.AttackInstanceFX = AttackFX.CreateInstance();
         }
 
         /// <summary>
@@ -150,7 +179,7 @@ namespace ProjectOcram
         /// </summary>
         /// <param name="position">Coordonnées initiales horizontale et verticale du sprite.</param>
         public JoueurSprite(Vector2 position)
-            : this(position.X, position.Y) 
+            : this(position.X, position.Y)
         {
         }
 
@@ -167,7 +196,11 @@ namespace ProjectOcram
             /// <summary>
             /// Déplacement vers la gauche de l'écran.
             /// </summary>
-            Gauche
+            Gauche,
+
+            DashingGauche,
+
+            DashingDroite
         }
 
         /// <summary>
@@ -188,7 +221,13 @@ namespace ProjectOcram
             /// <summary>
             /// Le personnage saute.
             /// </summary>
-            Saut
+            Saut,
+
+            ShootingIdle,
+
+            ShootingRunning,
+
+            ShootingJumping
         }
 
         /// <summary>
@@ -267,6 +306,7 @@ namespace ProjectOcram
         {
             get
             {
+
                 int dx = 0, dy = (Height / 2)  -7;
 
                 // La position dépend de la vitesse verticale : si le sprite est en saut montant,
@@ -274,15 +314,32 @@ namespace ProjectOcram
                 if (this.vitesseVerticale < 0.0f)
                     dy *= -1;
 
+
+                int dx = 0, dy = (this.Height / 3) - 1;
+
+                /* if (this.directionDeplacement)
+                 {
+                     dx = -dy;
+                 }
+                 */
+
                 // La position considérée est celle des pattes devant le personnage,
                 // ce qui dépend de la direction de déplacement
                 if (this.directionDeplacement == Direction.Droite)
                 {
+
                     dx = +15;
                 }
                 else if (this.directionDeplacement == Direction.Gauche)
                 {
                     dx = -15;
+
+                    dx += (this.Width / 2) + 3;
+                }
+                else if (this.directionDeplacement == Direction.Gauche)
+                {
+                    dx -= (this.Width / 2) + 3;
+
                 }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
@@ -325,18 +382,30 @@ namespace ProjectOcram
             foreach (Etats etat in Enum.GetValues(typeof(Etats)))
             {
                 // Déterminer le répertoire contenant les palettes selon l'état.
-                string repertoire;               
-                switch (etat) 
+                string repertoire;
+                switch (etat)
                 {
-                    case Etats.Marche: 
-                        repertoire = @"Joueur\Marche\"; 
+                    case Etats.Marche:
+                        repertoire = @"Joueur\Marche\";
                         break;
                     case Etats.Saut:
                         repertoire = @"Joueur\Saut\";
                         break;
 
-                    default: 
-                        repertoire = @"Joueur\Stationnaire\"; 
+                    case Etats.ShootingIdle:
+                        repertoire = @"Joueur\Shooting\Stationnaire\";
+                        break;
+
+                    case Etats.ShootingRunning:
+                        repertoire = @"Joueur\Shooting\Marche\";
+                        break;
+
+                    case Etats.ShootingJumping:
+                        repertoire = @"Joueur\Shooting\Saut\";
+                        break;
+
+                    default:
+                        repertoire = @"Joueur\Stationnaire\";
                         break;
                 }
 
@@ -344,7 +413,25 @@ namespace ProjectOcram
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Right"), 39, 39));
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Left"), 39, 39));
             }
+            // Charger la texture servant à l’affichage du rectangle de vitalité.
+            rectTexture = content.Load<Texture2D>(@"Extra\tankHP");
+            rectTextureOnTop = content.Load<Texture2D>(@"Extra\hp");
+
+            // Charger les effets sonores
+            AttackFX = content.Load<SoundEffect>(@"SoundFX\Laser_Shoot");
+            DashingFX = content.Load<SoundEffect>(@"SoundFX\DashingSound");
         }
+
+
+        int DashTime = 300;
+        int DashCooldown = 500;
+
+        int currentDashDroite = 0;
+        bool hasDashedDroite = false;
+
+
+        int currentDashGauche = 0;
+        bool hasDashedGauche = false;
 
         /// <summary>
         /// Ajuste la position du sprite en fonction de l'input.
@@ -361,6 +448,10 @@ namespace ProjectOcram
             // Obtenir les vitesses de déplacements (toutes entre 0.0 et 1.0) de l'input
             float vitesseD = ServiceHelper.Get<IInputService>().DeplacementDroite(this.indexPeripherique);
             float vitesseG = ServiceHelper.Get<IInputService>().DeplacementGauche(this.indexPeripherique);
+            float vitesseDashingG = ServiceHelper.Get<IInputService>().DashingGauche(this.indexPeripherique);
+            float vitesseDashingD = ServiceHelper.Get<IInputService>().DashingDroite(this.indexPeripherique);
+
+            int deltaX = 0;
 
             // Éviter les directions contradictoires
             if (vitesseD > 0.0)
@@ -368,10 +459,15 @@ namespace ProjectOcram
                 vitesseG = 0.0f;
             }
 
+            if (vitesseDashingD > 0.0)
+            {
+                vitesseDashingG = 0.0f;
+            }
+
             // Changer le sprite selon la direction 
             if (vitesseD > 0.0)
             {
-                
+
                 this.directionDeplacement = Direction.Droite;
             }
             else if (vitesseG > 0.0)
@@ -381,7 +477,7 @@ namespace ProjectOcram
 
             // Calculer le déplacement horizontal du sprite selon la direction indiquée. Notez que deux directions
             // opposées s'annulent
-            int deltaX = 0;
+
             if (this.directionDeplacement == Direction.Gauche)
             {
                 deltaX = (int)(-vitesseH * vitesseG);
@@ -390,7 +486,61 @@ namespace ProjectOcram
             if (this.directionDeplacement == Direction.Droite)
             {
                 deltaX = (int)(vitesseH * vitesseD);
+
             }
+
+
+            //DASHING DROITE
+            if (vitesseDashingD == 1 && hasDashedDroite == false)
+            {
+                DashingFX.Play(volume, pan, pitch);
+                currentDashDroite = DashTime + DashCooldown;
+                hasDashedDroite = true;
+            }
+            else
+            {
+                if (currentDashDroite > DashCooldown)
+                {
+                    // Movement code
+
+                    this.directionDeplacement = Direction.DashingDroite;
+                    deltaX = (int)(-8);
+
+                }
+                else if (vitesseDashingD == 0 && currentDashDroite <= 0)
+                {
+                    hasDashedDroite = false;
+                }
+
+                currentDashDroite -= gameTime.ElapsedGameTime.Milliseconds;
+            }
+
+
+            //DASHING GAUCHE
+            if (vitesseDashingG == 1 && hasDashedGauche == false)
+            {
+                DashingFX.Play(volume, pan, pitch);
+                currentDashGauche = DashTime + DashCooldown;
+                hasDashedGauche = true;
+            }
+            else
+            {
+                if (currentDashGauche > DashCooldown)
+                {
+                    // Movement code
+
+                    this.directionDeplacement = Direction.DashingGauche;
+                    deltaX = (int)(8);
+
+                }
+                else if (vitesseDashingG == 0 && currentDashGauche <= 0)
+                {
+                    hasDashedGauche = false;
+                }
+
+                currentDashGauche -= gameTime.ElapsedGameTime.Milliseconds;
+            }
+
 
             // Déterminer si le sprite doit sauter. Si c'est le cas, une vitesse verticale négative (i.e. vers le
             // haut) est initiée.
@@ -400,19 +550,22 @@ namespace ProjectOcram
 
                 // Vitesse initiale vers le haut de l'écran
                 this.vitesseVerticale = -0.56f;
-                
+
             }
+
+
+
 
             // Si le sprite est en état de saut, modifier graduellement sa vitesse verticale
             if (this.Etat == Etats.Saut)
             {
                 this.vitesseVerticale += 0.037f;    // selon la constante de gravité (9.8 m/s2)
-                
+
 
             }
 
             //Make falling more slower if the character vertical speed goes too high
-            if(this.vitesseVerticale > 0.4f)
+            if (this.vitesseVerticale > 0.4f)
             {
                 this.vitesseVerticale = 0.35f;
             }
@@ -432,13 +585,13 @@ namespace ProjectOcram
                 // de la résistance des tuiles. Une résistance maximale de 0.95 est indiquée afin de
                 // permettre au sprite de traverser les tuiles n'étant pas complètement solides.
                 this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
-                
+
 
 
                 // Si aucun déplacement verticale n'est déterminé lors d'un saut (parce que le sprite 
                 // a rencontré une tuile solide), indiquer que le saut est terminé.
                 sautTermine = (this.Etat == Etats.Saut) && (deltaY == 0);
-                
+
 
             }
 
@@ -467,15 +620,15 @@ namespace ProjectOcram
                 Vector2 newPosition = this.PositionPourCollisions;
                 newPosition.Y += 1;
 
-                if(this.directionDeplacement == Direction.Droite)
+                if (this.directionDeplacement == Direction.Droite)
                 {
                     newPosition.X -= (this.Width) / 1.9f;
                 }
                 else if (this.directionDeplacement == Direction.Gauche)
                 {
-                    newPosition.X += (this.Width)/1.9f;
+                    newPosition.X += (this.Width) / 1.9f;
                 }
-                     
+
                 // Calculer la résistance à la position du sprite.
                 float resistance = this.getResistanceAuMouvement(newPos) + this.getResistanceAuMouvement(newPosition);
 
@@ -503,33 +656,136 @@ namespace ProjectOcram
                 this.Etat = Etats.Stationnaire;    // aucun mouvement: le joueur est stationnaire
             }
 
+
+
+
+
+
+
+
+
+
+
+
             // Déterminer si un obus doit être lancé
             if (ServiceHelper.Get<IInputService>().TirerObus(this.indexPeripherique) && this.getLancerObus != null)
             {
+
                 
                 if (this.directionDeplacement == Direction.Gauche)
                 {
 
+
+               
+
+
+                AttackFX.Play(volume,pan,pitch);
+
+                if (this.directionDeplacement == Direction.Gauche)
+                {
+
+
+
                     // Créer le nouvel obus et le passer (via la déléguée) au gestionnaire d'obus
-                    JoueurObus obusGauche = new JoueurObus(this.Position.X, this.Position.Y - (this.Width / 3), new Vector2(-1.0f, 0f));
+                    JoueurObus obusGauche = new JoueurObus(this.Position.X - (this.Width * 1.25f), this.Position.Y - (this.Width / 9), new Vector2(-1.0f, 0f));
+
                     obusGauche.Source = this;
 
+
+                    //TO FIX LATER FUCK THIS SHIT
+                    //
+                    //
+                    //
+                    //
+                    if (this.Etat == Etats.Marche)
+                    {
+                        this.Etat = Etats.ShootingRunning;
+                    }
+                    if (this.Etat == Etats.Stationnaire)
+                    {
+                        this.Etat = Etats.ShootingIdle;
+
+                    }
+
                     this.getLancerObus(obusGauche);
+
                 }
 
                 else if (this.directionDeplacement == Direction.Droite)
                 {
                     // Créer le nouvel obus et le passer (via la déléguée) au gestionnaire d'obus
-                    JoueurObus obusDroite = new JoueurObus(this.Position.X, this.Position.Y - (this.Width / 3), new Vector2(1.0f, 0f));
+                    JoueurObus obusDroite = new JoueurObus(this.Position.X + (this.Width * 1.25f), this.Position.Y - (this.Width / 9), new Vector2(1.0f, 0f));
                     obusDroite.Source = this;
+
+
+                    //TO FIX LATER FUCK THIS SHIT
+                    //
+                    //
+                    //
+                    //
+                    if (this.Etat == Etats.Marche)
+                    {
+                        this.Etat = Etats.ShootingRunning;
+                    }
+                    if (deltaX == 0 && deltaY == 0)
+                    {
+                        if (this.Etat != Etats.Saut)
+                        {
+                            this.Etat = Etats.ShootingIdle;
+                        }
+                    }
+
+
                     this.getLancerObus(obusDroite);
 
                 }
+
+            }
+
+            // La fonction de base s'occupe de l'animation.
+            base.Update(gameTime, graphics);
+        }
+
+        // Fonction dessinant un rectangle de vitalité au-dessus du sprite.
+        private void DrawVitalite(Camera camera, SpriteBatch spriteBatch)
+        {
+            // Créer le rectangle à dessiner.
+            Rectangle rect = new Rectangle((int)(this.Position.X - 45),
+            (int)(this.Position.Y - this.Height / 2 - 23),
+            this.Width + 55, 35);
+
+            // Créer le rectangle à dessiner.
+            Rectangle rectOnTop = new Rectangle((int)(this.Position.X - 27),
+            (int)(this.Position.Y - this.Height / 2 - 8),
+            this.Width / 2 + 40, 4);
 
 
             }
                 // La fonction de base s'occupe de l'animation.
                 base.Update(gameTime, graphics);
+
+
+            // Si nous avons une caméra, corriger le rectangle en conséquence.
+            if (camera != null)
+            {
+                camera.Monde2Camera(ref rect);
+                camera.Monde2Camera(ref rectOnTop);
+            }
+            // Afficher le rectangle.
+            spriteBatch.Draw(rectTexture, rect, Color.Black);
+            spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.MediumBlue);
+        }
+
+
+
+        // Surcharge afin d'afficher le rectangle de vitalité.
+        public override void Draw(Camera camera, SpriteBatch spriteBatch)
+        {
+            // Afficher le rectangle de vitalité.
+            this.DrawVitalite(camera, spriteBatch);
+            // Puis afficher le sprite.
+            base.Draw(camera, spriteBatch);
+
         }
 
         /// <summary>

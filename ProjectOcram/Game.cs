@@ -44,6 +44,8 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
+    using Microsoft.Xna.Framework.Media;
+    using Microsoft.Xna.Framework.Audio;
 
     /// <summary>
     /// Classe principale du jeu.
@@ -92,6 +94,8 @@ namespace ProjectOcram
         private const int ScreenSizeH = 800;
 
         private const int ScreenSizeW = 1280;
+
+        private Song music;
 
         /// <summary>
         /// Liste des sprites représentant des obus.
@@ -153,6 +157,7 @@ namespace ProjectOcram
         {
             Color pixColor = Color.Black;
 
+
             // Vérifier si la position donnée est dans une plateforme.
             foreach (Plateforme plateforme in this.plateformes)
             {
@@ -167,23 +172,22 @@ namespace ProjectOcram
             }
 
             // Extraire la couleur du pixel correspondant à la position donnée.
+=======
+            // Extraire la couleur du pixel correspondant à la position.
+
             try
             {
-             pixColor = this.monde.CouleurDeCollision(position);
-            }            
-            catch(System.IndexOutOfRangeException)
+                pixColor = this.monde.CouleurDeCollision(position);
+            }
+            catch (System.IndexOutOfRangeException)
             {
                 this.Exit();
             }
-            // Déterminer le niveau de résistance en fonction de la couleur
-            if (pixColor == Color.Black)
-            {
-                return 1.0f;
-            }
-            else
-            {
+            // Déterminer le niveau de résistance en fonction de la couleur.
+            if (pixColor != Color.Black)
                 return 0.0f;
-            }
+            else
+                return 1.0f;
         }
 
         /// <summary>
@@ -245,15 +249,18 @@ namespace ProjectOcram
         {
             // Activer le service de gestion du clavier
             ServiceHelper.Game = this;
-            this.Components.Add(new ClavierService(this));
+            GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
+            if (gamepadState.IsConnected)
+            {
+                this.Components.Add(new ManetteService(this));
+            }
+            else
+            {
+                this.Components.Add(new ClavierService(this));
+            }
 
             // 1280 450
             nativeRenderTarget = new RenderTarget2D(GraphicsDevice, this.graphics.GraphicsDevice.Viewport.Width, 450);
-
-
-            //this.monde = new MondeOcram();   // créer le monde
-
-            
 
             // Initialiser la vue de la caméra à la taille de l'écran.
             this.camera = new Camera(new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, 450));
@@ -292,7 +299,7 @@ namespace ProjectOcram
             JoueurSprite.LoadContent(this.Content, this.graphics);
 
 
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur);
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur +(116));
 
             JoueurObus.LoadContent(this.Content, this.graphics);
 
@@ -318,6 +325,16 @@ namespace ProjectOcram
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+
+            // Charger la musique de fond du jeu.
+            this.music = Content.Load<Song>(@"Music\MonogameFinalSong");
+
+
+            // Paramétrer la musique de fond et la démarrer.
+            MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
+            MediaPlayer.IsRepeating = true;    // jouer en boucle
+
+            MediaPlayer.Play(this.music);
 
             // Associer la déléguée de gestion des obus du vaisseau à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;
@@ -446,7 +463,6 @@ namespace ProjectOcram
             // Activer le blending alpha (pour la transparence des sprites).
             this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             
-
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
 
             // Afficher les plateformes.
@@ -535,6 +551,7 @@ namespace ProjectOcram
             foreach (Obus obus in this.listeObus)
             {
                 obus.Update(gameTime, this.graphics);
+
             }
         }
 
