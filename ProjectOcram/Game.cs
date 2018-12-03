@@ -105,6 +105,9 @@ namespace ProjectOcram
         private SoundEffectInstance AttackInstanceFX;
 
 
+        GameObject key;
+
+
         /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
         /// par Visual Studio lors de la création du projet.
@@ -212,7 +215,15 @@ namespace ProjectOcram
         {
             // Activer le service de gestion du clavier
             ServiceHelper.Game = this;
-            this.Components.Add(new ClavierService(this));
+            GamePadState gamepadState = GamePad.GetState(PlayerIndex.One);
+            if (gamepadState.IsConnected)
+            {
+                this.Components.Add(new ManetteService(this));
+            }
+            else
+            {
+                this.Components.Add(new ClavierService(this));
+            }
 
             // 1280 450
             nativeRenderTarget = new RenderTarget2D(GraphicsDevice, this.graphics.GraphicsDevice.Viewport.Width, 450);
@@ -271,6 +282,13 @@ namespace ProjectOcram
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+
+            //this.key = new GameObject(200, 200);
+
+           // Texture2D KeyTexture = Content.Load<Texture2D>(@"GameObject\Key");
+         
+           // key = new GameObject(KeyTexture,Vector2.Zero);
+
 
 
             // Charger la musique de fond du jeu.

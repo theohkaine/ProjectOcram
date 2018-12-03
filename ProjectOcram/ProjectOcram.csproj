@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="GameObject.cs" />
     <Compile Include="IFM20884\Camera.cs" />
     <Compile Include="ClavierService.cs" />
     <Compile Include="IFM20884\DefilementArrierePlan.cs" />
@@ -49,11 +50,9 @@
     <Compile Include="JoueurSprite.cs" />
     <Compile Include="IFM20884\Monde.cs" />
     <Compile Include="IFM20884\Palette.cs" />
-
+    <Compile Include="ManetteService.cs" />
     <Compile Include="MondeOcram.cs" />
-
     <Compile Include="Obus.cs" />
-
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IFM20884\Sprite.cs" />
