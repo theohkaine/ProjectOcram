@@ -99,7 +99,7 @@ namespace ProjectOcram
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
         {
             // Charger la texture associée à la plateforme.
-            texture = content.Load<Texture2D>(@"Monde\MondeOcram\Plateforme");
+            texture = content.Load<Texture2D>(@"GameObject\Platform");
         }
 
         /// <summary>

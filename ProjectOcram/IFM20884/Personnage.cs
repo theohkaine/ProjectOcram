@@ -369,7 +369,7 @@ namespace IFM20884
                 deltaX = (int)vitesse;
             }
 
-            
+
 
             // Si une fonction déléguée est fournie pour valider les mouvements sur les tuiles
             // y faire appel pour valider la position résultante du mouvement

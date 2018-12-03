@@ -143,23 +143,23 @@ namespace ProjectOcram
             out float vitesseGauche)
         {
             // Aucun périphérique d'inputs disponible, alors aucune vitesse lue.
-         
+
             vitesseDroite = 0.0f;
             vitesseGauche = 0.0f;
-           
+
 
             // Aucune intellignece : l'ogre marche de gauche a droite aux 3 secondes
             if ((gameTime.TotalGameTime.Seconds / 3) % 2 == 0)
             {
                 this.Etat = Etats.Marche;
                 vitesseDroite = 0.23f;
-                
+
             }
             else
             {
                 this.Etat = Etats.Marche;
                 vitesseGauche = 0.23f;
-               
+
             }
             return true;
         }
