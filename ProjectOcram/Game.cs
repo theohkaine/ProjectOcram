@@ -50,7 +50,10 @@ namespace ProjectOcram
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
-
+        /// <summary>
+        /// Attribut indiquant l'état du jeu
+        /// </summary>
+        private Etats etatJeu;
 
         /// <summary>
         /// Attribut permettant d'obtenir des infos sur la carte graphique et l'écran.
@@ -70,7 +73,13 @@ namespace ProjectOcram
         /// <summary>
         /// Attribut représentant le personnage contrôlé par le joueur.
         /// </summary>
-        private JoueurSprite joueur;    
+        private JoueurSprite joueur;
+
+
+        /// <summary>
+        /// Attribut représentant la liste d'ennemis dans le jeu.
+        /// </summary>
+        private List<Sprite> listeEnnemis;
 
         /// <summary>
         /// Attribut représentant la camera.
@@ -90,9 +99,32 @@ namespace ProjectOcram
         private List<Obus> listeObus;
 
         /// <summary>
-        /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
-        /// par Visual Studio lors de la création du projet.
+        /// Liste des sprites que la plateforme transporte avec elle (voir Update).
         /// </summary>
+        private List<Plateforme> plateformes;
+
+        /// <summary>
+        /// États disponibles du personnage.
+        /// </summary>
+        public enum Etats
+        {
+            /// <summary>
+            /// En cours de démarrage.
+            /// </summary>
+            Demarrer,
+
+        }
+
+        /// <summary>
+        /// Attribut représentant la liste de goblins dans le jeu.
+        /// </summary>
+        private List<Slime> slimes;
+
+        /// <summary>
+        /// Attribut représentant la liste de goblins dans le jeu.
+        /// </summary>
+        private List<Miroyr> miroyrs;
+
         public Game()
         {
 
@@ -120,6 +152,19 @@ namespace ProjectOcram
         public float CalculerResistanceAuMouvement(Vector2 position)
         {
             Color pixColor = Color.Black;
+
+            // Vérifier si la position donnée est dans une plateforme.
+            foreach (Plateforme plateforme in this.plateformes)
+            {
+                if (position.X >= plateforme.Position.X - (plateforme.Width/2 ) &&
+                    position.Y >= plateforme.Position.Y - (plateforme.Height/2) &&
+                    position.X <= plateforme.Position.X + (plateforme.Width /2) &&
+                    position.Y <= plateforme.Position.Y + (plateforme.Height /2))
+                {
+                    pixColor = Color.Black;
+                    break;
+                }
+            }
 
             // Extraire la couleur du pixel correspondant à la position donnée.
             try
@@ -216,7 +261,13 @@ namespace ProjectOcram
             // Créer les attributs de gestion des obus.
             this.listeObus = new List<Obus>();
 
-
+            //this.listeEnnemis = new List<Sprite>();
+           /* ////Ajouter les enemis dans la liste avec leurs position.
+            this.listeEnnemis.Add(new Ennemi(800, 75));
+            this.listeEnnemis.Add(new Ennemi(200, 600));
+            this.listeEnnemis.Add(new Ennemi(200, 1000));
+            */
+            //this.etatJeu = Etats.Demarrer;
             base.Initialize();
         }
 
@@ -228,7 +279,6 @@ namespace ProjectOcram
         {
             // Créer un nouveau SpriteBatch, utilisée pour dessiner les textures.
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
-
 
 
             // Charger le monde.
@@ -246,15 +296,24 @@ namespace ProjectOcram
 
             JoueurObus.LoadContent(this.Content, this.graphics);
 
-            
-
+               /*  if (this.listeEnnemis != null)
+                    {
+                    foreach (Ennemi ennemi in this.listeEnnemis)
+                    {
+                        Ennemi.LoadContent(this.Content, this.graphics);
+                        this.joueur = new JoueurSprite(0, 0);
+                    }
+                }*/
 
             // Créer et initialiser le sprite du joueur.
             this.joueur = new JoueurSprite(0, 0);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur , this.monde.Hauteur);
 
+            // Créer les plateformes.
+            Plateforme.LoadContent(Content, this.graphics);
+            this.plateformes = new List<Plateforme>();
+            this.plateformes.Add(new Plateforme(200, 70));
 
-            
 
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
@@ -262,6 +321,43 @@ namespace ProjectOcram
 
             // Associer la déléguée de gestion des obus du vaisseau à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;
+
+            // Charger le sprite représentant des ogres.
+            Slime.LoadContent(this.Content, this.graphics);
+
+            // Créer les slimes.
+            this.slimes = new List<Slime>();
+            this.slimes.Add(new Slime(900, 77));
+            this.slimes.Add(new Slime(175, 605));
+            this.slimes.Add(new Slime(350, 73));
+            this.slimes.Add(new Slime(1500, 77));
+            this.slimes.Add(new Slime(1200, 605));
+
+
+            // Configurer les ogres de sorte qu'ils ne puissent se déplacer
+            // hors de la mappe monde et initialiser la détection de collision de tuiles.
+            foreach (Slime slimes in this.slimes)
+            {
+                slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+                //slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+            }
+
+            // Charger le sprite représentant des ogres.
+            Miroyr.LoadContent(this.Content, this.graphics);
+
+            // Créer les ogres.
+            this.miroyrs = new List<Miroyr>();
+            this.miroyrs.Add(new Miroyr(900, 1120));
+            //this.miroyrs.Add(new Miroyr(200, 77));
+           
+            // Configurer les ogres de sorte qu'ils ne puissent se déplacer
+            // hors de la mappe monde et initialiser la détection de collision de tuiles.
+            foreach (Miroyr miroyr in this.miroyrs)
+            {
+                miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+                //miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+            }
+
 
         }
 
@@ -287,17 +383,50 @@ namespace ProjectOcram
             {
                 this.Exit();
             }
+          
 
             // Mettre à jour le sprite du joueur puis centrer la camera sur celui-ci.
             this.joueur.Update(gameTime, this.graphics);
 
-            this.UpdateObus(gameTime);
+            /* foreach (Sprite ennemi in this.listeEnnemis)
+             {
+                 ennemi.Update(gameTime, this.graphics);
+             }*/
 
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
 
+            // Mettre à jour les Slimes.
+            foreach (Slime slime in this.slimes)
+            {
+                slime.Update(gameTime, this.graphics);
+            }
 
+            // Mettre à jour le Miroyr.
+            foreach (Miroyr miroyr in this.miroyrs)
+            {
+                miroyr.Update(gameTime, this.graphics);
+            }
 
+            // Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
+            // plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
+            // ce sprite.
+            foreach (Plateforme plateforme in this.plateformes)
+            {
+                plateforme.Update(gameTime, this.graphics);  // mettre à jour la position
+
+                // Activer/désactiver la composition selon la plateforme et la position du joueur.
+                if (this.joueur.SurPlateforme(plateforme))
+                {
+                    plateforme.AjouterPassager(this.joueur);
+                }
+                else
+                {
+                    plateforme.RetirerPassager(this.joueur);
+                }
+            }
+
+            this.UpdateObus(gameTime);
             base.Update(gameTime);
         }
 
@@ -319,17 +448,39 @@ namespace ProjectOcram
             
 
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
-            this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
-                                                               // Afficher les obus.
 
-            foreach (Obus obus in this.listeObus)
-
+            // Afficher les plateformes.
+            foreach (Plateforme plateforme in this.plateformes)
             {
-
+                plateforme.Draw(this.camera, this.spriteBatch);
+            }
+            this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
+            
+            // Afficher les obuss
+            foreach (Obus obus in this.listeObus)
+            {
                 obus.Draw(this.camera, this.spriteBatch);
-
             }
 
+            /*  if (this.listeEnnemis != null)
+              {
+                  foreach (Sprite ennemi in this.listeEnnemis)
+                  {
+                      ennemi.Draw(this.camera, this.spriteBatch);
+                  }
+              }*/
+           
+            // Afficher les  slimes
+            foreach (Slime slime in this.slimes)
+            {
+                slime.Draw(this.camera, this.spriteBatch);
+            }
+
+            // Afficher le Miroyr
+            foreach (Miroyr miroyr in this.miroyrs)
+            {
+                miroyr.Draw(this.camera, this.spriteBatch);
+            }
 
             this.spriteBatch.End();
 
