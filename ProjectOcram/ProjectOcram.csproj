@@ -39,7 +39,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="GameObject.cs" />
     <Compile Include="IFM20884\Camera.cs" />
     <Compile Include="ClavierService.cs" />
     <Compile Include="IFM20884\DefilementArrierePlan.cs" />
