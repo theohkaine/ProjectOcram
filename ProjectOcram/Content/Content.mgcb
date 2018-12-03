@@ -169,6 +169,18 @@
 /processorParam:TextureFormat=Color
 /build:GameObject/Key.png
 
+#begin GameObject/Platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:GameObject/Platform.png
+
 #begin GameObject/wall.png
 /importer:TextureImporter
 /processor:TextureProcessor

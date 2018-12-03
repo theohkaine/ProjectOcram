@@ -755,5 +755,26 @@ namespace ProjectOcram
             // Puis afficher le sprite.
             base.Draw(camera, spriteBatch);
         }
+
+
+        /// <summary>
+        /// Indique si this se tient debout sur la plateforme donnée.
+        /// </summary>
+        /// <param name="plateforme">La plateforme sur laquelle il faut vérifier si this est debout.</param>
+        /// <returns>Vrai si this est debout sur la plateforme; faux sinon.</returns>
+        public bool SurPlateforme(Plateforme plateforme)
+        {
+            // Obtenir la position "sous" les pieds de this.
+            Vector2 pos = this.PositionPourCollisions;
+            pos.Y += 1;
+
+
+            // This est "debout" sur la plateforme si le pixel sous son point de collision est
+            // dans la plateforme.
+            return pos.X >= plateforme.Position.X - (plateforme.Width / 2) &&
+                   pos.X <= plateforme.Position.X + (plateforme.Width / 2) &&
+                   pos.Y >= plateforme.Position.Y - (plateforme.Height / 2) &&
+                   pos.Y <= plateforme.Position.Y + (plateforme.Height / 2);
+        }
     }
 }
