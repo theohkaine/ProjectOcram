@@ -53,6 +53,9 @@ namespace ProjectOcram
     /// </summary>
     public class Slime : Personnage
     {
+
+
+
         /// <summary>
         /// Attribut statique (i.e. partagé par toutes les instances) constituant une 
         /// liste de palettes à exploiter selon la direction et l'état du personnage.
@@ -164,7 +167,6 @@ namespace ProjectOcram
             return true;
         }
     }
-
-
+   
 }
 

@@ -143,6 +143,8 @@ namespace ProjectOcram
         {
             Color pixColor = Color.Black;
 
+
+
             // Extraire la couleur du pixel correspondant à la position.
             try
             {
@@ -238,11 +240,6 @@ namespace ProjectOcram
             this.listeObus = new List<Obus>();
 
 
-
-        
-            
-
-
             base.Initialize();
         }
 
@@ -303,7 +300,7 @@ namespace ProjectOcram
             // Créer les plateformes.
             Plateforme.LoadContent(Content, this.graphics);
             this.plateformes = new List<Plateforme>();
-            this.plateformes.Add(new Plateforme(200, 70));
+            this.plateformes.Add(new Plateforme(1400, 1560));
 
 
             // Charger le sprite représentant des ogres.
@@ -313,7 +310,7 @@ namespace ProjectOcram
             this.slimes = new List<Slime>();
             this.slimes.Add(new Slime(900, 77));
             this.slimes.Add(new Slime(175, 605));
-            this.slimes.Add(new Slime(350, 73));
+            this.slimes.Add(new Slime(350, 77));
             this.slimes.Add(new Slime(1500, 77));
             this.slimes.Add(new Slime(1200, 605));
 
