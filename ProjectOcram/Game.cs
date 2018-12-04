@@ -106,6 +106,13 @@ namespace ProjectOcram
         private List<Miroyr> miroyrs;
 
 
+
+
+
+
+        private LaserObstacle deathLaser;
+
+
         /// <summary>
         /// Liste des sprites représentant des obus.
         /// </summary>
@@ -141,19 +148,31 @@ namespace ProjectOcram
         /// <returns>Facteur de résistance entre 0.0f (aucune résistance) et 1.0f (résistance maximale).</returns>
         public float CalculerResistanceAuMouvement(Vector2 position)
         {
-            Color pixColor = Color.Black;
+            Color pixColor = Color.White;
 
-
+            foreach (Plateforme plateforme in this.plateformes)
+            {
+                if (position.X >= plateforme.Position.X - (plateforme.Width / 2) &&
+                    position.Y >= plateforme.Position.Y - (plateforme.Height / 2) &&
+                    position.X <= plateforme.Position.X + (plateforme.Width / 2) &&
+                    position.Y <= plateforme.Position.Y + (plateforme.Height / 2))
+                {
+                    pixColor = Color.Black;
+                    break;
+                }
+            }
 
             // Extraire la couleur du pixel correspondant à la position.
-            try
-            {
-                pixColor = this.monde.CouleurDeCollision(position);
-            }
-            catch (System.IndexOutOfRangeException)
-            {
-                this.Exit();
-            }
+            if (pixColor != Color.Black)
+                try
+                {
+                    pixColor = this.monde.CouleurDeCollision(position);
+                }
+                catch (System.IndexOutOfRangeException)
+                {
+                    this.Exit();
+                }
+
             // Déterminer le niveau de résistance en fonction de la couleur.
             if (pixColor != Color.Black)
                 return 0.0f;
@@ -236,6 +255,8 @@ namespace ProjectOcram
             // Initialiser la vue de la caméra à la taille de l'écran.
             this.camera = new Camera(new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, 450));
 
+            
+
             // Créer les attributs de gestion des obus.
             this.listeObus = new List<Obus>();
 
@@ -252,7 +273,7 @@ namespace ProjectOcram
             // Créer un nouveau SpriteBatch, utilisée pour dessiner les textures.
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
-
+            
 
             // Charger le monde.
             MondeOcram.LoadContent(this.Content);
@@ -263,13 +284,19 @@ namespace ProjectOcram
 
             // Charger le sprite de personnages du joueur (statique).
             JoueurSprite.LoadContent(this.Content, this.graphics);
-
+            LaserObstacle.LoadContent(this.Content, this.graphics);
 
             this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur +(116));
 
             JoueurObus.LoadContent(this.Content, this.graphics);
 
+
+
+          
+                this.deathLaser = new LaserObstacle(200, 40);
             
+
+
 
 
             // Créer et initialiser le sprite du joueur.
@@ -300,7 +327,7 @@ namespace ProjectOcram
             // Créer les plateformes.
             Plateforme.LoadContent(Content, this.graphics);
             this.plateformes = new List<Plateforme>();
-            this.plateformes.Add(new Plateforme(1400, 1560));
+            this.plateformes.Add(new Plateforme(200, 75));
 
 
             // Charger le sprite représentant des ogres.
@@ -313,6 +340,8 @@ namespace ProjectOcram
             this.slimes.Add(new Slime(350, 77));
             this.slimes.Add(new Slime(1500, 77));
             this.slimes.Add(new Slime(1200, 605));
+
+            
 
 
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
@@ -365,6 +394,8 @@ namespace ProjectOcram
 
             // Mettre à jour le sprite du joueur puis centrer la camera sur celui-ci.
             this.joueur.Update(gameTime, this.graphics);
+
+            this.deathLaser.Update(gameTime, this.graphics);
 
             this.UpdateObus(gameTime);
 
@@ -424,6 +455,7 @@ namespace ProjectOcram
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
                                                                // Afficher les obus.
 
+            this.deathLaser.Draw(this.camera, this.spriteBatch);
             foreach (Obus obus in this.listeObus)
             {
 
@@ -451,6 +483,8 @@ namespace ProjectOcram
                 miroyr.Draw(this.camera, this.spriteBatch);
             }
 
+          
+
             this.spriteBatch.End();
 
             // Resize the game to fit the monitor's resolution
@@ -461,6 +495,29 @@ namespace ProjectOcram
 
             base.Draw(gameTime);
         }
+
+
+        //protected void UpdateDeathLaser(GameTime gameTime)
+        //{
+        //    List<LaserObstacle> asteroidesFini = new List<LaserObstacle>();
+        //    foreach (LaserObstacle laser in this.deathLaser)
+        //    {
+        //        if (laser.Position.Y - laser.Height > this.graphics.GraphicsDevice.Viewport.Height)
+        //        {
+        //            asteroidesFini.Add(laser);
+        //        }
+        //    }
+
+        //    // Mettre à jour les astéroïdes existants.
+        //    foreach (LaserObstacle laser in this.deathLaser)
+        //    {
+        //        laser.Update(gameTime, this.graphics);
+        //    }
+
+        //    // Créer le sprite
+        //    LaserObstacle lasers = new LaserObstacle(0, 0);
+        //}
+
 
         /// <summary>
         /// Fonction déléguée responsable de gérer les nouveaux obus lancés par le vaisseau du joueur.

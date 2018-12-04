@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Boss.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="IFM20884\Camera.cs" />
     <Compile Include="ClavierService.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="JoueurSprite.cs" />
     <Compile Include="IFM20884\Monde.cs" />
     <Compile Include="IFM20884\Palette.cs" />
+    <Compile Include="LaserObstacle.cs" />
     <Compile Include="ManetteService.cs" />
     <Compile Include="Miroyr.cs" />
     <Compile Include="MondeOcram.cs" />

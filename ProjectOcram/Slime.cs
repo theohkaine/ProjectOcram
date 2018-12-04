@@ -108,7 +108,7 @@ namespace ProjectOcram
         {
             // Les palettes sont stockées dans la liste en groupes d'état (i.e.
             // 8 palettes de direction pour chaque état).
-            get { return this.Palettes[((int)this.Etat * 20) + (int)this.DirectionDeplacement]; }
+            get { return this.Palettes[((int)this.Etat * 12) + (int)this.DirectionDeplacement]; }
         }
 
         /// <summary>
