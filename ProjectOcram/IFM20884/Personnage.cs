@@ -72,6 +72,8 @@ namespace IFM20884
     /// </summary>
     public abstract class Personnage : SpriteAnimation
     {
+
+
         /// <summary>
         /// Fonction déléguée permettant d'obtenir la résistance aux déplacements du sprite
         /// dans le monde de tuiles. Si aucune fonction déléguée n'est fournie, aucune
@@ -105,6 +107,8 @@ namespace IFM20884
         /// Instance de bruitage des moteurs en cours de sonorisation durant le jeu.
         /// </summary>
         private SoundEffectInstance bruitActif;
+
+        public int animationSpeed;
 
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
@@ -302,8 +306,8 @@ namespace IFM20884
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-
-
+            this.VitesseAnimation = 0.069f;
+            
             // Obtenir les vitesses de déplacements (toutes entre 0.0 et 1.0) de l'input
             float vitesseDroite, vitesseGauche;
             if (!this.LireVitesses(gameTime, out vitesseDroite, out vitesseGauche))
