@@ -167,6 +167,10 @@ namespace ProjectOcram
         private Color couleurMenuItemSelectionne = Color.Yellow;
 
 
+
+
+        Texture2D Menu;
+
         /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
         /// par Visual Studio lors de la création du projet.
@@ -488,6 +492,9 @@ namespace ProjectOcram
             this.slimes.Add(new Slime(1500, 77));
             this.slimes.Add(new Slime(1200, 605));
 
+
+            Menu = this.Content.Load<Texture2D>(@"MenuImage\menuV2");
+
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Slime slimes in this.slimes)
@@ -519,6 +526,8 @@ namespace ProjectOcram
             // Charger tous les menus disponibles et les stocker dans la liste des menus.
             // Obtenir d'abord une liste des fichiers XML de définition de menu.
             string[] fichiersDeMenu = Directory.GetFiles(Content.RootDirectory + @"\Menus\");
+
+
 
             // Itérer pour chaque fichier XML trouvé.
             foreach (string nomFichier in fichiersDeMenu)
@@ -763,9 +772,12 @@ namespace ProjectOcram
                 miroyr.Draw(this.camera, this.spriteBatch);
             }
 
+            
 
             // Afficher les messages selon l'état du jeu
             this.DrawMessages(this.spriteBatch);
+
+            
 
             // Afficher le menu courant s'il y en a un sélectionné
             if (this.MenuCourant != null)
@@ -780,18 +792,7 @@ namespace ProjectOcram
                     this.couleurMenuItemSelectionne);
             }
 
-
-
-
-
-
-
-
             
-
-          
-
-
             this.spriteBatch.End();
 
             // Resize the game to fit the monitor's resolution
@@ -866,6 +867,9 @@ namespace ProjectOcram
                     this.graphics.GraphicsDevice.Viewport.Width / 4,
                     this.graphics.GraphicsDevice.Viewport.Height / 4);
 
+                Vector2 centreEcranImage = new Vector2(0,0);
+
+                spriteBatch.Draw(Menu, centreEcranImage, Color.White);
                 // Afficher le message centré à l'écran
                 spriteBatch.DrawString(
                     this.policeMessages,        // police d'affichge
@@ -874,7 +878,7 @@ namespace ProjectOcram
                     Color.White,               // couleur du texte
                     0,                          // angle de rotation
                     centrePolice,               // origine du texte (centrePolice positionné à centreEcran)
-                    1.5f,                       // échelle d'affichage
+                    1.0f,                       // échelle d'affichage
                     SpriteEffects.None,         // effets
                     1.0f);                      // profondeur de couche (layer depth)
             }
