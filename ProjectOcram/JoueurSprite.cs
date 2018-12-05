@@ -644,15 +644,6 @@ namespace ProjectOcram
 
 
 
-
-
-
-
-
-
-
-
-
             // Déterminer si un obus doit être lancé
             if (ServiceHelper.Get<IInputService>().TirerObus(this.indexPeripherique) && this.getLancerObus != null)
             {
@@ -773,7 +764,6 @@ namespace ProjectOcram
             // Obtenir la position "sous" les pieds de this.
             Vector2 pos = this.PositionPourCollisions;
             pos.Y += 1;
-
 
             // This est "debout" sur la plateforme si le pixel sous son point de collision est
             // dans la plateforme.
