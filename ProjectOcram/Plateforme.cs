@@ -45,11 +45,12 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
 
-    /// <summary>
-    /// Classe représentant une plateforme se déplaçant horizontalement dans le monde. Celle-ci
-    /// peut transporter des sprites.
-    /// </summary>
-    public class Plateforme : Sprite
+ 
+/// <summary>
+/// Classe représentant une plateforme se déplaçant horizontalement dans le monde. Celle-ci
+/// peut transporter des sprites.
+/// </summary>
+public class Plateforme : Sprite
     {
         /// <summary>
         /// Texture représentant la plateforme dans la console.
@@ -57,9 +58,25 @@ namespace ProjectOcram
         private static Texture2D texture;
 
         /// <summary>
+        /// Vitesse verticale de déplacement, exploitée lors des sauts et lorsque le sprite tombe dans
+        /// un trou.
+        /// </summary>
+        private float vitesseVerticale = 0.0f;
+
+
+        /// <summary>
         /// Liste des sprites que la plateforme doit déplacer avec elle.
         /// </summary>
         private List<Sprite> passagers;
+
+        /// <summary>
+        /// Accesseur et mutateur pour attribut vitesseVerticale.
+        /// </summary>
+        public float VitesseVerticale
+        {
+            get { return this.vitesseVerticale; }
+            set { this.vitesseVerticale = value; }
+        }
 
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite. On invoque l'autre constructeur.
@@ -136,18 +153,17 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-            float vitesseH = 0.15f;
-            int deltaX;
+            float vitesseH;
 
-            // Faire en sorte que la plateforme change de direction à toutes les 3 secondes.
-            if ((gameTime.TotalGameTime.Seconds / 3) % 2 == 0)
-            {
-                deltaX = (int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH);
-            }
+            // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
+            if (passagers.Count < 1)
+                vitesseH = 0.0f;
             else
-            {
-                deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH);
-            }
+                vitesseH = 0.3f;
+
+
+            int  deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH);
+            
 
             // Repositionner la plateforme selon le déplacement horizontal calculé.
             this.Position = new Vector2(this.Position.X + deltaX, this.Position.Y);
