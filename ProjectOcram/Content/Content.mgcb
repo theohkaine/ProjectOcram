@@ -385,6 +385,21 @@
 /processorParam:TextureFormat=Color
 /build:Joueur/Stationnaire/Sprite_Right.png
 
+#begin MenuImage/Menu.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:MenuImage/Menu.png
+
+#begin Menus/QuitterMenu.xml
+/copy:Menus/QuitterMenu.xml
+
 #begin Monde/MondeOcram/map01.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -420,6 +435,27 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Music/MonogameFinalSong.mp3
+
+#begin Polices/MenuItemsPolice.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Polices/MenuItemsPolice.spritefont
+
+#begin Polices/MenuTitresPolice.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Polices/MenuTitresPolice.spritefont
+
+#begin Polices/MessagesPolice.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Polices/MessagesPolice.spritefont
 
 #begin SoundFX/BossCry.wav
 /importer:WavImporter

@@ -172,6 +172,11 @@ namespace ProjectOcram
 
             // Sélectionner et paramétrer le bruitage d'effets sonores.
             //this.AttackInstanceFX = AttackFX.CreateInstance();
+
+            // Sélectionner et paramétrer le bruitage de fond.
+            this.AttackInstanceFX = AttackFX.CreateInstance();
+            this.AttackInstanceFX.Volume = 0.0f;
+            this.AttackInstanceFX.IsLooped = false;
         }
 
         /// <summary>
@@ -651,10 +656,11 @@ namespace ProjectOcram
             // Déterminer si un obus doit être lancé
             if (ServiceHelper.Get<IInputService>().TirerObus(this.indexPeripherique) && this.getLancerObus != null)
             {
-               
+                
+                AttackFX.Play(volume, pan, pitch);
 
-
-                AttackFX.Play(volume,pan,pitch);
+                //Seulement pour faire fonctionner SuspendreEffetsSonores
+                this.AttackInstanceFX.Play();
 
                 if (this.directionDeplacement == Direction.Gauche)
                 {
@@ -775,6 +781,30 @@ namespace ProjectOcram
                    pos.X <= plateforme.Position.X + (plateforme.Width / 2) &&
                    pos.Y >= plateforme.Position.Y - (plateforme.Height / 2) &&
                    pos.Y <= plateforme.Position.Y + (plateforme.Height / 2);
+        }
+
+        /// <summary>
+        /// Suspend temporairement (pause) ou réactive les effets sonores du vaisseau.
+        /// </summary>
+        /// <param name="suspendre">Indique si les effets sonores doivent être suspendus ou réactivés.</param>
+        public void SuspendreEffetsSonores(bool suspendre)
+        {
+            if (suspendre)
+            {
+                // Suspendre au besoin les effets sonores associés aux moteurs
+                if (this.AttackInstanceFX.State == SoundState.Playing)
+                {
+                    this.AttackInstanceFX.Pause();
+                }
+            }
+            else
+            {
+                // Réactiver au besoin les effets sonores associés aux moteurs
+                if (this.AttackInstanceFX.State == SoundState.Paused)
+                {
+                    this.AttackInstanceFX.Play();
+                }
+            }
         }
     }
 }
