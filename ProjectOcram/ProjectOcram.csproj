@@ -44,6 +44,8 @@
     <Compile Include="ClavierService.cs" />
     <Compile Include="IFM20884\DefilementArrierePlan.cs" />
     <Compile Include="IFM20884\IInputService.cs" />
+    <Compile Include="IFM20884\ItemDeMenu.cs" />
+    <Compile Include="IFM20884\Menu.cs" />
     <Compile Include="IFM20884\MondeImages.cs" />
     <Compile Include="IFM20884\Personnage.cs" />
     <Compile Include="IFM20884\ServiceHelper.cs" />

@@ -86,6 +86,35 @@ namespace IFM20884
 
         float DashingDroite(int device);
         float DashingGauche(int device);
-       
+
+
+        /// <summary>
+        /// Indique si la partie doit être temporairement suspendue.
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si la partie doit être suspendue; faux sinon.</returns>
+        bool Pause(int device);
+
+        /// <summary>
+        /// Indique si l'item de menu suivant doit être activé pour sélection.
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si l'item de menu suivant doit être activé; faux sinon.</returns>
+        bool MenuItemSuivant(int device);
+
+        /// <summary>
+        /// Indique si l'item de menu précédent doit être activé pour sélection.
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si l'item de menu précédent doit être activé; faux sinon.</returns>
+        bool MenuItemPrecedent(int device);
+
+        /// <summary>
+        /// Indique si l'item de menu présentement activé doit être sélectionné.
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si l'item de menu actif doit être sélectionné; faux sinon.</returns>
+        bool MenuItemSelection(int device);
+
     }
 }
