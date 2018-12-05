@@ -327,8 +327,8 @@ namespace ProjectOcram
             // Créer les plateformes.
             Plateforme.LoadContent(Content, this.graphics);
             this.plateformes = new List<Plateforme>();
-            this.plateformes.Add(new Plateforme(200, 75));
-
+            this.plateformes.Add(new Plateforme(1800, 1575));
+            //this.plateformes.Add(new Plateforme(200, 76));
 
             // Charger le sprite représentant des ogres.
             Slime.LoadContent(this.Content, this.graphics);
@@ -341,15 +341,12 @@ namespace ProjectOcram
             this.slimes.Add(new Slime(1500, 77));
             this.slimes.Add(new Slime(1200, 605));
 
-            
-
-
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Slime slimes in this.slimes)
             {
                 slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
-                //slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+               // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
 
             // Charger le sprite représentant des ogres.
@@ -357,15 +354,14 @@ namespace ProjectOcram
 
             // Créer les ogres.
             this.miroyrs = new List<Miroyr>();
-            this.miroyrs.Add(new Miroyr(900, 1120));
-            //this.miroyrs.Add(new Miroyr(200, 77));
-
+            this.miroyrs.Add(new Miroyr(600, 1120));
+            
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Miroyr miroyr in this.miroyrs)
             {
                 miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
-                //miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+              // miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
         }
 
@@ -425,12 +421,11 @@ namespace ProjectOcram
                 if (this.joueur.SurPlateforme(plateforme))
                 {
                     plateforme.AjouterPassager(this.joueur);
+                    
                 }
-                else
-                {
-                    plateforme.RetirerPassager(this.joueur);
-                }
+               
             }
+            
 
             base.Update(gameTime);
         }
@@ -471,6 +466,8 @@ namespace ProjectOcram
             }
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
 
+
+
             // Afficher les  slimes
             foreach (Slime slime in this.slimes)
             {
@@ -482,6 +479,8 @@ namespace ProjectOcram
             {
                 miroyr.Draw(this.camera, this.spriteBatch);
             }
+
+            
 
           
 
