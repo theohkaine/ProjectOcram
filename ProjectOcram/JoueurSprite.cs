@@ -153,6 +153,8 @@ namespace ProjectOcram
         /// </summary>
         private SoundEffectInstance AttackInstanceFX;
 
+       public Rectangle playerCollision { get; set; }
+
 
         float volume = 0.59f;
         float pitch = 0.0f;
