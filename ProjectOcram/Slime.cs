@@ -54,7 +54,7 @@ namespace ProjectOcram
     public class Slime : Personnage
     {
 
-
+       public Rectangle SlimeCollision {  get; set; }
 
         /// <summary>
         /// Attribut statique (i.e. partagé par toutes les instances) constituant une 

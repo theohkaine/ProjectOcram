@@ -157,9 +157,15 @@ public class Plateforme : Sprite
 
             // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
             if (passagers.Count < 1)
+            {
                 vitesseH = 0.0f;
+            }
+
             else
+            {
                 vitesseH = 0.3f;
+            }
+               
 
 
             int  deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH);
@@ -171,7 +177,10 @@ public class Plateforme : Sprite
             // Déplacer aussi tous les sprites transportés par la plateforme.
             foreach (Sprite sprite in this.passagers)
             {
-                sprite.Position = new Vector2(sprite.Position.X + deltaX, sprite.Position.Y);
+               
+                    sprite.Position = new Vector2(sprite.Position.X + deltaX, sprite.Position.Y);
+                
+               
             }
         }
     }

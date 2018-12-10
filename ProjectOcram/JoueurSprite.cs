@@ -153,6 +153,8 @@ namespace ProjectOcram
         /// </summary>
         private SoundEffectInstance AttackInstanceFX;
 
+       public Rectangle playerCollision { get; set; }
+
 
         float volume = 0.59f;
         float pitch = 0.0f;
@@ -738,8 +740,68 @@ namespace ProjectOcram
                 camera.Monde2Camera(ref rectOnTop);
             }
             // Afficher le rectangle.
-            spriteBatch.Draw(rectTexture, rect, Color.Black);
-            spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.MediumBlue);
+            spriteBatch.Draw(rectTexture, rect, Color.White);
+            if (hasDashedGauche == false && hasDashedDroite==false)
+            {
+                spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.White);
+            }
+
+            if (hasDashedGauche == true)
+            {
+                // Créer le rectangle à dessiner.
+                Rectangle rect2 = new Rectangle((int)(this.Position.X - 45),
+                (int)(this.Position.Y - this.Height / 2 - 23),
+                this.Width + 55, 35);
+
+                // Créer le rectangle à dessiner.
+                Rectangle rectOnTop2 = new Rectangle((int)(this.Position.X - 27),
+                (int)(this.Position.Y - this.Height / 2 - 8),
+                this.Width / 2 + 20, 4);
+
+
+            
+
+                // Si nous avons une caméra, corriger le rectangle en conséquence.
+                if (camera != null)
+                {
+                    camera.Monde2Camera(ref rect2);
+                    camera.Monde2Camera(ref rectOnTop2);
+                }
+                // Afficher le rectangle.
+               // spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.Transparent);
+                spriteBatch.Draw(rectTextureOnTop, rectOnTop2, Color.LimeGreen);
+               
+            }
+
+            if (hasDashedDroite == true)
+            {
+
+                // Créer le rectangle à dessiner.
+                Rectangle rect3 = new Rectangle((int)(this.Position.X - 45),
+                (int)(this.Position.Y - this.Height / 2 - 23),
+                this.Width + 55, 35);
+
+                // Créer le rectangle à dessiner.
+                Rectangle rectOnTop3 = new Rectangle((int)(this.Position.X - 27),
+                (int)(this.Position.Y - this.Height / 2 - 8),
+                this.Width / 2, 4);
+
+
+
+
+                // Si nous avons une caméra, corriger le rectangle en conséquence.
+                if (camera != null)
+                {
+                    camera.Monde2Camera(ref rect3);
+                    camera.Monde2Camera(ref rectOnTop3);
+                }
+                // Afficher le rectangle.
+                // spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.Transparent);
+                spriteBatch.Draw(rectTextureOnTop, rectOnTop3, Color.IndianRed);
+
+            }
+
+
         }
 
 

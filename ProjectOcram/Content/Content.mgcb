@@ -397,6 +397,18 @@
 /processorParam:TextureFormat=Color
 /build:MenuImage/Menu.png
 
+#begin MenuImage/menuV2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:MenuImage/menuV2.png
+
 #begin Menus/QuitterMenu.xml
 /copy:Menus/QuitterMenu.xml
 

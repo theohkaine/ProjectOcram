@@ -95,7 +95,7 @@ namespace ProjectOcram
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
         {
             // Créer la palette d'animation des trois types d'astéroïde.
-            palette = new Palette(content.Load<Texture2D>(@"Extra\SpriteLazerDown"), 50, 30);
+            palette = new Palette(content.Load<Texture2D>(@"Extra\SpriteLazerDown"), 50, 130);
            
         }
 
@@ -106,6 +106,8 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
+
+          
             // Déplacer l'astériode vers le bas en fonction de sa vitesse.
 
             this.Position = new Vector2(this.Position.X, this.Position.Y + (gameTime.ElapsedGameTime.Milliseconds * this.vitesseDeplacement));

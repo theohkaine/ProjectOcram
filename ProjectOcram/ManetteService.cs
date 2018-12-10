@@ -178,7 +178,7 @@ namespace IFM20884
         /// <returns>Vrai si le bouton B est pressé.</returns>
         public bool Pause(int device)
         {
-            return this.NouvellePression(device, Buttons.B);
+            return this.NouvellePression(device, Buttons.Start);
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace IFM20884
         /// <returns>Vrai si la touche Esc est pressée.</returns>
         public bool Quitter(int device)
         {
-            return this.NouvellePression(device, Buttons.Y);
+            return this.NouvellePression(device, Buttons.Back);
         }
 
         /// <summary>
