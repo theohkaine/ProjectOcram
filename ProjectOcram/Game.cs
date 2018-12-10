@@ -172,10 +172,13 @@ namespace ProjectOcram
         /// </summary>
         private Color couleurMenuItemSelectionne = Color.Yellow;
 
-
+        bool Manette;
 
 
         Texture2D Menu;
+
+        //Texture2D Boss;
+        //Vector2 BossPosition = new Vector2(1700, 1720);
 
         /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
@@ -392,6 +395,7 @@ namespace ProjectOcram
             if (gamepadState.IsConnected)
             {
                 this.Components.Add(new ManetteService(this));
+                Manette = true;
             }
             else
             {
@@ -507,9 +511,14 @@ namespace ProjectOcram
             this.slimes.Add(new Slime(350, 77));
             this.slimes.Add(new Slime(1500, 77));
             this.slimes.Add(new Slime(1200, 605));
+            this.slimes.Add(new Slime(1700, 1920));
+            this.slimes.Add(new Slime(1400, 1920));
+            this.slimes.Add(new Slime(1300, 1920));
 
 
             Menu = this.Content.Load<Texture2D>(@"MenuImage\menuV2");
+
+           // Boss= this.Content.Load<Texture2D>(@"Boss\bossMonogame");
 
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
@@ -527,7 +536,12 @@ namespace ProjectOcram
             // Créer les ogres.
             this.miroyrs = new List<Miroyr>();
             this.miroyrs.Add(new Miroyr(600, 1120));
-            
+            this.miroyrs.Add(new Miroyr(1700, 1720));
+            this.miroyrs.Add(new Miroyr(1700, 1720));
+            this.miroyrs.Add(new Miroyr(1300, 1720));
+            this.miroyrs.Add(new Miroyr(1100, 1720));
+
+
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Miroyr miroyr in this.miroyrs)
@@ -725,6 +739,10 @@ namespace ProjectOcram
                     plateforme.AjouterPassager(this.joueur);
                     
                 }
+                else
+                {
+                    plateforme.RetirerPassager(this.joueur);
+                }
                
             }
 
@@ -770,6 +788,8 @@ namespace ProjectOcram
             this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
+
+           
 
 
             if (this.EtatJeu != Etats.Quitter)
@@ -839,7 +859,7 @@ namespace ProjectOcram
                     this.couleurMenuItemSelectionne);
             }
 
-            
+
             this.spriteBatch.End();
 
             // Resize the game to fit the monitor's resolution
@@ -892,8 +912,15 @@ namespace ProjectOcram
                 case Etats.Pause:
                     if (this.MenuCourant == null)
                     {
-
-                        output = "Pause (Pressez P pour continuer...)";
+                        if (Manette)
+                        {
+                            output = "Pause (Pressez Start pour continuer...)";
+                        }
+                        else
+                        {
+                            output = "Pause (Pressez P pour continuer...)";
+                        }
+                            
                     }
 
                     break;
