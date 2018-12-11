@@ -90,7 +90,8 @@ namespace ProjectOcram
 
 
         private Song music;
-
+        private SoundEffect SlimeDeath;
+        private SoundEffect MiroyrDeath;
 
         /// <summary>
         /// Liste des sprites que la plateforme transporte avec elle (voir Update).
@@ -185,6 +186,11 @@ namespace ProjectOcram
         int MiniBossHP = 50;
 
         bool minibossdeath;
+
+        //FOR SOUND EFFECT
+        float volume = 0.9f;
+        float pitch = 0.0f;
+        float pan = 0.0f;
         //Texture2D Boss;
         //Vector2 BossPosition = new Vector2(1700, 1720);
 
@@ -491,7 +497,8 @@ namespace ProjectOcram
 
             // Charger la musique de fond du jeu.
             this.music = Content.Load<Song>(@"Music\MonogameFinalSong");
-
+            this.SlimeDeath = Content.Load<SoundEffect>(@"SoundFX\SimeDeath");
+            this.MiroyrDeath = Content.Load<SoundEffect>(@"SoundFX\MiryorDeath");
 
             // Paramétrer la musique de fond et la démarrer.
             MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
@@ -1033,6 +1040,7 @@ namespace ProjectOcram
 
                         if (MiniBossHP == 0)
                         {
+                            MiroyrDeath.Play(volume, pan, pitch);
                             minibossdeath = true;
                         }
 
@@ -1048,6 +1056,7 @@ namespace ProjectOcram
                     slimeHP_1--;
                     obusFini.Add(obus);
                     if(slimeHP_1==0){
+                        SlimeDeath.Play(volume, pan, pitch);
                         this.slimes[0].Position = new Vector2(9999, 99999);
                     }
                    
@@ -1058,6 +1067,7 @@ namespace ProjectOcram
                     obusFini.Add(obus);
 
                     if (slimeHP_2 == 0){
+                        SlimeDeath.Play(volume, pan, pitch);
                         this.slimes[1].Position = new Vector2(9999, 99999);
                     }
                 }
@@ -1068,6 +1078,7 @@ namespace ProjectOcram
                     obusFini.Add(obus);
 
                     if (slimeHP_3 == 0){
+                        SlimeDeath.Play(volume, pan, pitch);
                         this.slimes[2].Position = new Vector2(9999, 99999);
                     }
                 }
@@ -1078,6 +1089,7 @@ namespace ProjectOcram
 
                     if (slimeHP_4 == 0)
                     {
+                        SlimeDeath.Play(volume, pan, pitch);
                         this.slimes[3].Position = new Vector2(9999, 99999);
                         deadslime = true;
                     }
