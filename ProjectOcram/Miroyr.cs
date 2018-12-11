@@ -53,6 +53,11 @@ namespace ProjectOcram
     /// </summary>
     public class Miroyr : Personnage
     {
+
+
+        public Rectangle MiroyrCollision { get; set; }
+
+
         /// <summary>
         /// Attribut statique (i.e. partagé par toutes les instances) constituant une 
         /// liste de palettes à exploiter selon la direction et l'état du personnage.
