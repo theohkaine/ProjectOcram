@@ -177,6 +177,11 @@ namespace ProjectOcram
 
         Texture2D Menu;
 
+        int slimeHP = 3;
+
+        int MiniBossHP = 50;
+
+        bool minibossdeath;
         //Texture2D Boss;
         //Vector2 BossPosition = new Vector2(1700, 1720);
 
@@ -506,14 +511,15 @@ namespace ProjectOcram
 
             // Créer les slimes.
             this.slimes = new List<Slime>();
-            this.slimes.Add(new Slime(900, 77));
-            this.slimes.Add(new Slime(175, 605));
             this.slimes.Add(new Slime(350, 77));
+            this.slimes.Add(new Slime(900, 77));
             this.slimes.Add(new Slime(1500, 77));
-            this.slimes.Add(new Slime(1200, 605));
-            this.slimes.Add(new Slime(1700, 1920));
-            this.slimes.Add(new Slime(1400, 1920));
-            this.slimes.Add(new Slime(1300, 1920));
+            //this.slimes.Add(new Slime(175, 605));
+            //this.slimes.Add(new Slime(1200, 605));
+
+            //this.slimes.Add(new Slime(1700, 1920));
+            //this.slimes.Add(new Slime(1400, 1920));
+            //this.slimes.Add(new Slime(1300, 1920));
 
 
             Menu = this.Content.Load<Texture2D>(@"MenuImage\menuV2");
@@ -530,22 +536,21 @@ namespace ProjectOcram
                // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
 
+
             // Charger le sprite représentant des ogres.
             Miroyr.LoadContent(this.Content, this.graphics);
 
             // Créer les ogres.
             this.miroyrs = new List<Miroyr>();
             this.miroyrs.Add(new Miroyr(600, 1120));
-            this.miroyrs.Add(new Miroyr(1700, 1720));
-            this.miroyrs.Add(new Miroyr(1700, 1720));
-            this.miroyrs.Add(new Miroyr(1300, 1720));
-            this.miroyrs.Add(new Miroyr(1100, 1720));
+
 
 
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Miroyr miroyr in this.miroyrs)
             {
+                miroyr.MiroyrCollision  = new Rectangle((int)miroyr.Position.X-(miroyr.Width/2), (int)miroyr.Position.Y-(miroyr.Height/2), miroyr.Width, miroyr.Height);
                 miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
               // miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
@@ -700,7 +705,7 @@ namespace ProjectOcram
 
             this.UpdateObus(gameTime);
 
-           /// UpdateCollisionObus(gameTime);
+            //UpdateCollisionObus(gameTime);
 
             // Est-on en processus de fin de jeu dû à une collision du vaisseau avec un astéroïde?
             if (this.EtatJeu == Etats.Quitter)
@@ -717,11 +722,15 @@ namespace ProjectOcram
                 slime.Update(gameTime, this.graphics);
             }
 
-            // Mettre à jour le Miroyr.
-            foreach (Miroyr miroyr in this.miroyrs)
+            if (minibossdeath == false)
             {
-                miroyr.Update(gameTime, this.graphics);
+                // Mettre à jour le Miroyr.
+                foreach (Miroyr miroyr in this.miroyrs)
+                {
+                    miroyr.Update(gameTime, this.graphics);
+                }
             }
+             
 
             //collisionEntrele slime et le Sprite
             UpdateCollisionSlimeJoueur(gameTime);
@@ -757,6 +766,15 @@ namespace ProjectOcram
                 slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
                 // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+            }
+
+            // Configurer les ogres de sorte qu'ils ne puissent se déplacer
+            // hors de la mappe monde et initialiser la détection de collision de tuiles.
+            foreach (Miroyr miroyr in this.miroyrs)
+            {
+                miroyr.MiroyrCollision = new Rectangle((int)miroyr.Position.X - (miroyr.Width / 2), (int)miroyr.Position.Y - (miroyr.Height / 2), miroyr.Width, miroyr.Height);
+                miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+                // miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
 
             foreach (Obus listeObus in this.listeObus)
@@ -832,11 +850,15 @@ namespace ProjectOcram
                 slime.Draw(this.camera, this.spriteBatch);
             }
 
-            // Afficher le Miroyr
-            foreach (Miroyr miroyr in this.miroyrs)
-            {
-                miroyr.Draw(this.camera, this.spriteBatch);
+
+            if(minibossdeath==false){
+                // Afficher le Miroyr
+                foreach (Miroyr miroyr in this.miroyrs)
+                {
+                    miroyr.Draw(this.camera, this.spriteBatch);
+                }
             }
+            
 
             
 
@@ -984,24 +1006,73 @@ namespace ProjectOcram
             List<Obus> obusFini = new List<Obus>();
             foreach (Obus obus in this.listeObus)
             {
-
-                //for (int i = 0; i < slimes.Count; i++)
-                //{
-
-                //    if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
-                //    {
-                       
-                //    }
-                // }
-
-                    if (obus.Position.Y + obus.Height < 0 ||
+                if (obus.Position.Y + obus.Height < 0 ||
                     obus.Position.Y - obus.Height > this.monde.Hauteur )
                 {
-                    
-
                     obusFini.Add(obus);
                 }
             }
+
+            foreach (Obus obus in this.listeObus)
+            {
+                foreach (Miroyr miroyr in this.miroyrs)
+                {
+                    if (miroyr.MiroyrCollision.Contains(obus.obusCollision))
+                    {
+
+                        MiniBossHP--;
+                        obusFini.Add(obus);
+
+                        if (MiniBossHP == 0)
+                        {
+                            minibossdeath = true;
+                        }
+
+                    }
+                }
+            }
+               
+           
+
+            
+
+
+
+
+
+                foreach (Obus obus in this.listeObus)
+                foreach (Slime slimes in this.slimes)
+                 
+
+                        //for (int i = 0; i < obusFini.Count; i++)
+             //{ 
+                if (slimes.SlimeCollision.Contains(obus.obusCollision))
+                {
+
+                        obusFini.Add(obus);
+
+
+
+
+                        // slimeHP = 3;
+                        // slimeHP--;
+
+                        
+                           // if (slimeHP == 0)
+                           // {
+                                //slimeHP = 3;
+
+                                //this.slimes[i].Position = new Vector2(9999, 99999);
+                                
+                               
+                           // }
+                            
+                            //this.slimes[i].Position = new Vector2(9999, 99999);         
+                        }
+                     
+            // }
+
+
 
             // Se débarasser des obus n'étant plus d'aucune utilité.
             foreach (Obus obus in obusFini)
@@ -1038,20 +1109,35 @@ namespace ProjectOcram
         }
 
 
-        //protected void UpdateCollisionObus(GameTime gametime)
-        //{
-        //    foreach (Obus listeObus in this.listeObus)
-        //    {
-        //        foreach(Slime slimes in this.slimes)
-        //        {
+       // protected void UpdateCollisionObus(GameTime gametime)
+       //{
+            //for (int i = 0; i < listeObus.Count; i++)
+            //{
+               // if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
+               // {
+                   
+                    //this.slimes[i].Position = new Vector2(9999, 99999);
+                //}
+           // }
 
-        //        }
-        //        if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
-        //        {
-        //           this.slimes[i].Position = new Vector2(9999, 99999);
-        //       }
 
-        //    }
+        //}
+
+
+
+
+            //foreach (Obus listeObus in this.listeObus)
+            //{
+            //    foreach(Slime slimes in this.slimes)
+            //    {
+
+            //   }
+            //    if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
+            //    {
+            //       this.slimes[i].Position = new Vector2(9999, 99999);
+            //   }
+
+            //}
         //}
 
 
