@@ -174,10 +174,13 @@ namespace ProjectOcram
 
         bool Manette;
 
-
+        bool deadslime;
         Texture2D Menu;
 
-        int slimeHP = 3;
+        int slimeHP_1 = 5;
+        int slimeHP_2 = 5;
+        int slimeHP_3 = 5;
+        int slimeHP_4 = 5;
 
         int MiniBossHP = 50;
 
@@ -514,8 +517,10 @@ namespace ProjectOcram
             this.slimes.Add(new Slime(350, 77));
             this.slimes.Add(new Slime(900, 77));
             this.slimes.Add(new Slime(1500, 77));
+
+            
             //this.slimes.Add(new Slime(175, 605));
-            //this.slimes.Add(new Slime(1200, 605));
+            this.slimes.Add(new Slime(1200, 605));
 
             //this.slimes.Add(new Slime(1700, 1920));
             //this.slimes.Add(new Slime(1400, 1920));
@@ -843,12 +848,15 @@ namespace ProjectOcram
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
 
 
-
-            // Afficher les  slimes
-            foreach (Slime slime in this.slimes)
+            if (deadslime == false)
             {
-                slime.Draw(this.camera, this.spriteBatch);
+                // Afficher les  slimes
+                foreach (Slime slime in this.slimes)
+                {
+                    slime.Draw(this.camera, this.spriteBatch);
+                }
             }
+            
 
 
             if(minibossdeath==false){
@@ -1031,49 +1039,51 @@ namespace ProjectOcram
                     }
                 }
             }
-               
-           
-
             
-
-
-
-
-
-                foreach (Obus obus in this.listeObus)
-                foreach (Slime slimes in this.slimes)
-                 
-
-                        //for (int i = 0; i < obusFini.Count; i++)
-             //{ 
-                if (slimes.SlimeCollision.Contains(obus.obusCollision))
+            foreach (Obus obus in this.listeObus)
+            {
+                
+                if (slimes[0].SlimeCollision.Contains(obus.obusCollision))
                 {
+                    slimeHP_1--;
+                    obusFini.Add(obus);
+                    if(slimeHP_1==0){
+                        this.slimes[0].Position = new Vector2(9999, 99999);
+                    }
+                   
+                }
+                if (slimes[1].SlimeCollision.Contains(obus.obusCollision))
+                {
+                    slimeHP_2--;
+                    obusFini.Add(obus);
 
-                        obusFini.Add(obus);
+                    if (slimeHP_2 == 0){
+                        this.slimes[1].Position = new Vector2(9999, 99999);
+                    }
+                }
 
+               if (slimes[2].SlimeCollision.Contains(obus.obusCollision))
+                {
+                    slimeHP_3--;
+                    obusFini.Add(obus);
 
+                    if (slimeHP_3 == 0){
+                        this.slimes[2].Position = new Vector2(9999, 99999);
+                    }
+                }
+                if (slimes[3].SlimeCollision.Contains(obus.obusCollision))
+                {
+                    slimeHP_4--;
+                    obusFini.Add(obus);
 
-
-                        // slimeHP = 3;
-                        // slimeHP--;
-
-                        
-                           // if (slimeHP == 0)
-                           // {
-                                //slimeHP = 3;
-
-                                //this.slimes[i].Position = new Vector2(9999, 99999);
-                                
-                               
-                           // }
-                            
-                            //this.slimes[i].Position = new Vector2(9999, 99999);         
-                        }
-                     
-            // }
-
-
-
+                    if (slimeHP_4 == 0)
+                    {
+                        this.slimes[3].Position = new Vector2(9999, 99999);
+                        deadslime = true;
+                    }
+                }
+            }
+          
             // Se débarasser des obus n'étant plus d'aucune utilité.
             foreach (Obus obus in obusFini)
             {
