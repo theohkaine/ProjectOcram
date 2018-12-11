@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Menu>
+  <MenuNom>QuitterMenu</MenuNom>
+  <MenuTitre>Voulez-vous vraiment quitter?</MenuTitre>
+  <MenuItem>
+    <MenuItemNom>Oui</MenuItemNom>
+    <MenuItemTitre>Oui</MenuItemTitre>
+    <MenuItemIndent>173</MenuItemIndent>
+  </MenuItem>
+  <MenuItem>
+    <MenuItemNom>Non</MenuItemNom>
+    <MenuItemTitre>Non</MenuItemTitre>
+    <MenuItemIndent>170</MenuItemIndent>
+  </MenuItem>
+  <PositionX>200</PositionX>
+  <PositionY>225</PositionY>
+  <IndexSelectionItem>1</IndexSelectionItem>
+</Menu>

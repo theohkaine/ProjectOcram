@@ -24,11 +24,14 @@ namespace ProjectOcram
         /// </summary>
         private float vitesseDeplacement;
 
-        Rectangle insideZone { get; set; }
+        //Rectangle insideZone { get; set; }
 
-        
+        public Rectangle insideZone { get; set; }
 
 
+        //Rectangle LaserZone = new Rectangle((int)this.Position.X, (int)this.Position.Y, 50, 50);
+
+            public Rectangle LaserZone { get; set; }
 
         /// <summary>
         /// Initialise une nouvelle instance de la classe AsteroideSprite.
@@ -56,7 +59,7 @@ namespace ProjectOcram
 
 
 
-       
+     
         /// <summary>
         /// Propriété (accesseur pour vitesseDeplacement) retournant ou changeant la vitesse de déplacement 
         /// verticale du sprite.
@@ -92,7 +95,7 @@ namespace ProjectOcram
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
         {
             // Créer la palette d'animation des trois types d'astéroïde.
-            palette = new Palette(content.Load<Texture2D>(@"Extra\SpriteLazerDown"), 50, 200);
+            palette = new Palette(content.Load<Texture2D>(@"Extra\SpriteLazerDown"), 50, 130);
            
         }
 
@@ -103,23 +106,16 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
+
+          
             // Déplacer l'astériode vers le bas en fonction de sa vitesse.
+
             this.Position = new Vector2(this.Position.X, this.Position.Y + (gameTime.ElapsedGameTime.Milliseconds * this.vitesseDeplacement));
            
-
-
-
+          
             // La classe de base gère l'animation.
             base.Update(gameTime, graphics);
         }
 
-
-
-        public override void Draw(Camera camera, SpriteBatch spriteBatch)
-        {
-
-
-            base.Draw(camera, spriteBatch);
-        }
     }
 }

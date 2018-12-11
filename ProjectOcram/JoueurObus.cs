@@ -14,6 +14,8 @@ namespace ProjectOcram
     public class JoueurObus : Obus
     {
 
+        
+
         /// <summary>
         /// Attribut statique contenant la texture de l'obus.
         /// </summary>

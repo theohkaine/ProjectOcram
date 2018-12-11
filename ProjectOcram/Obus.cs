@@ -29,6 +29,8 @@ namespace ProjectOcram
         /// </summary>
         private Sprite source = null;
 
+        public Rectangle obusCollision { get; set; }
+
         /// <summary>
         /// Initialise une nouvelle instance de la classe Obus.
         /// </summary>

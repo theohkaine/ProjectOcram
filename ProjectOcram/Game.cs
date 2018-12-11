@@ -46,6 +46,7 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Input;
     using Microsoft.Xna.Framework.Media;
     using Microsoft.Xna.Framework.Audio;
+    using System.IO;
 
     /// <summary>
     /// Classe principale du jeu.
@@ -86,8 +87,11 @@ namespace ProjectOcram
 
         private const int ScreenSizeW = 1280;
 
-        private Song music;
 
+
+        private Song music;
+        private SoundEffect SlimeDeath;
+        private SoundEffect MiroyrDeath;
 
         /// <summary>
         /// Liste des sprites que la plateforme transporte avec elle (voir Update).
@@ -104,19 +108,91 @@ namespace ProjectOcram
         /// Attribut représentant la liste de goblins dans le jeu.
         /// </summary>
         private List<Miroyr> miroyrs;
-
-
-
-
-
-
-        private LaserObstacle deathLaser;
-
-
+        
+        private List<LaserObstacle> deathLaser = new List<LaserObstacle>();
+        
         /// <summary>
         /// Liste des sprites représentant des obus.
         /// </summary>
         private List<Obus> listeObus;
+
+       
+
+       // private List<JoueurObus> obuscollision = new List<JoueurObus>();
+
+
+        /// <summary>
+        /// Attribut indiquant l'état du jeu
+        /// </summary>
+        private Etats etatJeu;
+
+        /// <summary>
+        /// Etat dans lequel état le jeu avant que la dernière pause ne soit activée.
+        /// </summary>
+        private Etats prevEtatJeu;
+
+        /// <summary>
+        /// Attribut fournissant la police d'affichage pour les messages
+        /// </summary>
+        private SpriteFont policeMessages;
+
+        /// <summary>
+        /// Liste de tous les menus du jeu (chargés dans LoadContent()).
+        /// </summary>
+        private List<Menu> listeMenus = new List<Menu>();
+
+        /// <summary>
+        /// Menu présentement affiché.
+        /// </summary>
+        private Menu menuCourant = null;
+
+        /// <summary>
+        /// Police exploitée pour afficher le titre des menus.
+        /// </summary>
+        private SpriteFont policeMenuTitre;
+
+        /// <summary>
+        /// Police exploitée pour afficher les items de menus.
+        /// </summary>
+        private SpriteFont policeMenuItem;
+
+        /// <summary>
+        /// Couleur de la police exploitée pour afficher le titre des menus.
+        /// </summary>
+        private Color couleurMenuTitre = Color.White;
+
+        /// <summary>
+        /// Couleur de la police exploitée pour afficher les items des menus lorsqu'ils ne sont 
+        /// pas actifs.
+        /// </summary>
+        private Color couleurMenuItem = Color.White;
+
+        /// <summary>
+        /// Couleur de la police exploitée pour afficher les items des menus lorsqu'ils sont 
+        /// actifs.
+        /// </summary>
+        private Color couleurMenuItemSelectionne = Color.Yellow;
+
+        bool Manette;
+
+        bool deadslime;
+        Texture2D Menu;
+
+        int slimeHP_1 = 5;
+        int slimeHP_2 = 5;
+        int slimeHP_3 = 5;
+        int slimeHP_4 = 5;
+
+        int MiniBossHP = 50;
+
+        bool minibossdeath;
+
+        //FOR SOUND EFFECT
+        float volume = 0.9f;
+        float pitch = 0.0f;
+        float pan = 0.0f;
+        //Texture2D Boss;
+        //Vector2 BossPosition = new Vector2(1700, 1720);
 
         /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
@@ -138,6 +214,96 @@ namespace ProjectOcram
             graphics.PreferMultiSampling = false;
             graphics.SynchronizeWithVerticalRetrace = true;
 
+        }
+
+        /// <summary>
+        /// États disponibles du jeu.
+        /// </summary>
+        public enum Etats
+        {
+            /// <summary>
+            /// En cours de démarrage.
+            /// </summary>
+            Demarrer,
+
+            /// <summary>
+            /// En cours de jeu.
+            /// </summary>
+            Jouer,
+
+            /// <summary>
+            /// En cours de fin de jeu.
+            /// </summary>
+            Quitter,
+
+            /// <summary>
+            /// En suspension temporaire.
+            /// </summary>
+            Pause
+        }
+
+        /// <summary>
+        /// Propriété (accesseur pour etatJeu) retournant ou changeant l'état du jeu.
+        /// </summary>
+        /// <value>État courant du jeu.</value>
+        public Etats EtatJeu
+        {
+            get { return this.etatJeu; }
+            set { this.etatJeu = value; }
+        }
+
+        /// <summary>
+        /// Propriété activant et désactivant l'état de pause du jeu. Cette propriété doit être utilisée
+        /// pour mettre le jeu en pause (plutôt que EtatJeu) car elle stocke l'état précédent (i.e. avant 
+        /// la pause) du jeu afin de le restaurer lorsque la pause est terminée.
+        /// </summary>
+        /// <value>Le jeu est en pause ou pas.</value>
+        public bool Pause
+        {
+            get
+            {
+                return this.etatJeu == Etats.Pause;
+            }
+
+            set
+            {
+                // S'assurer qu'il y a changement de statut de pause
+                if (value && this.EtatJeu != Etats.Pause)
+                {
+                    // Stocker l'état courant du jeu avant d'activer la pause
+                    this.prevEtatJeu = this.EtatJeu;
+                    this.EtatJeu = Etats.Pause;
+                }
+                else if (!value && this.EtatJeu == Etats.Pause)
+                {
+                    // Restaurer l'état du jeu à ce qu'il était avant la pause
+                    this.EtatJeu = this.prevEtatJeu;
+                }
+
+                // Suspendre les effets sonores au besoin
+                this.SuspendreEffetsSonores(this.Pause);
+            }
+        }
+
+        /// <summary>
+        /// Propriété (accesseur pour menuCourant) retournant ou changeant le menu affiché. Lorsque
+        /// sa valeur est null, aucun menu n'est affiché.
+        /// </summary>
+        /// <value>Menu présentement affiché.</value>
+        public Menu MenuCourant
+        {
+            get
+            {
+                return this.menuCourant;
+            }
+
+            set
+            {
+                this.menuCourant = value;
+
+                // Mettre le jeu en pause si un menu est affiché
+                this.Pause = this.menuCourant != null;
+            }
         }
 
         /// <summary>
@@ -243,6 +409,7 @@ namespace ProjectOcram
             if (gamepadState.IsConnected)
             {
                 this.Components.Add(new ManetteService(this));
+                Manette = true;
             }
             else
             {
@@ -260,6 +427,10 @@ namespace ProjectOcram
             // Créer les attributs de gestion des obus.
             this.listeObus = new List<Obus>();
 
+            // Le jeu est en cours de démarrage. Notez qu'on évite d'exploiter la prorpiété EtatJeu
+            // car le setter de cette dernière manipule des effets sonores qui ne sont pas encore
+            // chargées par LoadContent()
+            this.etatJeu = Etats.Demarrer;
 
             base.Initialize();
         }
@@ -291,20 +462,34 @@ namespace ProjectOcram
             JoueurObus.LoadContent(this.Content, this.graphics);
 
 
+            foreach (Obus listeObus in this.listeObus)
+            {
+                listeObus.obusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
+                //slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
-          
-                this.deathLaser = new LaserObstacle(200, 40);
+                // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+            }
+
+
+
+            LaserObstacle deathLaser1 = new LaserObstacle(200, 2);
             
+            deathLaser1.insideZone = new Rectangle(200, 2, 100, 200);
+
+            deathLaser1.LaserZone = new Rectangle(0,0, (int)deathLaser1.Position.X, (int)deathLaser1.Position.Y);
+            this.deathLaser.Add(deathLaser1);
+
 
 
 
 
             // Créer et initialiser le sprite du joueur.
-            this.joueur = new JoueurSprite(0, 0);
+            this.joueur = new JoueurSprite(0,0);
+            joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur , this.monde.Hauteur);
-
-
             
+
+
 
             // Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
@@ -312,7 +497,8 @@ namespace ProjectOcram
 
             // Charger la musique de fond du jeu.
             this.music = Content.Load<Song>(@"Music\MonogameFinalSong");
-
+            this.SlimeDeath = Content.Load<SoundEffect>(@"SoundFX\SimeDeath");
+            this.MiroyrDeath = Content.Load<SoundEffect>(@"SoundFX\MiryorDeath");
 
             // Paramétrer la musique de fond et la démarrer.
             MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
@@ -335,19 +521,33 @@ namespace ProjectOcram
 
             // Créer les slimes.
             this.slimes = new List<Slime>();
-            this.slimes.Add(new Slime(900, 77));
-            this.slimes.Add(new Slime(175, 605));
             this.slimes.Add(new Slime(350, 77));
+            this.slimes.Add(new Slime(900, 77));
             this.slimes.Add(new Slime(1500, 77));
+
+            
+            //this.slimes.Add(new Slime(175, 605));
             this.slimes.Add(new Slime(1200, 605));
+
+            //this.slimes.Add(new Slime(1700, 1920));
+            //this.slimes.Add(new Slime(1400, 1920));
+            //this.slimes.Add(new Slime(1300, 1920));
+
+
+            Menu = this.Content.Load<Texture2D>(@"MenuImage\menuV2");
+
+           // Boss= this.Content.Load<Texture2D>(@"Boss\bossMonogame");
 
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Slime slimes in this.slimes)
-            {
+                {
+                slimes.SlimeCollision = new Rectangle((int)slimes.Position.X-(slimes.Width/2), (int)slimes.Position.Y-(slimes.Height/2), slimes.Width,slimes.Height);
                 slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+
                // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
+
 
             // Charger le sprite représentant des ogres.
             Miroyr.LoadContent(this.Content, this.graphics);
@@ -355,14 +555,95 @@ namespace ProjectOcram
             // Créer les ogres.
             this.miroyrs = new List<Miroyr>();
             this.miroyrs.Add(new Miroyr(600, 1120));
-            
+
+
+
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Miroyr miroyr in this.miroyrs)
             {
+                miroyr.MiroyrCollision  = new Rectangle((int)miroyr.Position.X-(miroyr.Width/2), (int)miroyr.Position.Y-(miroyr.Height/2), miroyr.Width, miroyr.Height);
                 miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
               // miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
+
+            // Charger les polices
+            this.policeMessages = Content.Load<SpriteFont>(@"Polices\MessagesPolice");
+            this.policeMenuTitre = Content.Load<SpriteFont>(@"Polices\MenuTitresPolice");
+            this.policeMenuItem = Content.Load<SpriteFont>(@"Polices\MenuItemsPolice");
+
+            // Charger tous les menus disponibles et les stocker dans la liste des menus.
+            // Obtenir d'abord une liste des fichiers XML de définition de menu.
+            string[] fichiersDeMenu = Directory.GetFiles(Content.RootDirectory + @"\Menus\");
+
+
+
+            // Itérer pour chaque fichier XML trouvé.
+            foreach (string nomFichier in fichiersDeMenu)
+            {
+                // Créer un nouveau menu.
+                Menu menu = new Menu();
+
+                // Configurer le nouveau menu à partir de son fichier XML.
+                menu.Load(nomFichier);
+
+                // Assigner la fonction déléguée de Game au nouveau menu (pour gestion des
+                // sélections de l'usager lors de l'affichage du menu).
+                menu.SelectionItemMenu = this.SelectionItemMenu;
+
+                // Ajouter le nouveau menu à la liste des menus du jeu.
+                this.listeMenus.Add(menu);
+            }
+        }
+
+        /// <summary>
+        /// Fonction déléguée fournie à tous les menus du jeu pour traiter les sélections 
+        /// de l'usager.
+        /// </summary>
+        /// <param name="nomMenu">Nom du menu d'où provient la sélection.</param>
+        /// <param name="item">Item de menu sélectionné.</param>
+        protected void SelectionItemMenu(string nomMenu, ItemDeMenu item)
+        {
+            // Est-ce le menu pour quitter le jeu?
+            if (nomMenu == "QuitterMenu")
+            {
+
+
+                // Deux sélections possibles : Oui ou Non
+                switch (item.Nom)
+                {
+                    case "Oui":         // L'usager veut quitter le jeu
+                        this.Exit();
+                        break;
+
+                    case "Non":         // L'usager ne veut pas quitter le jeu
+                        this.MenuCourant = null;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Trouve le menu dont le nom est fourni dans la liste des menus gérée par le jeu.
+        /// </summary>
+        /// <param name="nomMenu">Nom du menu d'où provient la sélection.</param>
+        /// <returns>Menu recherché; null si non trouvé.</returns>
+        protected Menu TrouverMenu(string nomMenu)
+        {
+            // Itérer parmi la liste des menus disponibles
+            foreach (Menu menu in this.listeMenus)
+            {
+                // Si le menu recherché est trouvé, le retourner
+                if (menu.Nom == nomMenu)
+                {
+                    return menu;
+                }
+            }
+
+            return null;    // aucun menu correspondant au fourni
         }
 
         /// <summary>
@@ -382,18 +663,67 @@ namespace ProjectOcram
         /// <param name="gameTime">Fournie un instantané du temps de jeu.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Permettre de quitter le jeu via la manette ou le clavier.
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // Si le jeu est en cours de démarrage, passer à l'état de jouer
+            if (this.EtatJeu == Etats.Demarrer)
             {
-                this.Exit();
+                this.EtatJeu = Etats.Jouer;
             }
+
+            // Un menu est-il affiché?
+            if (this.MenuCourant != null)
+            {
+                // Oui, alors gérer les inputs pour ce menu.
+                this.MenuCourant.GetInput(gameTime);
+
+                // Lorsqu'un menu est affiché, le jeu est en pause alors il n'y a rien d'autre.
+                // à faire dans Update()
+                base.Update(gameTime);
+                return;
+            }
+
+            // Permettre de quitter le jeu via la manette.
+            if (ServiceHelper.Get<IInputService>().Quitter(1))
+            {
+
+                this.MenuCourant = this.TrouverMenu("QuitterMenu");
+            }
+
+            // Est-ce que le bouton de pause a été pressé?
+            if (ServiceHelper.Get<IInputService>().Pause(1))
+            {
+                this.Pause = !this.Pause;
+            }
+
+            // Si le jeu est en pause, interrompre la mise à jour
+            if (this.Pause)
+            {
+                base.Update(gameTime);
+                return;
+            }
+
+
 
             // Mettre à jour le sprite du joueur puis centrer la camera sur celui-ci.
             this.joueur.Update(gameTime, this.graphics);
 
-            this.deathLaser.Update(gameTime, this.graphics);
+            // for(int i = 0; i<deathLaser.Count; i++)
+            // {
+            //  this.deathLaser[i].Update(gameTime, this.graphics);
+
+
+            //}
+
+            this.UpdateLaser(gameTime);
 
             this.UpdateObus(gameTime);
+
+            //UpdateCollisionObus(gameTime);
+
+            // Est-on en processus de fin de jeu dû à une collision du vaisseau avec un astéroïde?
+            if (this.EtatJeu == Etats.Quitter)
+            {
+                this.Exit();
+            }
 
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
@@ -404,11 +734,18 @@ namespace ProjectOcram
                 slime.Update(gameTime, this.graphics);
             }
 
-            // Mettre à jour le Miroyr.
-            foreach (Miroyr miroyr in this.miroyrs)
+            if (minibossdeath == false)
             {
-                miroyr.Update(gameTime, this.graphics);
+                // Mettre à jour le Miroyr.
+                foreach (Miroyr miroyr in this.miroyrs)
+                {
+                    miroyr.Update(gameTime, this.graphics);
+                }
             }
+             
+
+            //collisionEntrele slime et le Sprite
+            UpdateCollisionSlimeJoueur(gameTime);
 
             // Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
             // plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
@@ -423,9 +760,43 @@ namespace ProjectOcram
                     plateforme.AjouterPassager(this.joueur);
                     
                 }
+                else
+                {
+                    plateforme.RetirerPassager(this.joueur);
+                }
                
             }
-            
+
+
+
+
+            joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
+
+            foreach (Slime slimes in this.slimes)
+            {
+                slimes.SlimeCollision = new Rectangle((int)slimes.Position.X - (slimes.Width / 2), (int)slimes.Position.Y - (slimes.Height / 2), slimes.Width, slimes.Height);
+                slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+
+                // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+            }
+
+            // Configurer les ogres de sorte qu'ils ne puissent se déplacer
+            // hors de la mappe monde et initialiser la détection de collision de tuiles.
+            foreach (Miroyr miroyr in this.miroyrs)
+            {
+                miroyr.MiroyrCollision = new Rectangle((int)miroyr.Position.X - (miroyr.Width / 2), (int)miroyr.Position.Y - (miroyr.Height / 2), miroyr.Width, miroyr.Height);
+                miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+                // miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+            }
+
+            foreach (Obus listeObus in this.listeObus)
+            {
+                listeObus.obusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
+                //slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+
+                // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+            }
+
 
             base.Update(gameTime);
         }
@@ -447,16 +818,33 @@ namespace ProjectOcram
             this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
-            this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
-                                                               // Afficher les obus.
 
-            this.deathLaser.Draw(this.camera, this.spriteBatch);
+           
+
+
+            if (this.EtatJeu != Etats.Quitter)
+            {
+                this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
+            }
+
             foreach (Obus obus in this.listeObus)
             {
 
                 obus.Draw(this.camera, this.spriteBatch);
 
             }
+
+            foreach(LaserObstacle laser in this.deathLaser)
+            {
+                laser.Draw(this.camera, this.spriteBatch);
+            }
+
+
+            //if (deathLaser.insideZone.Contains(deathLaser.LaserZone))
+            //{
+                //this.deathLaser[1].Draw(this.camera, this.spriteBatch);
+            //}
+
 
 
             // Afficher les plateformes.
@@ -467,22 +855,47 @@ namespace ProjectOcram
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
 
 
-
-            // Afficher les  slimes
-            foreach (Slime slime in this.slimes)
+            if (deadslime == false)
             {
-                slime.Draw(this.camera, this.spriteBatch);
+                // Afficher les  slimes
+                foreach (Slime slime in this.slimes)
+                {
+                    slime.Draw(this.camera, this.spriteBatch);
+                }
             }
+            
 
-            // Afficher le Miroyr
-            foreach (Miroyr miroyr in this.miroyrs)
-            {
-                miroyr.Draw(this.camera, this.spriteBatch);
+
+            if(minibossdeath==false){
+                // Afficher le Miroyr
+                foreach (Miroyr miroyr in this.miroyrs)
+                {
+                    miroyr.Draw(this.camera, this.spriteBatch);
+                }
             }
+            
 
             
 
-          
+            // Afficher les messages selon l'état du jeu
+            this.DrawMessages(this.spriteBatch);
+
+           
+
+            // Afficher le menu courant s'il y en a un sélectionné
+            if (this.MenuCourant != null)
+            {
+                spriteBatch.Draw(Menu, new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, this.graphics.GraphicsDevice.Viewport.Height), Color.White);
+                // Dessiner le menu
+                this.MenuCourant.Draw(
+                    this.spriteBatch,
+                    this.policeMenuTitre,
+                    this.policeMenuItem,
+                    this.couleurMenuTitre,
+                    this.couleurMenuItem,
+                    this.couleurMenuItemSelectionne);
+            }
+
 
             this.spriteBatch.End();
 
@@ -496,26 +909,91 @@ namespace ProjectOcram
         }
 
 
-        //protected void UpdateDeathLaser(GameTime gameTime)
-        //{
-        //    List<LaserObstacle> asteroidesFini = new List<LaserObstacle>();
-        //    foreach (LaserObstacle laser in this.deathLaser)
-        //    {
-        //        if (laser.Position.Y - laser.Height > this.graphics.GraphicsDevice.Viewport.Height)
-        //        {
-        //            asteroidesFini.Add(laser);
-        //        }
-        //    }
+        /// <summary>
+        /// Suspend temporairement (pause) ou réactive les effets sonores du jeu.
+        /// </summary>
+        /// <param name="suspendre">Indique si les effets sonores doivent être suspendus ou réactivés.</param>
+        protected void SuspendreEffetsSonores(bool suspendre)
+        {
+            // Suspendre au besoin les effets sonores du vaisseau
+            this.joueur.SuspendreEffetsSonores(suspendre);
 
-        //    // Mettre à jour les astéroïdes existants.
-        //    foreach (LaserObstacle laser in this.deathLaser)
-        //    {
-        //        laser.Update(gameTime, this.graphics);
-        //    }
+            // Suspendre ou réactiver le bruitage de fond
+            if (suspendre)
+            {
+                if (MediaPlayer.State == MediaState.Playing)
+                {
+                    MediaPlayer.Pause();
+                }
+            }
+            else
+            {
+                if (MediaPlayer.State == MediaState.Paused)
+                {
+                    MediaPlayer.Resume();
+                }
+            }
+        }
 
-        //    // Créer le sprite
-        //    LaserObstacle lasers = new LaserObstacle(0, 0);
-        //}
+        /// <summary>
+        /// Routine d'affichage de message (centré à l'écran) correspondant à l'état courant du jeu.
+        /// </summary>
+        /// <param name="spriteBatch">Tampon d'affichage.</param>
+        protected void DrawMessages(SpriteBatch spriteBatch)
+        {
+            string output = string.Empty;      // message à afficher
+
+            // Déterminer le message à afficher selon l'état du jeu
+            switch (this.EtatJeu)
+            {
+                case Etats.Pause:
+                    if (this.MenuCourant == null)
+                    {
+                        if (Manette)
+                        {
+                            output = "Pause (Pressez Start pour continuer...)";
+                        }
+                        else
+                        {
+                            output = "Pause (Pressez P pour continuer...)";
+                        }
+                            
+                    }
+
+                    break;
+
+                default:
+                    output = string.Empty;
+                    break;
+            }
+
+            // Afficher le message s'il y a lieu
+            if (output.Length > 0)
+            {
+                // L'origine d'affichage du message est son point central
+                Vector2 centrePolice = this.policeMessages.MeasureString(output) / 4;
+
+                // L'origine du message sera positionnée au centre de l'écran
+                Vector2 centreEcran = new Vector2(
+                    this.graphics.GraphicsDevice.Viewport.Width / 4,
+                    this.graphics.GraphicsDevice.Viewport.Height / 4);
+
+                Vector2 centreEcranImage = new Vector2(0,0);
+
+                spriteBatch.Draw(Menu, centreEcranImage, Color.White);
+                // Afficher le message centré à l'écran
+                spriteBatch.DrawString(
+                    this.policeMessages,        // police d'affichge
+                    output,                     // message à afficher
+                    centreEcran,                // position où afficher le message
+                    Color.White,               // couleur du texte
+                    0,                          // angle de rotation
+                    centrePolice,               // origine du texte (centrePolice positionné à centreEcran)
+                    1.0f,                       // échelle d'affichage
+                    SpriteEffects.None,         // effets
+                    1.0f);                      // profondeur de couche (layer depth)
+            }
+        }
 
 
         /// <summary>
@@ -544,17 +1022,87 @@ namespace ProjectOcram
             foreach (Obus obus in this.listeObus)
             {
                 if (obus.Position.Y + obus.Height < 0 ||
-                    obus.Position.Y - obus.Height > this.monde.Hauteur)
+                    obus.Position.Y - obus.Height > this.monde.Hauteur )
                 {
                     obusFini.Add(obus);
                 }
             }
 
+            foreach (Obus obus in this.listeObus)
+            {
+                foreach (Miroyr miroyr in this.miroyrs)
+                {
+                    if (miroyr.MiroyrCollision.Contains(obus.obusCollision))
+                    {
+
+                        MiniBossHP--;
+                        obusFini.Add(obus);
+
+                        if (MiniBossHP == 0)
+                        {
+                            MiroyrDeath.Play(volume, pan, pitch);
+                            minibossdeath = true;
+                        }
+
+                    }
+                }
+            }
+            
+            foreach (Obus obus in this.listeObus)
+            {
+                
+                if (slimes[0].SlimeCollision.Contains(obus.obusCollision))
+                {
+                    slimeHP_1--;
+                    obusFini.Add(obus);
+                    if(slimeHP_1==0){
+                        SlimeDeath.Play(volume, pan, pitch);
+                        this.slimes[0].Position = new Vector2(9999, 99999);
+                    }
+                   
+                }
+                if (slimes[1].SlimeCollision.Contains(obus.obusCollision))
+                {
+                    slimeHP_2--;
+                    obusFini.Add(obus);
+
+                    if (slimeHP_2 == 0){
+                        SlimeDeath.Play(volume, pan, pitch);
+                        this.slimes[1].Position = new Vector2(9999, 99999);
+                    }
+                }
+
+               if (slimes[2].SlimeCollision.Contains(obus.obusCollision))
+                {
+                    slimeHP_3--;
+                    obusFini.Add(obus);
+
+                    if (slimeHP_3 == 0){
+                        SlimeDeath.Play(volume, pan, pitch);
+                        this.slimes[2].Position = new Vector2(9999, 99999);
+                    }
+                }
+                if (slimes[3].SlimeCollision.Contains(obus.obusCollision))
+                {
+                    slimeHP_4--;
+                    obusFini.Add(obus);
+
+                    if (slimeHP_4 == 0)
+                    {
+                        SlimeDeath.Play(volume, pan, pitch);
+                        this.slimes[3].Position = new Vector2(9999, 99999);
+                        deadslime = true;
+                    }
+                }
+            }
+          
             // Se débarasser des obus n'étant plus d'aucune utilité.
             foreach (Obus obus in obusFini)
             {
+                
                 this.listeObus.Remove(obus);
             }
+
 
             // Mettre à jour les obus existants.
             foreach (Obus obus in this.listeObus)
@@ -563,6 +1111,98 @@ namespace ProjectOcram
 
             }
         }
+        protected void UpdateCollisionSlimeJoueur(GameTime gameTime)
+        {
+           
+            for(int i = 0; i< slimes.Count; i++)
+            {
+                //Vector2 tempPositionSlime = this.slimes[i].Position;
+                if (slimes[i].SlimeCollision.Contains(joueur.playerCollision))
+                {
+                    //Vector2 tempPositionJoueur = this.joueur.Position;
+                    this.slimes[i].Position = new Vector2(9999,99999);
+                   // this.joueur.Position = tempPositionJoueur;
+
+
+
+                }
+               
+            }
+        }
+
+
+       // protected void UpdateCollisionObus(GameTime gametime)
+       //{
+            //for (int i = 0; i < listeObus.Count; i++)
+            //{
+               // if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
+               // {
+                   
+                    //this.slimes[i].Position = new Vector2(9999, 99999);
+                //}
+           // }
+
+
+        //}
+
+
+
+
+            //foreach (Obus listeObus in this.listeObus)
+            //{
+            //    foreach(Slime slimes in this.slimes)
+            //    {
+
+            //   }
+            //    if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
+            //    {
+            //       this.slimes[i].Position = new Vector2(9999, 99999);
+            //   }
+
+            //}
+        //}
+
+
+        protected void UpdateLaser(GameTime gameTime)
+        {
+            // Identifier les obus ayant quitté l'écran.
+            List<LaserObstacle> laserFini = new List<LaserObstacle>();
+            foreach (LaserObstacle laser in this.deathLaser)
+            {
+                if (laser.insideZone.Contains(laser.LaserZone))
+                {
+                    laserFini.Add(laser);
+                }
+               
+                
+            }
+
+            // Determiner si un obus a frappé un astéroïde, et si c'est le cas détruire les deux sprites.
+            foreach (LaserObstacle laser in laserFini)
+            {
+                // Premièrement, est-ce que l'obus a touché un astéroïde?
+               // Sprite cible = laser.Collision(this.deathLaser);
+
+                // Si oui, détruire les deux sprites impliqués et produire une explosion
+                if (!(laser.insideZone.Contains(laser.LaserZone)))
+                {
+                    // Détruire la cible et l'obus.
+                    deathLaser.Remove(laser);
+              
+                   
+                }
+            }
+
+            // Mettre à jour les obus existants.
+            foreach (LaserObstacle laser in this.deathLaser)
+            {
+                laser.Update(gameTime, this.graphics);
+            }
+
+        }
+
+
+
 
     }
 }

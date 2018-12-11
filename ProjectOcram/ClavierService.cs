@@ -228,6 +228,54 @@ namespace IFM20884
         }
 
         /// <summary>
+        /// Indique la fin d'exécution du jeu doit être suspendue (si P du clavier est pressée).
+        /// Le paramètre device est ignoré (un seul clavier).
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si la touche P est pressée.</returns>
+        public bool Pause(int device)
+        {
+            // Ne pas tenir compte des répétitions de pressions.
+            return this.NouvellePression(Keys.P);
+        }
+
+        /// <summary>
+        /// Indique si l'item de menu précédent doit être activé pour sélection (si flèche haut pressée).
+        /// Le paramètre device est ignoré (un seul clavier).
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si l'item de menu précédent doit être activé; faux sinon.</returns>
+        public bool MenuItemPrecedent(int device)
+        {
+            // Ralentir les répétitions de pressions (400 millisecondes de délai)
+            return this.DelaiDuplicationExpire(Keys.Up, 400);
+        }
+
+        /// <summary>
+        /// Indique si l'item de menu suivant doit être activé pour sélection (si flèche bas pressée).
+        /// Le paramètre device est ignoré (un seul clavier).
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si l'item de menu suivant doit être activé; faux sinon.</returns>
+        public bool MenuItemSuivant(int device)
+        {
+            // Ralentir les répétitions de pressions (400 millisecondes de délai)
+            return this.DelaiDuplicationExpire(Keys.Down, 400);
+        }
+
+        /// <summary>
+        /// Indique si l'item de menu présentement activé doit être sélectionné (touche Enter pressée).
+        /// Le paramètre device est ignoré (un seul clavier).
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Vrai si l'item de menu actif doit être sélectionné; faux sinon.</returns>
+        public bool MenuItemSelection(int device)
+        {
+            // Ne pas tenir compte des répétitions de pressions
+            return this.NouvellePression(Keys.Enter);
+        }
+
+        /// <summary>
         /// Récupère l'état du clavier.
         /// </summary>
         /// <param name="gameTime">Gestionnaire de temps.</param>

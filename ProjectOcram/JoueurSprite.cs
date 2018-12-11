@@ -153,6 +153,8 @@ namespace ProjectOcram
         /// </summary>
         private SoundEffectInstance AttackInstanceFX;
 
+       public Rectangle playerCollision { get; set; }
+
 
         float volume = 0.59f;
         float pitch = 0.0f;
@@ -172,6 +174,11 @@ namespace ProjectOcram
 
             // Sélectionner et paramétrer le bruitage d'effets sonores.
             //this.AttackInstanceFX = AttackFX.CreateInstance();
+
+            // Sélectionner et paramétrer le bruitage de fond.
+            this.AttackInstanceFX = AttackFX.CreateInstance();
+            this.AttackInstanceFX.Volume = 0.0f;
+            this.AttackInstanceFX.IsLooped = false;
         }
 
         /// <summary>
@@ -642,10 +649,11 @@ namespace ProjectOcram
             // Déterminer si un obus doit être lancé
             if (ServiceHelper.Get<IInputService>().TirerObus(this.indexPeripherique) && this.getLancerObus != null)
             {
-               
+                
+                AttackFX.Play(volume, pan, pitch);
 
-
-                AttackFX.Play(volume,pan,pitch);
+                //Seulement pour faire fonctionner SuspendreEffetsSonores
+                this.AttackInstanceFX.Play();
 
                 if (this.directionDeplacement == Direction.Gauche)
                 {
@@ -732,8 +740,68 @@ namespace ProjectOcram
                 camera.Monde2Camera(ref rectOnTop);
             }
             // Afficher le rectangle.
-            spriteBatch.Draw(rectTexture, rect, Color.Black);
-            spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.MediumBlue);
+            spriteBatch.Draw(rectTexture, rect, Color.White);
+            if (hasDashedGauche == false && hasDashedDroite==false)
+            {
+                spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.White);
+            }
+
+            if (hasDashedGauche == true)
+            {
+                // Créer le rectangle à dessiner.
+                Rectangle rect2 = new Rectangle((int)(this.Position.X - 45),
+                (int)(this.Position.Y - this.Height / 2 - 23),
+                this.Width + 55, 35);
+
+                // Créer le rectangle à dessiner.
+                Rectangle rectOnTop2 = new Rectangle((int)(this.Position.X - 27),
+                (int)(this.Position.Y - this.Height / 2 - 8),
+                this.Width / 2 + 20, 4);
+
+
+            
+
+                // Si nous avons une caméra, corriger le rectangle en conséquence.
+                if (camera != null)
+                {
+                    camera.Monde2Camera(ref rect2);
+                    camera.Monde2Camera(ref rectOnTop2);
+                }
+                // Afficher le rectangle.
+               // spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.Transparent);
+                spriteBatch.Draw(rectTextureOnTop, rectOnTop2, Color.LimeGreen);
+               
+            }
+
+            if (hasDashedDroite == true)
+            {
+
+                // Créer le rectangle à dessiner.
+                Rectangle rect3 = new Rectangle((int)(this.Position.X - 45),
+                (int)(this.Position.Y - this.Height / 2 - 23),
+                this.Width + 55, 35);
+
+                // Créer le rectangle à dessiner.
+                Rectangle rectOnTop3 = new Rectangle((int)(this.Position.X - 27),
+                (int)(this.Position.Y - this.Height / 2 - 8),
+                this.Width / 2, 4);
+
+
+
+
+                // Si nous avons une caméra, corriger le rectangle en conséquence.
+                if (camera != null)
+                {
+                    camera.Monde2Camera(ref rect3);
+                    camera.Monde2Camera(ref rectOnTop3);
+                }
+                // Afficher le rectangle.
+                // spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.Transparent);
+                spriteBatch.Draw(rectTextureOnTop, rectOnTop3, Color.IndianRed);
+
+            }
+
+
         }
 
 
@@ -765,6 +833,30 @@ namespace ProjectOcram
                    pos.X <= plateforme.Position.X + (plateforme.Width / 2) &&
                    pos.Y >= plateforme.Position.Y - (plateforme.Height / 2) &&
                    pos.Y <= plateforme.Position.Y + (plateforme.Height / 2);
+        }
+
+        /// <summary>
+        /// Suspend temporairement (pause) ou réactive les effets sonores du vaisseau.
+        /// </summary>
+        /// <param name="suspendre">Indique si les effets sonores doivent être suspendus ou réactivés.</param>
+        public void SuspendreEffetsSonores(bool suspendre)
+        {
+            if (suspendre)
+            {
+                // Suspendre au besoin les effets sonores associés aux moteurs
+                if (this.AttackInstanceFX.State == SoundState.Playing)
+                {
+                    this.AttackInstanceFX.Pause();
+                }
+            }
+            else
+            {
+                // Réactiver au besoin les effets sonores associés aux moteurs
+                if (this.AttackInstanceFX.State == SoundState.Paused)
+                {
+                    this.AttackInstanceFX.Play();
+                }
+            }
         }
     }
 }
