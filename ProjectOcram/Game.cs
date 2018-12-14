@@ -92,11 +92,17 @@ namespace ProjectOcram
         private Song music;
         private SoundEffect SlimeDeath;
         private SoundEffect MiroyrDeath;
+        private SoundEffect DoorOpening;
+
+        private List<Key> keys;
+
 
         /// <summary>
         /// Liste des sprites que la plateforme transporte avec elle (voir Update).
         /// </summary>
         private List<Plateforme> plateformes;
+
+        private List<Door> door;
 
 
         /// <summary>
@@ -183,6 +189,9 @@ namespace ProjectOcram
         int slimeHP_3 = 5;
         int slimeHP_4 = 5;
 
+        bool deletedKey;
+
+        int playerHP = 3;
         int MiniBossHP = 50;
 
         bool minibossdeath;
@@ -306,6 +315,8 @@ namespace ProjectOcram
             }
         }
 
+        
+
         /// <summary>
         /// Fonction retournant le niveau de résistance aux déplacements en fonction de la couleur du pixel de tuile
         /// à la position donnée.
@@ -323,13 +334,32 @@ namespace ProjectOcram
                     position.X <= plateforme.Position.X + (plateforme.Width / 2) &&
                     position.Y <= plateforme.Position.Y + (plateforme.Height / 2))
                 {
+
                     pixColor = Color.Black;
                     break;
                 }
+
+
+            }
+            foreach (Door door in this.door)
+            {
+                if(position.X >= door.Position.X - (door.Width) &&
+                    position.Y >= door.Position.Y - (door.Height-20) &&
+                    position.X <= door.Position.X + (door.Width) &&
+                    position.Y <= door.Position.Y + (door.Height))
+                {
+                    if (deletedKey == false)
+                    {
+                        pixColor = Color.Black;
+                        break;
+                    }
+                }
             }
 
-            // Extraire la couleur du pixel correspondant à la position.
-            if (pixColor != Color.Black)
+           
+
+                // Extraire la couleur du pixel correspondant à la position.
+                if (pixColor != Color.Black)
                 try
                 {
                     pixColor = this.monde.CouleurDeCollision(position);
@@ -484,7 +514,7 @@ namespace ProjectOcram
 
 
             // Créer et initialiser le sprite du joueur.
-            this.joueur = new JoueurSprite(0,0);
+            this.joueur = new JoueurSprite(1746, 1280);
             joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur , this.monde.Hauteur);
             
@@ -499,6 +529,7 @@ namespace ProjectOcram
             this.music = Content.Load<Song>(@"Music\MonogameFinalSong");
             this.SlimeDeath = Content.Load<SoundEffect>(@"SoundFX\SimeDeath");
             this.MiroyrDeath = Content.Load<SoundEffect>(@"SoundFX\MiryorDeath");
+            this.DoorOpening = Content.Load<SoundEffect>(@"SoundFX\DoorOpening");
 
             // Paramétrer la musique de fond et la démarrer.
             MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
@@ -509,11 +540,18 @@ namespace ProjectOcram
             // Associer la déléguée de gestion des obus du vaisseau à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;
 
+            Door.LoadContent(Content, this.graphics);
+            this.door = new List<Door>();
+            this.door.Add(new Door(1847, 1365));
 
+            Key.LoadContent(Content, this.graphics);
+            this.keys = new List<Key>();
+            this.keys.Add(new Key(33, 1330));
+            
             // Créer les plateformes.
             Plateforme.LoadContent(Content, this.graphics);
             this.plateformes = new List<Plateforme>();
-            this.plateformes.Add(new Plateforme(1800, 1575));
+            this.plateformes.Add(new Plateforme(1835, 1575));
             //this.plateformes.Add(new Plateforme(200, 76));
 
             // Charger le sprite représentant des ogres.
@@ -743,9 +781,19 @@ namespace ProjectOcram
                 }
             }
              
+            foreach(Key key in this.keys)
+            {
+                key.Update(gameTime, this.graphics);
+            }
 
-            //collisionEntrele slime et le Sprite
-            UpdateCollisionSlimeJoueur(gameTime);
+            foreach(Door door in this.door)
+            {
+                door.Update(gameTime, this.graphics);
+               
+            }
+
+            //collisionEntre la cle et le Sprite
+            UpdateCollisionKeyJoueur(gameTime);
 
             // Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
             // plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
@@ -779,6 +827,8 @@ namespace ProjectOcram
 
                 // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
+
+            
 
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
@@ -842,10 +892,24 @@ namespace ProjectOcram
 
             //if (deathLaser.insideZone.Contains(deathLaser.LaserZone))
             //{
-                //this.deathLaser[1].Draw(this.camera, this.spriteBatch);
+            //this.deathLaser[1].Draw(this.camera, this.spriteBatch);
             //}
 
+            if (deletedKey == false)
+            {
+                foreach (Key key in this.keys)
+                {
+                    key.Draw(this.camera, this.spriteBatch);
+                }
+            }
 
+            if (deletedKey == false)
+            {
+                foreach (Door door in this.door)
+                {
+                    door.Draw(this.camera, this.spriteBatch);
+                }
+            }
 
             // Afficher les plateformes.
             foreach (Plateforme plateforme in this.plateformes)
@@ -1111,22 +1175,24 @@ namespace ProjectOcram
 
             }
         }
-        protected void UpdateCollisionSlimeJoueur(GameTime gameTime)
+
+        
+    protected void UpdateCollisionKeyJoueur(GameTime gameTime)
         {
-           
-            for(int i = 0; i< slimes.Count; i++)
+
+            
+            for (int i = 0; i < keys.Count; i++)
             {
+
+                
                 //Vector2 tempPositionSlime = this.slimes[i].Position;
-                if (slimes[i].SlimeCollision.Contains(joueur.playerCollision))
+                if (keys[i].Collision(joueur))
                 {
-                    //Vector2 tempPositionJoueur = this.joueur.Position;
-                    this.slimes[i].Position = new Vector2(9999,99999);
-                   // this.joueur.Position = tempPositionJoueur;
 
+                    deletedKey = true;
 
-
+                    DoorOpening.Play(volume, pan, pitch);
                 }
-               
             }
         }
 

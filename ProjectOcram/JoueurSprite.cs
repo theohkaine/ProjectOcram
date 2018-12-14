@@ -415,11 +415,11 @@ namespace ProjectOcram
         int DashCooldown = 500;
 
         int currentDashDroite = 0;
-        bool hasDashedDroite = false;
+        public bool hasDashedDroite = false;
 
 
         int currentDashGauche = 0;
-        bool hasDashedGauche = false;
+       public  bool hasDashedGauche = false;
 
         /// <summary>
         /// Ajuste la position du sprite en fonction de l'input.
