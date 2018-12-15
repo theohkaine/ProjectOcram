@@ -191,10 +191,13 @@ namespace ProjectOcram
 
         bool deletedKey;
 
-        int playerHP = 3;
+        
         int MiniBossHP = 50;
 
         bool minibossdeath;
+
+        bool instantdeath;
+
 
         //FOR SOUND EFFECT
         float volume = 0.9f;
@@ -305,7 +308,6 @@ namespace ProjectOcram
             {
                 return this.menuCourant;
             }
-
             set
             {
                 this.menuCourant = value;
@@ -356,7 +358,7 @@ namespace ProjectOcram
                 }
             }
 
-           
+          
 
                 // Extraire la couleur du pixel correspondant à la position.
                 if (pixColor != Color.Black)
@@ -369,11 +371,22 @@ namespace ProjectOcram
                     this.Exit();
                 }
 
+            if (pixColor == Color.Red)
+            {
+
+                instantdeath = true;
+            }
+
             // Déterminer le niveau de résistance en fonction de la couleur.
             if (pixColor != Color.Black)
                 return 0.0f;
             else
                 return 1.0f;
+
+            
+            
+
+            
         }
 
         /// <summary>
@@ -476,21 +489,20 @@ namespace ProjectOcram
 
             
 
+           
+
+            
+
             // Charger le monde.
             MondeOcram.LoadContent(this.Content);
+            // Charger le sprite de personnages du joueur (statique).
+            JoueurSprite.LoadContent(this.Content, this.graphics);
+            LaserObstacle.LoadContent(this.Content, this.graphics);      
+            JoueurObus.LoadContent(this.Content, this.graphics);
 
             // Au départ, le monde de jour est exploité.
             this.monde = new MondeOcram();
-
-
-            // Charger le sprite de personnages du joueur (statique).
-            JoueurSprite.LoadContent(this.Content, this.graphics);
-            LaserObstacle.LoadContent(this.Content, this.graphics);
-
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW/3), this.monde.Hauteur +(116));
-
-            JoueurObus.LoadContent(this.Content, this.graphics);
-
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW / 3), this.monde.Hauteur + (116));
 
             foreach (Obus listeObus in this.listeObus)
             {
@@ -511,10 +523,10 @@ namespace ProjectOcram
 
 
 
-
+            //1746, 1280
 
             // Créer et initialiser le sprite du joueur.
-            this.joueur = new JoueurSprite(1746, 1280);
+            this.joueur = new JoueurSprite(0,0);
             joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur , this.monde.Hauteur);
             
@@ -755,6 +767,7 @@ namespace ProjectOcram
 
             this.UpdateObus(gameTime);
 
+
             //UpdateCollisionObus(gameTime);
 
             // Est-on en processus de fin de jeu dû à une collision du vaisseau avec un astéroïde?
@@ -794,6 +807,7 @@ namespace ProjectOcram
 
             //collisionEntre la cle et le Sprite
             UpdateCollisionKeyJoueur(gameTime);
+            UpdateCollisionJoueurMonster(gameTime);
 
             // Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
             // plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
@@ -1179,11 +1193,9 @@ namespace ProjectOcram
         
     protected void UpdateCollisionKeyJoueur(GameTime gameTime)
         {
-
             
             for (int i = 0; i < keys.Count; i++)
             {
-
                 
                 //Vector2 tempPositionSlime = this.slimes[i].Position;
                 if (keys[i].Collision(joueur))
@@ -1196,38 +1208,126 @@ namespace ProjectOcram
             }
         }
 
+        protected void UpdateCollisionJoueurMonster(GameTime gameTime)
+        {
 
-       // protected void UpdateCollisionObus(GameTime gametime)
-       //{
-            //for (int i = 0; i < listeObus.Count; i++)
-            //{
-               // if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
-               // {
-                   
-                    //this.slimes[i].Position = new Vector2(9999, 99999);
-                //}
-           // }
+            for (int i = 0; i < slimes.Count; i++)
+            {
+
+                //Vector2 tempPositionSlime = this.slimes[i].Position;
+                if (slimes[i].SlimeCollision.Contains(joueur.playerCollision))
+                {
+                    //float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
+
+                    this.joueur.PlayerHP -= 1;
+                    
+
+                }
+            }
+            this.Reset();
+        }
+
+        private void Reset()
+        {
+            if (this.joueur.PlayerHP == 0 || instantdeath==true)
+            {
+                instantdeath = false;
+                this.joueur.PlayerHP = 6;
+                deadslime = false;
+                slimeHP_1 = 5;
+                slimeHP_2 = 5;
+                slimeHP_3 = 5;
+                slimeHP_4 = 5;
+                MiniBossHP = 50;
+                deletedKey = false;
+
+                // Au départ, le monde de jour est exploité.
+                this.monde = new MondeOcram();
+                this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW / 3), this.monde.Hauteur + (116));
+
+                foreach (Obus listeObus in this.listeObus)
+                {
+                    listeObus.obusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
+                    //slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+
+                    // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+                }
 
 
-        //}
+
+                LaserObstacle deathLaser1 = new LaserObstacle(200, 2);
+
+                deathLaser1.insideZone = new Rectangle(200, 2, 100, 200);
+
+                deathLaser1.LaserZone = new Rectangle(0, 0, (int)deathLaser1.Position.X, (int)deathLaser1.Position.Y);
+                this.deathLaser.Add(deathLaser1);
+
+
+
+                //1746, 1280
+
+                // Créer et initialiser le sprite du joueur.
+                this.joueur = new JoueurSprite(20,20);
+                joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
+                this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
 
 
 
-            //foreach (Obus listeObus in this.listeObus)
-            //{
-            //    foreach(Slime slimes in this.slimes)
-            //    {
+                // Imposer la palette de collisions au déplacement du joueur.
+                this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
+                this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
 
-            //   }
-            //    if (slimes[i].SlimeCollision.Contains(listeObus[i].obusCollision))
-            //    {
-            //       this.slimes[i].Position = new Vector2(9999, 99999);
-            //   }
+                // Associer la déléguée de gestion des obus du vaisseau à son sprite.
+                this.joueur.GetLancerObus = this.LancerObus;
 
-            //}
-        //}
+               
+                this.door = new List<Door>();
+                this.door.Add(new Door(1847, 1365));
 
+              
+                this.keys = new List<Key>();
+                this.keys.Add(new Key(33, 1330));
+
+                // Créer les plateformes.
+                
+                this.plateformes = new List<Plateforme>();
+                this.plateformes.Add(new Plateforme(1835, 1575));
+                //this.plateformes.Add(new Plateforme(200, 76));
+
+                // Charger le sprite représentant des ogres.
+               
+
+                // Créer les slimes.
+                this.slimes = new List<Slime>();
+                this.slimes.Add(new Slime(350, 77));
+                this.slimes.Add(new Slime(900, 77));
+                this.slimes.Add(new Slime(1500, 77));
+
+
+                //this.slimes.Add(new Slime(175, 605));
+                this.slimes.Add(new Slime(1200, 605));
+
+                // Charger le sprite représentant des ogres.
+                Miroyr.LoadContent(this.Content, this.graphics);
+
+                // Créer les ogres.
+                this.miroyrs = new List<Miroyr>();
+                this.miroyrs.Add(new Miroyr(600, 1120));
+
+
+
+                // Configurer les ogres de sorte qu'ils ne puissent se déplacer
+                // hors de la mappe monde et initialiser la détection de collision de tuiles.
+                foreach (Miroyr miroyr in this.miroyrs)
+                {
+                    miroyr.MiroyrCollision = new Rectangle((int)miroyr.Position.X - (miroyr.Width / 2), (int)miroyr.Position.Y - (miroyr.Height / 2), miroyr.Width, miroyr.Height);
+                    miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
+                    // miroyr.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
+                }
+
+            }
+        }
 
         protected void UpdateLaser(GameTime gameTime)
         {
