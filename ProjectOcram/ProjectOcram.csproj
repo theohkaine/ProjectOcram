@@ -58,7 +58,6 @@
     <Compile Include="IFM20884\Monde.cs" />
     <Compile Include="IFM20884\Palette.cs" />
     <Compile Include="Key.cs" />
-    <Compile Include="LaserObstacle.cs" />
     <Compile Include="ManetteService.cs" />
     <Compile Include="Miroyr.cs" />
     <Compile Include="MondeOcram.cs" />
