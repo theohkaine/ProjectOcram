@@ -1,36 +1,8 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="Plateforme.cs" company="Marco Lavoie">
-// Marco Lavoie, 2010. Tous droits réservés
-// 
-// L'utilisation de ce matériel pédagogique (présentations, code source 
-// et autres) avec ou sans modifications, est permise en autant que les 
-// conditions suivantes soient respectées:
-//
-// 1. La diffusion du matériel doit se limiter à un intranet dont l'accès
-//    est imité aux étudiants inscrits à un cours exploitant le dit 
-//    matériel. IL EST STRICTEMENT INTERDIT DE DIFFUSER CE MATÉRIEL 
-//    LIBREMENT SUR INTERNET.
-// 2. La redistribution des présentations contenues dans le matériel 
-//    pédagogique est autorisée uniquement en format Acrobat PDF et sous
-//    restrictions stipulées à la condition #1. Le code source contenu 
-//    dans le matériel pédagogique peut cependant être redistribué sous 
-//    sa forme  originale, en autant que la condition #1 soit également 
-//    respectée.
-// 3. Le matériel diffusé doit contenir intégralement la mention de 
-//    droits d'auteurs ci-dessus, la notice présente ainsi que la
-//    décharge ci-dessous.
-// 
-// CE MATÉRIEL PÉDAGOGIQUE EST DISTRIBUÉ "TEL QUEL" PAR L'AUTEUR, SANS 
-// AUCUNE GARANTIE EXPLICITE OU IMPLICITE. L'AUTEUR NE PEUT EN AUCUNE 
-// CIRCONSTANCE ÊTRE TENU RESPONSABLE DE DOMMAGES DIRECTS, INDIRECTS, 
-// CIRCONSTENTIELS OU EXEMPLAIRES. TOUTE VIOLATION DE DROITS D'AUTEUR 
-// OCCASIONNÉ PAR L'UTILISATION DE CE MATÉRIEL PÉDAGOGIQUE EST PRIS EN 
-// CHARGE PAR L'UTILISATEUR DU DIT MATÉRIEL.
-// 
-// En utilisant ce matériel pédagogique, vous acceptez implicitement les
-// conditions et la décharge exprimés ci-dessus.
-// </copyright>
-//-----------------------------------------------------------------------
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ProjectOcram
 {
@@ -45,12 +17,12 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
 
- 
-/// <summary>
-/// Classe représentant une plateforme se déplaçant horizontalement dans le monde. Celle-ci
-/// peut transporter des sprites.
-/// </summary>
-public class Plateforme : Sprite
+
+    /// <summary>
+    /// Classe représentant une plateforme se déplaçant horizontalement dans le monde. Celle-ci
+    /// peut transporter des sprites.
+    /// </summary>
+    public class PlateformeDescendante : Sprite
     {
         /// <summary>
         /// Texture représentant la plateforme dans la console.
@@ -63,7 +35,7 @@ public class Plateforme : Sprite
         /// </summary>
         private float vitesseVerticale = 0.0f;
 
-        float vitesseH = 0.0f;
+        float vitesseV = 0.0f;
 
 
 
@@ -85,7 +57,7 @@ public class Plateforme : Sprite
         /// Constructeur paramétré recevant la position du sprite. On invoque l'autre constructeur.
         /// </summary>
         /// <param name="position">Coordonnées initiales horizontale et verticale du sprite.</param>
-        public Plateforme(Vector2 position)
+        public PlateformeDescendante(Vector2 position)
             : this(position.X, position.Y)
         {
         }
@@ -95,7 +67,7 @@ public class Plateforme : Sprite
         /// </summary>
         /// <param name="x">Coordonnée initiale x (horizontale) du sprite.</param>
         /// <param name="y">Coordonnée initiale y (verticale) du sprite.</param>
-        public Plateforme(float x, float y) : base(x, y)
+        public PlateformeDescendante(float x, float y) : base(x, y)
         {
             // Créer la liste où seront stockés les sprites transportés par la plateforme.
             this.passagers = new List<Sprite>();
@@ -156,28 +128,29 @@ public class Plateforme : Sprite
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-           
+
 
             // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
 
             if (passagers.Count > 0)
-                vitesseH = 0.25f;
+                vitesseV = 0.4f;
 
-          
-             int deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH );
-            
+
+            int deltaY = +(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseV);
+
 
             // Repositionner la plateforme selon le déplacement horizontal calculé.
-            this.Position = new Vector2(this.Position.X + deltaX, this.Position.Y);
+            this.Position = new Vector2(this.Position.X , this.Position.Y+ deltaY);
 
             // Déplacer aussi tous les sprites transportés par la plateforme.
             foreach (Sprite sprite in this.passagers)
             {
-               
-                    sprite.Position = new Vector2(sprite.Position.X + deltaX, sprite.Position.Y);
-                
-               
+
+                sprite.Position = new Vector2(sprite.Position.X , sprite.Position.Y+deltaY);
+
+
             }
         }
     }
 }
+
