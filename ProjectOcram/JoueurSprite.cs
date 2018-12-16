@@ -765,11 +765,10 @@ namespace ProjectOcram
                    pos.Y <= plateforme.Position.Y + (plateforme.Height / 2);
         }
 
-
-        // <summary>
+        /// <summary>
         /// Indique si this se tient debout sur la plateforme donnée.
         /// </summary>
-        /// <param name="plateforme">La plateforme sur laquelle il faut vérifier si this est debout.</param>
+        /// <param name="plateforme">Indique si les effets sonores doivent être suspendus ou réactivés.</param>
         /// <returns>Vrai si this est debout sur la plateforme; faux sinon.</returns>
         public bool SurPlateforme(PlateformeDescendante plateforme)
         {

@@ -60,11 +60,10 @@ public class Plateforme : Sprite
         /// </summary>
         private float vitesseVerticale = 0.0f;
 
-
-        float vitesseH = 0.0f;
-
-
-
+        /// <summary>
+        /// Vitesse du platforme.
+        /// </summary>
+        private float vitesseH = 0.0f;
 
         /// <summary>
         /// Liste des sprites que la plateforme doit déplacer avec elle.
@@ -155,15 +154,14 @@ public class Plateforme : Sprite
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-           
+            //// Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
 
-            // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
-
-
-            if (passagers.Count > 0)
-                vitesseH = 0.25f;
+            if (this.passagers.Count > 0)
+            {
+                this.vitesseH = 0.25f;
+            }
             
-            int deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH);
+            int deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * this.vitesseH);
             
             //// Repositionner la plateforme selon le déplacement horizontal calculé.
             this.Position = new Vector2(this.Position.X + deltaX, this.Position.Y);
