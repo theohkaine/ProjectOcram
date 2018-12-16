@@ -155,6 +155,8 @@ namespace ProjectOcram
 
        public Rectangle playerCollision { get; set; }
 
+        public int PlayerHP = 6;
+
 
         float volume = 0.59f;
         float pitch = 0.0f;
@@ -715,6 +717,11 @@ namespace ProjectOcram
 
             }
 
+            if (PlayerHP < 0)
+            {
+                PlayerHP = 0;
+            }
+
             // La fonction de base s'occupe de l'animation.
             base.Update(gameTime, graphics);
         }
@@ -741,12 +748,12 @@ namespace ProjectOcram
             }
             // Afficher le rectangle.
             spriteBatch.Draw(rectTexture, rect, Color.White);
-            if (hasDashedGauche == false && hasDashedDroite==false)
+            if (PlayerHP == 5 || PlayerHP == 6)
             {
                 spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.White);
             }
 
-            if (hasDashedGauche == true)
+            if (PlayerHP== 3 || PlayerHP==4)
             {
                 // Créer le rectangle à dessiner.
                 Rectangle rect2 = new Rectangle((int)(this.Position.X - 45),
@@ -773,7 +780,7 @@ namespace ProjectOcram
                
             }
 
-            if (hasDashedDroite == true)
+            if (PlayerHP == 1 || PlayerHP == 2)
             {
 
                 // Créer le rectangle à dessiner.
