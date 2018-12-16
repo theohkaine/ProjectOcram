@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Boss.cs" />
+    <Compile Include="BoulePiqueObstacle.cs" />
     <Compile Include="Door.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="IFM20884\Camera.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="MondeOcram.cs" />
     <Compile Include="Obus.cs" />
     <Compile Include="Plateforme.cs" />
+    <Compile Include="PlateformeDescendante.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IFM20884\Sprite.cs" />

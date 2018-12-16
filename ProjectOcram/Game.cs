@@ -73,7 +73,9 @@ namespace ProjectOcram
         /// <summary>
         /// Attribut représentant le personnage contrôlé par le joueur.
         /// </summary>
-        private JoueurSprite joueur;    
+        private JoueurSprite joueur;
+
+        
 
         /// <summary>
         /// Attribut représentant la camera.
@@ -95,12 +97,19 @@ namespace ProjectOcram
         private SoundEffect DoorOpening;
 
         private List<Key> keys;
+        private List<BoulePiqueObstacle> boulepiques;
+        private List<Boss> boss;
 
 
         /// <summary>
         /// Liste des sprites que la plateforme transporte avec elle (voir Update).
         /// </summary>
         private List<Plateforme> plateformes;
+
+        /// <summary>
+        /// Liste des sprites que la plateforme transporte avec elle (voir Update).
+        /// </summary>
+        private List<PlateformeDescendante> plateformesD;
 
         private List<Door> door;
 
@@ -343,6 +352,21 @@ namespace ProjectOcram
 
 
             }
+
+            foreach (PlateformeDescendante plateforme in this.plateformesD)
+            {
+                if (position.X >= plateforme.Position.X - (plateforme.Width / 2) &&
+                    position.Y >= plateforme.Position.Y - (plateforme.Height / 2) &&
+                    position.X <= plateforme.Position.X + (plateforme.Width / 2) &&
+                    position.Y <= plateforme.Position.Y + (plateforme.Height / 2))
+                {
+
+                    pixColor = Color.Black;
+                    break;
+                }
+
+
+            }
             foreach (Door door in this.door)
             {
                 if(position.X >= door.Position.X - (door.Width) &&
@@ -526,7 +550,11 @@ namespace ProjectOcram
             //1746, 1280
 
             // Créer et initialiser le sprite du joueur.
+
+
+
             this.joueur = new JoueurSprite(0,0);
+
             joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur , this.monde.Hauteur);
             
@@ -554,18 +582,36 @@ namespace ProjectOcram
 
             Door.LoadContent(Content, this.graphics);
             this.door = new List<Door>();
-            this.door.Add(new Door(1847, 1365));
+            this.door.Add(new Door(1747, 1365));
 
             Key.LoadContent(Content, this.graphics);
             this.keys = new List<Key>();
             this.keys.Add(new Key(33, 1330));
-            
+
+            Boss.LoadContent(Content, this.graphics);
+            this.boss = new List<Boss>();
+            this.boss .Add(new Boss(1757, 1805));
+
             // Créer les plateformes.
             Plateforme.LoadContent(Content, this.graphics);
             this.plateformes = new List<Plateforme>();
-            this.plateformes.Add(new Plateforme(1835, 1575));
+            this.plateformes.Add(new Plateforme(1835, 1565));
             //this.plateformes.Add(new Plateforme(200, 76));
 
+            // Créer les plateformes.
+            PlateformeDescendante.LoadContent(Content, this.graphics);
+            this.plateformesD = new List<PlateformeDescendante>();
+            this.plateformesD.Add(new PlateformeDescendante(1635, 1565));
+            //this.plateformes.Add(new Plateforme(200, 76)); 
+
+            //Créer les BoulePiques
+            BoulePiqueObstacle.LoadContent(Content, this.graphics);
+            this.boulepiques = new List<BoulePiqueObstacle>();
+            this.boulepiques.Add(new BoulePiqueObstacle(1520, 1535));
+            this.boulepiques.Add(new BoulePiqueObstacle(1020, 1535));
+            this.boulepiques.Add(new BoulePiqueObstacle(800, 1535));
+            this.boulepiques.Add(new BoulePiqueObstacle(600, 1535));
+            this.boulepiques.Add(new BoulePiqueObstacle(200, 1535));
             // Charger le sprite représentant des ogres.
             Slime.LoadContent(this.Content, this.graphics);
 
@@ -586,7 +632,7 @@ namespace ProjectOcram
 
             Menu = this.Content.Load<Texture2D>(@"MenuImage\menuV2");
 
-           // Boss= this.Content.Load<Texture2D>(@"Boss\bossMonogame");
+           
 
             // Configurer les ogres de sorte qu'ils ne puissent se déplacer
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
@@ -763,6 +809,13 @@ namespace ProjectOcram
 
             //}
 
+
+            
+            foreach (Boss boss in this.boss)
+            {
+                boss.Update(gameTime, this.graphics);
+            }
+
             this.UpdateLaser(gameTime);
 
             this.UpdateObus(gameTime);
@@ -805,6 +858,11 @@ namespace ProjectOcram
                
             }
 
+            foreach (BoulePiqueObstacle boulepique in this.boulepiques)
+            {
+                boulepique.Update(gameTime, this.graphics);
+            }
+
             //collisionEntre la cle et le Sprite
             UpdateCollisionKeyJoueur(gameTime);
             UpdateCollisionJoueurMonster(gameTime);
@@ -820,16 +878,28 @@ namespace ProjectOcram
                 if (this.joueur.SurPlateforme(plateforme))
                 {
                     plateforme.AjouterPassager(this.joueur);
-                    
                 }
                 else
-                {
                     plateforme.RetirerPassager(this.joueur);
-                }
-               
+                
             }
 
+            // Mettre à jour les plateformes et déterminer si le sprite du jour est sur une
+            // plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
+            // ce sprite.
+            foreach (PlateformeDescendante plateforme in this.plateformesD)
+            {
+                plateforme.Update(gameTime, this.graphics);  // mettre à jour la position
 
+                // Activer/désactiver la composition selon la plateforme et la position du joueur.
+                if (this.joueur.SurPlateforme(plateforme))
+                {
+                    plateforme.AjouterPassager(this.joueur);
+                }
+                else
+                    plateforme.RetirerPassager(this.joueur);
+
+            }
 
 
             joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
@@ -925,13 +995,31 @@ namespace ProjectOcram
                 }
             }
 
+            foreach (BoulePiqueObstacle boulepique in this.boulepiques)
+            {
+                boulepique.Draw(this.camera, this.spriteBatch);
+            }
+
             // Afficher les plateformes.
             foreach (Plateforme plateforme in this.plateformes)
             {
                 plateforme.Draw(this.camera, this.spriteBatch);
             }
+
+            // Afficher les plateformes.
+            foreach (PlateformeDescendante plateforme in this.plateformesD)
+            {
+                plateforme.Draw(this.camera, this.spriteBatch);
+            }
+
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
 
+
+            foreach (Boss boss in this.boss)
+            {
+                boss.Draw(this.camera, this.spriteBatch);
+            }
+           
 
             if (deadslime == false)
             {
