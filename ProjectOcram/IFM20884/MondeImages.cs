@@ -55,7 +55,7 @@ namespace IFM20884
         /// </summary>
         public MondeImages()
         {
-            float scale = .5f; //50% smaller
+            ////float scale = .5f; //50% smaller
             // On s'assure d'avoir des images à afficher.
             if (this.Textures == null || this.Textures.GetLength(0) == 0 || this.Textures.GetLength(1) == 0)
             {

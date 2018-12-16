@@ -72,8 +72,6 @@ namespace IFM20884
     /// </summary>
     public abstract class Personnage : SpriteAnimation
     {
-
-
         /// <summary>
         /// Fonction déléguée permettant d'obtenir la résistance aux déplacements du sprite
         /// dans le monde de tuiles. Si aucune fonction déléguée n'est fournie, aucune
@@ -108,8 +106,6 @@ namespace IFM20884
         /// </summary>
         private SoundEffectInstance bruitActif;
 
-        public int animationSpeed;
-
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
         /// </summary>
@@ -137,8 +133,14 @@ namespace IFM20884
         /// </summary>
         public enum Direction
         {
+            /// <summary>
+            /// Le personnage se déplace vers la gauche.
+            /// </summary>
             Gauche,
 
+            /// <summary>
+            /// Le personnage se déplace vers la droite.
+            /// </summary>
             Droite
         }
 
@@ -290,7 +292,6 @@ namespace IFM20884
         /// Lire de  l'input les vitesses de déplacement directionnels.
         /// </summary>
         /// <param name="gameTime">Indique le temps écoulé depuis la dernière invocation.</param>
-        /// <param name="vitesseVerticale">Retourne la vitesse de déplacement verticale.</param>
         /// <param name="vitesseDroite">Retourne la vitesse de déplacement vers le est.</param>
         /// <param name="vitesseGauche">Retourne la vitesse de déplacement vers le ouest.</param>
         /// <returns>Vrai si des vitesses furent lues; faux sinon.</returns>
@@ -332,7 +333,6 @@ namespace IFM20884
                 this.directionDeplacement = Direction.Gauche;
             }
 
-
             // Calcul de la vitesse de déplacement du personnage en fonction de l'input
             float vitesse = this.vitesseMaximum;
 
@@ -344,7 +344,6 @@ namespace IFM20884
             {
                 vitesse *= vitesseGauche;
             }
-
 
             // Mettre à jour l'état du personnage selon sa vitesse de déplacement
             if (vitesse >= 0.6 * this.vitesseMaximum)
@@ -372,8 +371,6 @@ namespace IFM20884
             {
                 deltaX = (int)vitesse;
             }
-
-
 
             // Si une fonction déléguée est fournie pour valider les mouvements sur les tuiles
             // y faire appel pour valider la position résultante du mouvement
@@ -551,4 +548,3 @@ namespace IFM20884
         }
     }
 }
-
