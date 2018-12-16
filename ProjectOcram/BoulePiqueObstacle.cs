@@ -7,13 +7,14 @@ using IFM20884;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+
 namespace ProjectOcram
 {
-    public class Boss : Sprite
+    public class BoulePiqueObstacle : Sprite
     {
 
 
-        public Rectangle bossCollision { get; set; }
+        public Rectangle BoulePiqueCollision { get; set; }
 
 
         /// <summary>
@@ -25,7 +26,7 @@ namespace ProjectOcram
         /// Constructeur paramétré recevant la position du sprite. On invoque l'autre constructeur.
         /// </summary>
         /// <param name="position">Coordonnées initiales horizontale et verticale du sprite.</param>
-        public Boss(Vector2 position)
+        public BoulePiqueObstacle(Vector2 position)
             : this(position.X, position.Y)
         {
         }
@@ -35,7 +36,7 @@ namespace ProjectOcram
         /// </summary>
         /// <param name="x">Coordonnée initiale x (horizontale) du sprite.</param>
         /// <param name="y">Coordonnée initiale y (verticale) du sprite.</param>
-        public Boss(float x, float y) : base(x, y)
+        public BoulePiqueObstacle(float x, float y) : base(x, y)
         {
         }
 
@@ -58,7 +59,7 @@ namespace ProjectOcram
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
         {
             // Charger la texture associée à la plateforme.
-            texture = content.Load<Texture2D>(@"Boss\boss");
+            texture = content.Load<Texture2D>(@"GameObject\BoulePique");
         }
 
         /// <summary>
