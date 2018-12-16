@@ -38,14 +38,11 @@ namespace ProjectOcram
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-
     using IFM20884;
-
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
 
- 
 /// <summary>
 /// Classe représentant une plateforme se déplaçant horizontalement dans le monde. Celle-ci
 /// peut transporter des sprites.
@@ -63,19 +60,20 @@ public class Plateforme : Sprite
         /// </summary>
         private float vitesseVerticale = 0.0f;
 
-
         /// <summary>
         /// Liste des sprites que la plateforme doit déplacer avec elle.
         /// </summary>
         private List<Sprite> passagers;
 
         /// <summary>
-        /// Accesseur et mutateur pour attribut vitesseVerticale.
+        /// Constructeur paramétré recevant la position du sprite.
         /// </summary>
-        public float VitesseVerticale
+        /// <param name="x">Coordonnée initiale x (horizontale) du sprite.</param>
+        /// <param name="y">Coordonnée initiale y (verticale) du sprite.</param>
+        public Plateforme(float x, float y) : base(x, y)
         {
-            get { return this.vitesseVerticale; }
-            set { this.vitesseVerticale = value; }
+            // Créer la liste où seront stockés les sprites transportés par la plateforme.
+            this.passagers = new List<Sprite>();
         }
 
         /// <summary>
@@ -88,14 +86,12 @@ public class Plateforme : Sprite
         }
 
         /// <summary>
-        /// Constructeur paramétré recevant la position du sprite.
+        /// Accesseur et mutateur pour attribut vitesseVerticale.
         /// </summary>
-        /// <param name="x">Coordonnée initiale x (horizontale) du sprite.</param>
-        /// <param name="y">Coordonnée initiale y (verticale) du sprite.</param>
-        public Plateforme(float x, float y) : base(x, y)
+        public float VitesseVerticale
         {
-            // Créer la liste où seront stockés les sprites transportés par la plateforme.
-            this.passagers = new List<Sprite>();
+            get { return this.vitesseVerticale; }
+            set { this.vitesseVerticale = value; }
         }
 
         /// <summary>
@@ -156,31 +152,24 @@ public class Plateforme : Sprite
             float vitesseH;
 
             // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
-            if (passagers.Count < 1)
+            if (this.passagers.Count < 1)
             {
                 vitesseH = 0.0f;
             }
-
             else
             {
                 vitesseH = 0.3f;
-            }
-               
-
-
-            int  deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH);
+            }      
             
-
-            // Repositionner la plateforme selon le déplacement horizontal calculé.
+            int deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH);
+            
+            //// Repositionner la plateforme selon le déplacement horizontal calculé.
             this.Position = new Vector2(this.Position.X + deltaX, this.Position.Y);
 
             // Déplacer aussi tous les sprites transportés par la plateforme.
             foreach (Sprite sprite in this.passagers)
-            {
-               
-                    sprite.Position = new Vector2(sprite.Position.X + deltaX, sprite.Position.Y);
-                
-               
+            {  
+                    sprite.Position = new Vector2(sprite.Position.X + deltaX, sprite.Position.Y);                   
             }
         }
     }

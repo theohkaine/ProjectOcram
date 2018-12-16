@@ -506,7 +506,7 @@ namespace ProjectOcram
 
             foreach (Obus listeObus in this.listeObus)
             {
-                listeObus.obusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
+                listeObus.ObusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
                 //slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
                 // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
@@ -527,7 +527,7 @@ namespace ProjectOcram
 
             // Créer et initialiser le sprite du joueur.
             this.joueur = new JoueurSprite(0,0);
-            joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
+            joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur , this.monde.Hauteur);
             
 
@@ -832,7 +832,7 @@ namespace ProjectOcram
 
 
 
-            joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
+            joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
 
             foreach (Slime slimes in this.slimes)
             {
@@ -855,7 +855,7 @@ namespace ProjectOcram
 
             foreach (Obus listeObus in this.listeObus)
             {
-                listeObus.obusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
+                listeObus.ObusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
                 //slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
                 // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
@@ -1110,7 +1110,7 @@ namespace ProjectOcram
             {
                 foreach (Miroyr miroyr in this.miroyrs)
                 {
-                    if (miroyr.MiroyrCollision.Contains(obus.obusCollision))
+                    if (miroyr.MiroyrCollision.Contains(obus.ObusCollision))
                     {
 
                         MiniBossHP--;
@@ -1129,7 +1129,7 @@ namespace ProjectOcram
             foreach (Obus obus in this.listeObus)
             {
                 
-                if (slimes[0].SlimeCollision.Contains(obus.obusCollision))
+                if (slimes[0].SlimeCollision.Contains(obus.ObusCollision))
                 {
                     slimeHP_1--;
                     obusFini.Add(obus);
@@ -1139,7 +1139,7 @@ namespace ProjectOcram
                     }
                    
                 }
-                if (slimes[1].SlimeCollision.Contains(obus.obusCollision))
+                if (slimes[1].SlimeCollision.Contains(obus.ObusCollision))
                 {
                     slimeHP_2--;
                     obusFini.Add(obus);
@@ -1150,7 +1150,7 @@ namespace ProjectOcram
                     }
                 }
 
-               if (slimes[2].SlimeCollision.Contains(obus.obusCollision))
+               if (slimes[2].SlimeCollision.Contains(obus.ObusCollision))
                 {
                     slimeHP_3--;
                     obusFini.Add(obus);
@@ -1160,7 +1160,7 @@ namespace ProjectOcram
                         this.slimes[2].Position = new Vector2(9999, 99999);
                     }
                 }
-                if (slimes[3].SlimeCollision.Contains(obus.obusCollision))
+                if (slimes[3].SlimeCollision.Contains(obus.ObusCollision))
                 {
                     slimeHP_4--;
                     obusFini.Add(obus);
@@ -1215,7 +1215,7 @@ namespace ProjectOcram
             {
 
                 //Vector2 tempPositionSlime = this.slimes[i].Position;
-                if (slimes[i].SlimeCollision.Contains(joueur.playerCollision))
+                if (slimes[i].SlimeCollision.Contains(joueur.PlayerCollision))
                 {
                     //float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
 
@@ -1247,7 +1247,7 @@ namespace ProjectOcram
 
                 foreach (Obus listeObus in this.listeObus)
                 {
-                    listeObus.obusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
+                    listeObus.ObusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
                     //slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
                     // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
@@ -1268,7 +1268,7 @@ namespace ProjectOcram
 
                 // Créer et initialiser le sprite du joueur.
                 this.joueur = new JoueurSprite(20,20);
-                joueur.playerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
+                joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
                 this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
 

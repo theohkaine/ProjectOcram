@@ -89,6 +89,7 @@ namespace IFM20884
                 this.heureDernierePression[key] = new DateTime(0);
                 this.etatPrecedent[key] = false;
             }
+
             this.heureSaut = new DateTime(0);           // initialisé l'objet
 
             ServiceHelper.Add<IInputService>(this);
@@ -103,6 +104,7 @@ namespace IFM20884
         {
             get { return (int)Keys.Zoom + 1; }
         }
+
         /// <summary>
         /// Retourne 1.0f si la flèche gauche du clavier est pressée, 0.0 sinon.
         /// Le paramètre device est ignoré (un seul clavier).
@@ -138,7 +140,6 @@ namespace IFM20884
                 return 0.0f;
             }
         }
-
 
         /// <summary>
         /// Indique si le personnage doit sauter (si la barre d'espacement du clavier pressée). La
@@ -188,7 +189,6 @@ namespace IFM20884
             return this.etatClavier.IsKeyDown(Keys.Escape);
         }
 
-
         /// <summary>
         /// Indique si la barre d'espacement fut pressée.
         /// Le paramètre device est ignoré (un seul clavier).
@@ -201,9 +201,13 @@ namespace IFM20884
             return this.DelaiDuplicationExpire(Keys.W, 300);
         }
 
-
-
-        public float DashingDroite(int device)
+        /// <summary>
+        /// Retourne 1.0f si le button Q du clavier est pressée, 0.0 sinon.
+        /// Le paramètre device est ignoré (un seul clavier).
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Valeur entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
+        public float DashingGauche(int device)
         {
             if (this.etatClavier.IsKeyDown(Keys.Q))
             {
@@ -215,7 +219,13 @@ namespace IFM20884
             }
         }
 
-        public float DashingGauche(int device)
+        /// <summary>
+        /// Retourne 1.0f si le button E du clavier est pressée, 0.0 sinon.
+        /// Le paramètre device est ignoré (un seul clavier).
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Valeur entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
+        public float DashingDroite(int device)
         {
             if (this.etatClavier.IsKeyDown(Keys.E))
             {
@@ -298,7 +308,6 @@ namespace IFM20884
             // Premièrement s'assurer que la touche est pressée.
             if (!this.etatClavier.IsKeyDown(touche))
             {
-
                 return false;
             }
 
@@ -331,6 +340,5 @@ namespace IFM20884
             // La touche est pressée seulement si c'est une nouvelle pression.
             return !etaitPressee && estPressee;
         }
-
     }
 }

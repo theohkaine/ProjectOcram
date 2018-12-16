@@ -84,9 +84,23 @@ namespace IFM20884
         /// <returns>Vrai si un obus doit être tiré; faux sinon.</returns>
         bool TirerObus(int device);
 
-        float DashingDroite(int device);
-        float DashingGauche(int device);
+        /// <summary>
+        /// Retourne un entier entre 0.0 et 1.0 indiquant le facteur de vitesse à appliquer
+        /// durant le jeu pour diriger le sprite du joueur vers la droite lors d'un "Dashing": 0.0 = aucun 
+        /// déplacement, 1.0 = vitesse maximale.
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Valeurs entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
+        float DashingGauche(int device); 
 
+        /// <summary>
+        /// Retourne un entier entre 0.0 et 1.0 indiquant le facteur de vitesse à appliquer
+        /// durant le jeu pour diriger le sprite du joueur vers la gauche lors d'un "Dashing": 0.0 = aucun 
+        /// déplacement, 1.0 = vitesse maximale.
+        /// </summary>
+        /// <param name="device">Le périphérique à lire.</param>
+        /// <returns>Valeurs entre 0.0 (aucun mouvement) et 1.0 (vitesse maximale).</returns>
+        float DashingDroite(int device);
 
         /// <summary>
         /// Indique si la partie doit être temporairement suspendue.
@@ -115,6 +129,5 @@ namespace IFM20884
         /// <param name="device">Le périphérique à lire.</param>
         /// <returns>Vrai si l'item de menu actif doit être sélectionné; faux sinon.</returns>
         bool MenuItemSelection(int device);
-
     }
 }

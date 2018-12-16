@@ -51,7 +51,9 @@
     <Compile Include="IFM20884\Personnage.cs" />
     <Compile Include="IFM20884\ServiceHelper.cs" />
     <Compile Include="JoueurObus.cs" />
-    <Compile Include="JoueurSprite.cs" />
+    <Compile Include="JoueurSprite.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="IFM20884\Monde.cs" />
     <Compile Include="IFM20884\Palette.cs" />
     <Compile Include="Key.cs" />
