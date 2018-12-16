@@ -123,18 +123,11 @@ namespace ProjectOcram
         /// Attribut représentant la liste de goblins dans le jeu.
         /// </summary>
         private List<Miroyr> miroyrs;
-        
-        private List<LaserObstacle> deathLaser = new List<LaserObstacle>();
-        
+
         /// <summary>
         /// Liste des sprites représentant des obus.
         /// </summary>
         private List<Obus> listeObus;
-
-       
-
-       // private List<JoueurObus> obuscollision = new List<JoueurObus>();
-
 
         /// <summary>
         /// Attribut indiquant l'état du jeu
@@ -521,7 +514,6 @@ namespace ProjectOcram
             MondeOcram.LoadContent(this.Content);
             // Charger le sprite de personnages du joueur (statique).
             JoueurSprite.LoadContent(this.Content, this.graphics);
-            LaserObstacle.LoadContent(this.Content, this.graphics);      
             JoueurObus.LoadContent(this.Content, this.graphics);
 
             // Au départ, le monde de jour est exploité.
@@ -535,17 +527,6 @@ namespace ProjectOcram
 
                 // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
             }
-
-
-
-            LaserObstacle deathLaser1 = new LaserObstacle(200, 2);
-            
-            deathLaser1.insideZone = new Rectangle(200, 2, 100, 200);
-
-            deathLaser1.LaserZone = new Rectangle(0,0, (int)deathLaser1.Position.X, (int)deathLaser1.Position.Y);
-            this.deathLaser.Add(deathLaser1);
-
-
 
             //1746, 1280
 
@@ -817,8 +798,6 @@ namespace ProjectOcram
                 boss.Update(gameTime, this.graphics);
             }
 
-            this.UpdateLaser(gameTime);
-
             this.UpdateObus(gameTime);
 
 
@@ -968,18 +947,7 @@ namespace ProjectOcram
                 obus.Draw(this.camera, this.spriteBatch);
 
             }
-
-            foreach(LaserObstacle laser in this.deathLaser)
-            {
-                laser.Draw(this.camera, this.spriteBatch);
-            }
-
-
-            //if (deathLaser.insideZone.Contains(deathLaser.LaserZone))
-            //{
-            //this.deathLaser[1].Draw(this.camera, this.spriteBatch);
-            //}
-
+            
             if (deletedKey == false)
             {
                 foreach (Key key in this.keys)
@@ -1308,7 +1276,7 @@ namespace ProjectOcram
                 {
                     //float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
 
-                    this.joueur.PlayerHP -= 1;
+                    this.joueur.PlayerHPP -= 1;
                     
 
                 }
@@ -1318,10 +1286,10 @@ namespace ProjectOcram
 
         private void Reset()
         {
-            if (this.joueur.PlayerHP == 0 || instantdeath==true)
+            if (this.joueur.PlayerHPP == 0 || instantdeath==true)
             {
                 instantdeath = false;
-                this.joueur.PlayerHP = 6;
+                this.joueur.PlayerHPP = 6;
                 deadslime = false;
                 slimeHP_1 = 5;
                 slimeHP_2 = 5;
@@ -1341,18 +1309,7 @@ namespace ProjectOcram
 
                     // slimes.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
                 }
-
-
-
-                LaserObstacle deathLaser1 = new LaserObstacle(200, 2);
-
-                deathLaser1.insideZone = new Rectangle(200, 2, 100, 200);
-
-                deathLaser1.LaserZone = new Rectangle(0, 0, (int)deathLaser1.Position.X, (int)deathLaser1.Position.Y);
-                this.deathLaser.Add(deathLaser1);
-
-
-
+                
                 //1746, 1280
 
                 // Créer et initialiser le sprite du joueur.
@@ -1417,47 +1374,5 @@ namespace ProjectOcram
 
             }
         }
-
-        protected void UpdateLaser(GameTime gameTime)
-        {
-            // Identifier les obus ayant quitté l'écran.
-            List<LaserObstacle> laserFini = new List<LaserObstacle>();
-            foreach (LaserObstacle laser in this.deathLaser)
-            {
-                if (laser.insideZone.Contains(laser.LaserZone))
-                {
-                    laserFini.Add(laser);
-                }
-               
-                
-            }
-
-            // Determiner si un obus a frappé un astéroïde, et si c'est le cas détruire les deux sprites.
-            foreach (LaserObstacle laser in laserFini)
-            {
-                // Premièrement, est-ce que l'obus a touché un astéroïde?
-               // Sprite cible = laser.Collision(this.deathLaser);
-
-                // Si oui, détruire les deux sprites impliqués et produire une explosion
-                if (!(laser.insideZone.Contains(laser.LaserZone)))
-                {
-                    // Détruire la cible et l'obus.
-                    deathLaser.Remove(laser);
-              
-                   
-                }
-            }
-
-            // Mettre à jour les obus existants.
-            foreach (LaserObstacle laser in this.deathLaser)
-            {
-                laser.Update(gameTime, this.graphics);
-            }
-
-        }
-
-
-
-
     }
 }

@@ -160,7 +160,7 @@ namespace ProjectOcram
         /// <summary>
         /// La vie du personnage.
         /// </summary>
-        public int PlayerHP = 6;
+        private int playerHP = 6;
 
         /// <summary>
         /// Instance du volume pour les Sound Effects.
@@ -311,6 +311,15 @@ namespace ProjectOcram
         {
             get { return this.vitesseMarche; }
             set { this.vitesseMarche = value; }
+        }
+
+        /// <summary>
+        /// La vie du personnage.
+        /// </summary>
+        public int PlayerHPP
+        {
+            get { return this.playerHP; }
+            set { this.playerHP = value; }
         }
 
         /// <summary>
@@ -724,9 +733,9 @@ namespace ProjectOcram
                 }
             }
 
-            if (this.PlayerHP < 0)
+            if (this.playerHP < 0)
             {
-                this.PlayerHP = 0;
+                this.playerHP = 0;
             }
 
             //// La fonction de base s'occupe de l'animation.
@@ -829,12 +838,12 @@ namespace ProjectOcram
             }
             //// Afficher le rectangle.
             spriteBatch.Draw(rectTexture, rect, Color.White);
-            if (this.PlayerHP == 5 || this.PlayerHP == 6)
+            if (this.playerHP == 5 || this.playerHP == 6)
             {
                 spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.White);
             }
 
-            if (this.PlayerHP == 3 || this.PlayerHP == 4)
+            if (this.playerHP == 3 || this.playerHP == 4)
             {
                 //// Créer le rectangle à dessiner.
                 Rectangle rect2 = new Rectangle((int)(this.Position.X - 45), (int)(this.Position.Y - (this.Height / 2) - 23), this.Width + 55, 35);
@@ -854,7 +863,7 @@ namespace ProjectOcram
                 spriteBatch.Draw(rectTextureOnTop, rectOnTop2, Color.LimeGreen);            
             }
 
-            if (this.PlayerHP == 1 || this.PlayerHP == 2)
+            if (this.playerHP == 1 || this.playerHP == 2)
             {
                 //// Créer le rectangle à dessiner.
                 Rectangle rect3 = new Rectangle((int)this.Position.X - 45, (int)(this.Position.Y - (this.Height / 2) - 23), this.Width + 55, 35);
