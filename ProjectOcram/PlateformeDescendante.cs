@@ -1,22 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿//-----------------------------------------------------------------------
+// <copyright file="PlateformeDescendante.cs" company="Tristan Araujo & Dominik Desjardins">
+// Tristan Araujo & Dominik Desjardins, 2018. Tous droits réservés
+// 
+// L'utilisation de ce matériel pédagogique (présentations, code source 
+// et autres) avec ou sans modifications, est permise en autant que les 
+// conditions suivantes soient respectées:
+//
+// 1. La diffusion du matériel doit se limiter à un intranet dont l'accès
+//    est imité aux étudiants inscrits à un cours exploitant le dit 
+//    matériel. IL EST STRICTEMENT INTERDIT DE DIFFUSER CE MATÉRIEL 
+//    LIBREMENT SUR INTERNET.
+// 2. La redistribution des présentations contenues dans le matériel 
+//    pédagogique est autorisée uniquement en format Acrobat PDF et sous
+//    restrictions stipulées à la condition #1. Le code source contenu 
+//    dans le matériel pédagogique peut cependant être redistribué sous 
+//    sa forme  originale, en autant que la condition #1 soit également 
+//    respectée.
+// 3. Le matériel diffusé doit contenir intégralement la mention de 
+//    droits d'auteurs ci-dessus, la notice présente ainsi que la
+//    décharge ci-dessous.
+// 
+// CE MATÉRIEL PÉDAGOGIQUE EST DISTRIBUÉ "TEL QUEL" PAR L'AUTEUR, SANS 
+// AUCUNE GARANTIE EXPLICITE OU IMPLICITE. L'AUTEUR NE PEUT EN AUCUNE 
+// CIRCONSTANCE ÊTRE TENU RESPONSABLE DE DOMMAGES DIRECTS, INDIRECTS, 
+// CIRCONSTENTIELS OU EXEMPLAIRES. TOUTE VIOLATION DE DROITS D'AUTEUR 
+// OCCASIONNÉ PAR L'UTILISATION DE CE MATÉRIEL PÉDAGOGIQUE EST PRIS EN 
+// CHARGE PAR L'UTILISATEUR DU DIT MATÉRIEL.
+// 
+// En utilisant ce matériel pédagogique, vous acceptez implicitement les
+// conditions et la décharge exprimés ci-dessus.
+// </copyright>
+//-----------------------------------------------------------------------
 namespace ProjectOcram
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-
+    using System.Threading.Tasks;
     using IFM20884;
-
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Graphics;
-
 
     /// <summary>
     /// Classe représentant une plateforme se déplaçant horizontalement dans le monde. Celle-ci
@@ -35,23 +60,15 @@ namespace ProjectOcram
         /// </summary>
         private float vitesseVerticale = 0.0f;
 
-        float vitesseV = 0.0f;
-
-
+        /// <summary>
+        /// Vitesse vertical de la platforme.
+        /// </summary>
+        private float vitesseV = 0.0f;
 
         /// <summary>
         /// Liste des sprites que la plateforme doit déplacer avec elle.
         /// </summary>
         private List<Sprite> passagers;
-
-        /// <summary>
-        /// Accesseur et mutateur pour attribut vitesseVerticale.
-        /// </summary>
-        public float VitesseVerticale
-        {
-            get { return this.vitesseVerticale; }
-            set { this.vitesseVerticale = value; }
-        }
 
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite. On invoque l'autre constructeur.
@@ -71,6 +88,15 @@ namespace ProjectOcram
         {
             // Créer la liste où seront stockés les sprites transportés par la plateforme.
             this.passagers = new List<Sprite>();
+        }
+
+        /// <summary>
+        /// Accesseur et mutateur pour attribut vitesseVerticale.
+        /// </summary>
+        public float VitesseVerticale
+        {
+            get { return this.vitesseVerticale; }
+            set { this.vitesseVerticale = value; }
         }
 
         /// <summary>
@@ -128,29 +154,23 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
+            //// Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
 
+            if (this.passagers.Count > 0)
+            {
+                this.vitesseV = 0.4f;
+            }
 
-            // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
-
-            if (passagers.Count > 0)
-                vitesseV = 0.4f;
-
-
-            int deltaY = +(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseV);
-
-
+            int deltaY = +(int)(gameTime.ElapsedGameTime.Milliseconds * this.vitesseV);
+     
             // Repositionner la plateforme selon le déplacement horizontal calculé.
-            this.Position = new Vector2(this.Position.X , this.Position.Y+ deltaY);
+            this.Position = new Vector2(this.Position.X, this.Position.Y + deltaY);
 
             // Déplacer aussi tous les sprites transportés par la plateforme.
             foreach (Sprite sprite in this.passagers)
             {
-
-                sprite.Position = new Vector2(sprite.Position.X , sprite.Position.Y+deltaY);
-
-
+                sprite.Position = new Vector2(sprite.Position.X, sprite.Position.Y + deltaY);
             }
         }
     }
 }
-
