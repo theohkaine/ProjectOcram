@@ -619,7 +619,7 @@ namespace ProjectOcram
 
             ////1746, 1280
             ////650, 1070
-            this.joueur = new JoueurSprite(0, 0);
+            this.joueur = new JoueurSprite(1746, 1280);
             this.joueur.PlayerCollision = new Rectangle((int)this.joueur.Position.X - (this.joueur.Width / 2), (int)this.joueur.Position.Y - (this.joueur.Height / 2), this.joueur.Width, this.joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
@@ -639,7 +639,7 @@ namespace ProjectOcram
             MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
             MediaPlayer.IsRepeating = true;    // jouer en boucle
 
-            // MediaPlayer.Play(this.music);
+            MediaPlayer.Play(this.music);
 
             //// Associer la déléguée de gestion des obus du personnage à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;
