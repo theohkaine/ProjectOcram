@@ -51,6 +51,21 @@ namespace ProjectOcram
     public class Game : Microsoft.Xna.Framework.Game
     {
         /// <summary>
+        /// Changer la resolution horizontale du jeu.
+        /// </summary>
+        private const int ScreenSizeH = 800;
+
+        /// <summary>
+        /// Changer la resolution verticale du jeu.
+        /// </summary>
+        private const int ScreenSizeW = 1280;
+
+        /// <summary>
+        /// Render the resolution variable
+        /// </summary>
+        private static RenderTarget2D nativeRenderTarget;
+
+        /// <summary>
         /// Attribut permettant d'obtenir des infos sur la carte graphique et l'écran.
         /// </summary>
         private GraphicsDeviceManager graphics;
@@ -74,21 +89,6 @@ namespace ProjectOcram
         /// Attribut représentant la camera.
         /// </summary>
         private Camera camera;
-
-        /// <summary>
-        /// Render the resolution variable
-        /// </summary>
-        private static RenderTarget2D nativeRenderTarget;
-
-        /// <summary>
-        /// Changer la resolution horizontale du jeu.
-        /// </summary>
-        private const int ScreenSizeH = 800;
-
-        /// <summary>
-        /// Changer la resolution verticale du jeu.
-        /// </summary>
-        private const int ScreenSizeW = 1280;
 
         /// <summary>
         /// Music principale du jeu.
@@ -231,7 +231,7 @@ namespace ProjectOcram
         /// Permet d'avoir un delai entre des coups d'attaque par les monstres envers
         /// le personnage.
         /// </summary>
-        private float hpHitCouldown = 0f;
+        private float hithpCoolDown = 0f;
 
         /// <summary>
         /// Permet de savoir si une manette est connecté.
@@ -819,7 +819,6 @@ namespace ProjectOcram
         /// <param name="gameTime">Fournie un instantané du temps de jeu.</param>
         protected override void Update(GameTime gameTime)
         {
-
             //// Un menu est-il affiché?
             if (this.MenuCourant != null)
             {
@@ -1129,7 +1128,6 @@ namespace ProjectOcram
             }
             else
             {
-
                 if (MediaPlayer.State == MediaState.Paused)
                 {
                     MediaPlayer.Resume();
@@ -1197,17 +1195,6 @@ namespace ProjectOcram
         }
 
         /// <summary>
-        /// Fonction déléguée responsable de gérer les nouveaux obus lancés par le vaisseau du joueur.
-        /// Nous ne faisons qu'ajouter le nouvel obus à la liste des obus à gérer.
-        /// </summary>
-        /// <param name="obus">Nouvel obus à gérer.</param>
-        private void LancerObus(Obus obus)
-        {
-            // Ajouter l'obus à la liste des obus gérés par this.
-            this.listeObus.Add(obus);
-        }
-
-        /// <summary>
         /// Routine mettant à jour les obus. Elle s'occupe de:
         ///   1 - Détruire les obus ayant quitté l'écran sans collision
         ///   2 - Déterminer si un des obus a frappé un sprite, et si c'est le cas
@@ -1234,7 +1221,6 @@ namespace ProjectOcram
                 {
                     if (miroyr.MiroyrCollision.Contains(obus.ObusCollision))
                     {
-
                         this.miniBossHP--;
                         obusFini.Add(obus);
                         if (this.miniBossHP == 0)
@@ -1248,7 +1234,6 @@ namespace ProjectOcram
 
             foreach (Obus obus in this.listeObus)
             {
-
                 if (this.slimes[0].SlimeCollision.Contains(obus.ObusCollision))
                 {
                     this.slimeHP1--;
@@ -1312,6 +1297,10 @@ namespace ProjectOcram
             }
         }
 
+        /// <summary>
+        /// Fonction qui permet d'avoir une collision entre le personnage et la clé.
+        /// </summary>
+        /// <param name="gameTime">gametime à gérer pour le sprite.</param>
         protected void UpdateCollisionKeyJoueur(GameTime gameTime)
         {
             for (int i = 0; i < this.keys.Count; i++)
@@ -1326,6 +1315,10 @@ namespace ProjectOcram
             }
         }
 
+        /// <summary>
+        /// Fonction qui permet d'avoir une collision entre le personnage et la trampoline.
+        /// </summary>
+        /// <param name="gameTime">gametime à gérer pour le sprite.</param>
         protected void UpdateCollisionJumpingItemJoueur(GameTime gameTime)
         {
             foreach (JumpingItem jumpingitems in this.jumpingitems)
@@ -1337,34 +1330,38 @@ namespace ProjectOcram
             }
         }
 
+        /// <summary>
+        /// Fonction qui permet d'avoir une collision entre le personnage et les slimes.
+        /// </summary>
+        /// <param name="gameTime">gametime à gérer pour le sprite.</param>
         protected void UpdateCollisionJoueurMonster(GameTime gameTime)
         {
             for (int i = 0; i < this.slimes.Count; i++)
             {
-                this.hpHitCouldown += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (this.hpHitCouldown > 3f)
+                this.hithpCoolDown += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (this.hithpCoolDown > 3f)
                 {
                     ////Vector2 tempPositionSlime = this.slimes[i].Position;
                     if (this.slimes[i].SlimeCollision.Contains(this.joueur.PlayerCollision))
                     {
                         this.joueur.PlayerHPP -= 1;
                         this.gettingHit.Play(this.volume, this.pan, this.pitch);
-                        this.hpHitCouldown = 0f;
+                        this.hithpCoolDown = 0f;
                     }
                 }
             }
 
             for (int i = 0; i < this.miroyrs.Count; i++)
             {
-                this.hpHitCouldown += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (this.hpHitCouldown > 3f)
+                this.hithpCoolDown += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (this.hithpCoolDown > 3f)
                 {
                     ////Vector2 tempPositionSlime = this.slimes[i].Position;
                     if (this.miroyrs[i].MiroyrCollision.Contains(this.joueur.PlayerCollision))
                     {
                         this.joueur.PlayerHPP -= 1;
                         this.gettingHit.Play(this.volume, this.pan, this.pitch);
-                        this.hpHitCouldown = 0f;
+                        this.hithpCoolDown = 0f;
                     }
                 }
             }
@@ -1373,15 +1370,18 @@ namespace ProjectOcram
             {
                 this.joueur.PlayerHPP = 3;
             }
+
             this.Reset();
         }
 
+        /// <summary>
+        /// Fonction qui permet d'avoir une collision entre le personnage et la boule de pique.
+        /// </summary>
+        /// <param name="gameTime">gametime à gérer pour le sprite.</param>
         protected void UpdateCollisionJoueurBoulePique(GameTime gameTime)
         {
-
             for (int i = 0; i < this.boulepiques.Count; i++)
             {
-
                 ////Vector2 tempPositionSlime = this.slimes[i].Position;
                 if (this.boulepiques[i].Collision(this.joueur))
                 {
@@ -1389,9 +1389,24 @@ namespace ProjectOcram
                     this.joueur.PlayerHPP -= 1;
                 }
             }
+
             this.Reset();
         }
 
+        /// <summary>
+        /// Fonction déléguée responsable de gérer les nouveaux obus lancés par le vaisseau du joueur.
+        /// Nous ne faisons qu'ajouter le nouvel obus à la liste des obus à gérer.
+        /// </summary>
+        /// <param name="obus">Nouvel obus à gérer.</param>
+        private void LancerObus(Obus obus)
+        {
+            // Ajouter l'obus à la liste des obus gérés par this.
+            this.listeObus.Add(obus);
+        }
+
+        /// <summary>
+        /// Un reset complet du jeu quand le personnage meurt.
+        /// </summary>
         private void Reset()
         {
             if (this.joueur.PlayerHPP == 0 || this.instantdeath == true)
