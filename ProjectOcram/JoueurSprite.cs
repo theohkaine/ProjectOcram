@@ -427,7 +427,7 @@ namespace ProjectOcram
                 }
                 else if (this.directionDeplacement == Direction.Gauche)
                 {
-                    dx -= (this.Width / 2) + 3;
+                    dx += (this.Width / 2) + 3;
                 }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
@@ -448,7 +448,7 @@ namespace ProjectOcram
                 //// ce qui dépend de la direction de déplacement
                 if (this.directionDeplacement == Direction.Droite)
                 {
-                    dx += (this.Width / 2) + 3;
+                    dx -= (this.Width / 2) + 3;
                 }
                 else if (this.directionDeplacement == Direction.Gauche)
                 {

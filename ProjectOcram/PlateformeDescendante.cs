@@ -63,6 +63,11 @@ namespace ProjectOcram
         /// <summary>
         /// Vitesse vertical de la platforme.
         /// </summary>
+        private float vitessH = 0.0f;
+
+        /// <summary>
+        /// Vitesse vertical de la platforme.
+        /// </summary>
         private float vitesseV = 0.0f;
 
         /// <summary>
@@ -154,22 +159,34 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-            //// Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
 
             if (this.passagers.Count > 0)
             {
                 this.vitesseV = 0.4f;
             }
 
-            int deltaY = +(int)(gameTime.ElapsedGameTime.Milliseconds * this.vitesseV);
-     
+            // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
+
+            if (passagers.Count > 0)
+            {
+                vitesseV = 0.2f;
+                vitessH = 0.3f;
+            }
+
+
+            int deltaY = +(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseV);
+            int deltaX = +(int)(gameTime.ElapsedGameTime.Milliseconds * vitessH);
+
+
             // Repositionner la plateforme selon le déplacement horizontal calculé.
-            this.Position = new Vector2(this.Position.X, this.Position.Y + deltaY);
+            this.Position = new Vector2(this.Position.X + deltaX, this.Position.Y + deltaY);
+
 
             // Déplacer aussi tous les sprites transportés par la plateforme.
             foreach (Sprite sprite in this.passagers)
             {
-                sprite.Position = new Vector2(sprite.Position.X, sprite.Position.Y + deltaY);
+                sprite.Position = new Vector2(sprite.Position.X + deltaX, sprite.Position.Y + deltaY);
+
             }
         }
     }
