@@ -453,19 +453,24 @@ namespace ProjectOcram
                 //// ce qui dépend de la direction de déplacement
                 if (this.directionDeplacement == Direction.Droite)
                 {
-                    dx += (this.Width / 2) + 3;
-                    if (onplatform == true)
+                    if (this.onplatform == true)
                     {
                         dx -= (this.Width / 2) + 3;
-                        onplatform = false;
+                        this.onplatform = false;
                     }
+
+                    dx += (this.Width / 2) + 3;
                 }
                 else if (this.directionDeplacement == Direction.Gauche)
-                if (onplatform == true)
+                {
+                    if (this.onplatform == true)
                     {
                         dx += (this.Width / 2) + 3;
-                        onplatform = false;
+                        this.onplatform = false;
                     }
+
+                    dx -= (this.Width / 2) + 3;
+                }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
             }
@@ -848,9 +853,9 @@ namespace ProjectOcram
             // Obtenir la position "sous" les pieds de this.
             Vector2 pos = this.PositionPourCollisions;
             pos.Y += 1;
-            onplatform = true;
-            // This est "debout" sur la plateforme si le pixel sous son point de collision est
-            // dans la plateforme.
+            this.onplatform = true;
+            //// This est "debout" sur la plateforme si le pixel sous son point de collision est
+            //// dans la plateforme.
             return pos.X >= plateforme.Position.X - (plateforme.Width / 2) &&
                    pos.X <= plateforme.Position.X + (plateforme.Width / 2) &&
                    pos.Y >= plateforme.Position.Y - (plateforme.Height / 2) &&
