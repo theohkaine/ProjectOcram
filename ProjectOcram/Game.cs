@@ -115,7 +115,7 @@ namespace ProjectOcram
         private List<PlateformeDescendante> plateformesD;
 
         private List<Door> door;
-
+        private List<WallForMiniboss> minibossWall;
 
         /// <summary>
         /// Attribut représentant la liste de goblins dans le jeu.
@@ -199,7 +199,7 @@ namespace ProjectOcram
         bool deletedKey;
 
         
-        int MiniBossHP = 50;
+        int MiniBossHP = 30;
 
         bool minibossdeath;
 
@@ -207,9 +207,9 @@ namespace ProjectOcram
 
 
         //FOR SOUND EFFECT
-        float volume = 0.9f;
-        float pitch = 0.0f;
-        float pan = 0.0f;
+        private float volume = 0.9f;
+        private float pitch = 0.0f;
+        private float pan = 0.0f;
         //Texture2D Boss;
         //Vector2 BossPosition = new Vector2(1700, 1720);
 
@@ -362,7 +362,6 @@ namespace ProjectOcram
                     break;
                 }
 
-
             }
             foreach (Door door in this.door)
             {
@@ -379,10 +378,24 @@ namespace ProjectOcram
                 }
             }
 
-          
+            foreach (WallForMiniboss minibossWall in this.minibossWall)
+            {
+                if (position.X >= minibossWall.Position.X - (minibossWall.Width) &&
+                    position.Y >= minibossWall.Position.Y - (minibossWall.Height - 20) &&
+                    position.X <= minibossWall.Position.X + (minibossWall.Width) &&
+                    position.Y <= minibossWall.Position.Y + (minibossWall.Height))
+                {
+                    if (minibossdeath == false)
+                    {
+                        pixColor = Color.Black;
+                        break;
+                    }
+                }
+            }
+            
 
-                // Extraire la couleur du pixel correspondant à la position.
-                if (pixColor != Color.Black)
+            // Extraire la couleur du pixel correspondant à la position.
+            if (pixColor != Color.Black)
                 try
                 {
                     pixColor = this.monde.CouleurDeCollision(position);
@@ -391,6 +404,7 @@ namespace ProjectOcram
                 {
                     this.Exit();
                 }
+
 
             if (pixColor == Color.Red)
             {
@@ -403,11 +417,7 @@ namespace ProjectOcram
                 return 0.0f;
             else
                 return 1.0f;
-
-            
-            
-
-            
+ 
         }
 
         /// <summary>
@@ -536,7 +546,7 @@ namespace ProjectOcram
 
             // Créer et initialiser le sprite du joueur.
 
-
+            //650, 1070
 
             this.joueur = new JoueurSprite(650, 1070);
 
@@ -572,6 +582,10 @@ namespace ProjectOcram
             this.door = new List<Door>();
             this.door.Add(new Door(1747, 1365));
 
+            WallForMiniboss.LoadContent(Content, this.graphics);
+            this.minibossWall = new List<WallForMiniboss>();
+            this.minibossWall.Add(new WallForMiniboss(1320, 980));
+
             Key.LoadContent(Content, this.graphics);
             this.keys = new List<Key>();
             this.keys.Add(new Key(33, 1330));
@@ -580,7 +594,7 @@ namespace ProjectOcram
             this.jumpingitems = new List<JumpingItem>();
             this.jumpingitems.Add(new JumpingItem(740, 1097));
             this.jumpingitems.Add(new JumpingItem(837, 1145));
-            this.jumpingitems.Add(new JumpingItem(1270, 1145));
+            this.jumpingitems.Add(new JumpingItem(1250, 1145));
 
             Boss.LoadContent(Content, this.graphics);
             this.boss = new List<Boss>();
@@ -854,6 +868,14 @@ namespace ProjectOcram
                 door.Update(gameTime, this.graphics);
                
             }
+            if (minibossdeath == false)
+            {
+                foreach (WallForMiniboss minibossWall in this.minibossWall)
+                {
+                    minibossWall.Update(gameTime, this.graphics);
+
+                }
+            }
 
             foreach (BoulePiqueObstacle boulepique in this.boulepiques)
             {
@@ -984,6 +1006,14 @@ namespace ProjectOcram
                 foreach (Door door in this.door)
                 {
                     door.Draw(this.camera, this.spriteBatch);
+                }
+            }
+            if (minibossdeath == false)
+            {
+                foreach (WallForMiniboss minibossWall in this.minibossWall)
+                {
+                    minibossWall.Draw(this.camera, this.spriteBatch);
+
                 }
             }
 
@@ -1290,28 +1320,23 @@ namespace ProjectOcram
 
         protected void UpdateCollisionJumpingItemJoueur(GameTime gameTime)
         {
+            foreach (JumpingItem jumpingitems in this.jumpingitems)
 
-            for (int i = 0; i < jumpingitems.Count; i++)
-            {
 
                 //Vector2 tempPositionSlime = this.slimes[i].Position;
-                if (jumpingitems[0].Collision(joueur))
+                if (jumpingitems.Collision(joueur))
                 {
-
-                    this.joueur.VitesseVerticale -= 0.39f;
+                    this.joueur.VitesseVerticale -= 1.25f;
                 }
-                else if (jumpingitems[1].Collision(joueur))
-                {
-                    this.joueur.VitesseVerticale -= 0.45f;
+               
 
-
-                    /////Make falling more slower if the character vertical speed goes too high
-                    if (this.joueur.VitesseVerticale > 0.4f)
-                    {
-                        this.joueur.VitesseVerticale = 0.35f;
-                    }
-                }
-            }
+                /////Make falling more slower if the character vertical speed goes too high
+                //if (this.joueur.VitesseVerticale > 0.4f)
+                //{
+                //    this.joueur.VitesseVerticale = 0.35f;
+                ////}
+            
+            //this.joueur.VitesseVerticale = 0f;
         }
 
         protected void UpdateCollisionJoueurMonster(GameTime gameTime)
@@ -1340,13 +1365,14 @@ namespace ProjectOcram
             {
                 this.CharacterDeath.Play(this.volume, this.pan, this.pitch);
                 instantdeath = false;
-                this.joueur.PlayerHPP = 6;
+                minibossdeath = false;
+                this.joueur.PlayerHPP = 3;
                 deadslime = false;
                 slimeHP_1 = 5;
                 slimeHP_2 = 5;
                 slimeHP_3 = 5;
                 slimeHP_4 = 5;
-                MiniBossHP = 50;
+                MiniBossHP = 30;
                 deletedKey = false;
 
                 // Au départ, le monde de jour est exploité.
@@ -1378,16 +1404,21 @@ namespace ProjectOcram
                 // Associer la déléguée de gestion des obus du vaisseau à son sprite.
                 this.joueur.GetLancerObus = this.LancerObus;
 
+
                
                 this.door = new List<Door>();
                 this.door.Add(new Door(1847, 1365));
 
-              
+                this.minibossWall = new List<WallForMiniboss>();
+                this.minibossWall.Add(new WallForMiniboss(1320, 980));
+
                 this.keys = new List<Key>();
                 this.keys.Add(new Key(33, 1330));
 
                 this.jumpingitems = new List<JumpingItem>();
-                this.jumpingitems.Add(new JumpingItem(100, 0));
+                this.jumpingitems.Add(new JumpingItem(740, 1097));
+                this.jumpingitems.Add(new JumpingItem(837, 1145));
+                this.jumpingitems.Add(new JumpingItem(1250, 1145));
 
                 // Créer les plateformes.
 

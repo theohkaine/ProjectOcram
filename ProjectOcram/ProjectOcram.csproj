@@ -70,6 +70,7 @@
     <Compile Include="IFM20884\Sprite.cs" />
     <Compile Include="IFM20884\SpriteAnimation.cs" />
     <Compile Include="Slime.cs" />
+    <Compile Include="WallForMiniboss.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
