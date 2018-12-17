@@ -243,7 +243,6 @@ namespace IFM20884
         /// <param name="device">Le numéro de manette à lire (1 à 4).</param>
         /// <returns>Vitesse entre 0.0f et 1.0f.</returns>
         public float DashingGauche(int device)
-        
         {
             if (this.etatManette[device - 1].IsButtonDown(Buttons.LeftTrigger))
             {
