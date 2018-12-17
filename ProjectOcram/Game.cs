@@ -579,6 +579,8 @@ namespace ProjectOcram
             JumpingItem.LoadContent(Content, this.graphics);
             this.jumpingitems = new List<JumpingItem>();
             this.jumpingitems.Add(new JumpingItem(740, 1097));
+            this.jumpingitems.Add(new JumpingItem(837, 1145));
+            this.jumpingitems.Add(new JumpingItem(1270, 1145));
 
             Boss.LoadContent(Content, this.graphics);
             this.boss = new List<Boss>();
@@ -1293,12 +1295,21 @@ namespace ProjectOcram
             {
 
                 //Vector2 tempPositionSlime = this.slimes[i].Position;
-                if (jumpingitems[i].Collision(joueur))
+                if (jumpingitems[0].Collision(joueur))
                 {
 
-                
+                    this.joueur.VitesseVerticale -= 0.39f;
+                }
+                else if (jumpingitems[1].Collision(joueur))
+                {
+                    this.joueur.VitesseVerticale -= 0.45f;
 
-                   
+
+                    /////Make falling more slower if the character vertical speed goes too high
+                    if (this.joueur.VitesseVerticale > 0.4f)
+                    {
+                        this.joueur.VitesseVerticale = 0.35f;
+                    }
                 }
             }
         }

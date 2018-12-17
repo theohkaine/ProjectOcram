@@ -323,6 +323,15 @@ namespace ProjectOcram
         }
 
         /// <summary>
+        /// La vitesse verticale. Utiliser pour un saut vers le haut.
+        /// </summary>
+        public float VitesseVerticale
+        {
+            get { return this.vitesseVerticale; }
+            set { this.vitesseVerticale = value; }
+        }
+
+        /// <summary>
         /// Accesseur et mutateur pour l'attribut directionDeplacement.
         /// </summary>
         public Direction DirectionDeplacement
@@ -422,7 +431,6 @@ namespace ProjectOcram
                 }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
-
             }
         }
 
@@ -448,7 +456,6 @@ namespace ProjectOcram
                 }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
-
             }
         }
 
@@ -651,14 +658,17 @@ namespace ProjectOcram
                 {
                     this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
                 }
+
                 if (this.directionDeplacement == Direction.Droite)
                 {
                     this.getValiderDeplacement(this.PositionPourCollisions2, ref deltaX, ref deltaY, 0.95f);
                 }
+
                 if (this.directionDeplacement == Direction.DashingGauche)
                 {
                     this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
                 }
+
                 if (this.directionDeplacement == Direction.DashingDroite)
                 {
                     this.getValiderDeplacement(this.PositionPourCollisions2, ref deltaX, ref deltaY, 0.95f);
