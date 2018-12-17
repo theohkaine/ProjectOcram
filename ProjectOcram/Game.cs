@@ -619,7 +619,7 @@ namespace ProjectOcram
 
             ////1746, 1280
             ////650, 1070
-            this.joueur = new JoueurSprite(650, 1070);
+            this.joueur = new JoueurSprite(0, 0);
             this.joueur.PlayerCollision = new Rectangle((int)this.joueur.Position.X - (this.joueur.Width / 2), (int)this.joueur.Position.Y - (this.joueur.Height / 2), this.joueur.Width, this.joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
@@ -647,7 +647,7 @@ namespace ProjectOcram
             Door.LoadContent(this.Content, this.graphics);
 
             this.door = new List<Door>();
-            this.door.Add(new Door(1747, 1365));
+            this.door.Add(new Door(1847, 1365));
 
             WallForMiniboss.LoadContent(this.Content, this.graphics);
             this.minibossWall = new List<WallForMiniboss>();
@@ -868,11 +868,11 @@ namespace ProjectOcram
 
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
-
-            ////collisionEntre la cle et le Sprite
+          
             this.UpdateCollisionKeyJoueur(gameTime);
             this.UpdateCollisionJoueurMonster(gameTime);
             this.UpdateCollisionJumpingItemJoueur(gameTime);
+            this.UpdateCollisionJoueurBoulePique(gameTime);
 
             // Mettre à jour les Slimes.
             foreach (Slime slime in this.slimes)
@@ -917,9 +917,9 @@ namespace ProjectOcram
                 }
             }
 
-            foreach (BoulePiqueObstacle boulepique in this.boulepiques)
+            foreach (BoulePiqueObstacle boulepiques in this.boulepiques)
             {
-                boulepique.Update(gameTime, this.graphics);
+                boulepiques.Update(gameTime, this.graphics);
             }
 
             //// Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
@@ -1039,9 +1039,9 @@ namespace ProjectOcram
                 }
             }
 
-            foreach (BoulePiqueObstacle boulepique in this.boulepiques)
+            foreach (BoulePiqueObstacle boulepiques in this.boulepiques)
             {
-                boulepique.Draw(this.camera, this.spriteBatch);
+                boulepiques.Draw(this.camera, this.spriteBatch);
             }
 
             //// Afficher les plateformes.
@@ -1351,24 +1351,22 @@ namespace ProjectOcram
                 }
             }
 
-            for (int i = 0; i < this.miroyrs.Count; i++)
+            if (this.minibossdeath == false)
             {
-                this.hithpCoolDown += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (this.hithpCoolDown > 3f)
+                for (int i = 0; i < this.miroyrs.Count; i++)
                 {
-                    ////Vector2 tempPositionSlime = this.slimes[i].Position;
-                    if (this.miroyrs[i].MiroyrCollision.Contains(this.joueur.PlayerCollision))
+                    this.hithpCoolDown += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (this.hithpCoolDown > 3f)
                     {
-                        this.joueur.PlayerHPP -= 1;
-                        this.gettingHit.Play(this.volume, this.pan, this.pitch);
-                        this.hithpCoolDown = 0f;
+                        ////Vector2 tempPositionSlime = this.slimes[i].Position;
+                        if (this.miroyrs[i].MiroyrCollision.Contains(this.joueur.PlayerCollision))
+                        {
+                            this.joueur.PlayerHPP -= 1;
+                            this.gettingHit.Play(this.volume, this.pan, this.pitch);
+                            this.hithpCoolDown = 0f;
+                        }
                     }
                 }
-            }
-
-            if (this.minibossdeath == true)
-            {
-                this.joueur.PlayerHPP = 3;
             }
 
             this.Reset();
@@ -1382,11 +1380,16 @@ namespace ProjectOcram
         {
             for (int i = 0; i < this.boulepiques.Count; i++)
             {
-                ////Vector2 tempPositionSlime = this.slimes[i].Position;
-                if (this.boulepiques[i].Collision(this.joueur))
+                this.hithpCoolDown += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (this.hithpCoolDown > 3f)
                 {
-                    ////float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
-                    this.joueur.PlayerHPP -= 1;
+                    if (this.boulepiques[i].Collision(this.joueur))
+                    {
+                        ////float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
+                        this.joueur.PlayerHPP -= 1;
+                        this.gettingHit.Play(this.volume, this.pan, this.pitch);
+                        this.hithpCoolDown = 0f;
+                    }
                 }
             }
 
@@ -1471,10 +1474,24 @@ namespace ProjectOcram
 
                 this.slimes.Add(new Slime(1200, 605));
 
-                Miroyr.LoadContent(this.Content, this.graphics);
-
                 this.miroyrs = new List<Miroyr>();
-                this.miroyrs.Add(new Miroyr(800, 1120));
+                this.miroyrs.Add(new Miroyr(890, 1120));
+
+                this.boss = new List<Boss>();
+                this.boss.Add(new Boss(1757, 1805));
+
+                this.boulepiques = new List<BoulePiqueObstacle>();
+                this.boulepiques.Add(new BoulePiqueObstacle(1520, 1535));
+                this.boulepiques.Add(new BoulePiqueObstacle(1020, 1535));
+                this.boulepiques.Add(new BoulePiqueObstacle(800, 1535));
+                this.boulepiques.Add(new BoulePiqueObstacle(600, 1535));
+                this.boulepiques.Add(new BoulePiqueObstacle(200, 1535));
+
+                this.plateformesD = new List<PlateformeDescendante>();
+                this.plateformesD.Add(new PlateformeDescendante(100, 1645));
+                this.plateformesD.Add(new PlateformeDescendante(400, 1765));
+                this.plateformesD.Add(new PlateformeDescendante(580, 1805));
+                this.plateformesD.Add(new PlateformeDescendante(780, 1830));
 
                 // Configurer les ogres de sorte qu'ils ne puissent se déplacer
                 // hors de la mappe monde et initialiser la détection de collision de tuiles.

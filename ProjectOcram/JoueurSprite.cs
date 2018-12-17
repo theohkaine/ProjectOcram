@@ -208,6 +208,11 @@ namespace ProjectOcram
         private SoundEffectInstance attackInstanceFX;
 
         /// <summary>
+        /// Instance de bruitage des attaques en cours de sonorisation durant le jeu.
+        /// </summary>
+        private bool onplatform = false;
+
+        /// <summary>
         /// Constructeur paramétré recevant la position du sprite.
         /// </summary>
         /// <param name="x">Coordonnée initiale x (horizontale) du sprite.</param>
@@ -449,11 +454,18 @@ namespace ProjectOcram
                 if (this.directionDeplacement == Direction.Droite)
                 {
                     dx += (this.Width / 2) + 3;
+                    if (onplatform == true)
+                    {
+                        dx -= (this.Width / 2) + 3;
+                        onplatform = false;
+                    }
                 }
                 else if (this.directionDeplacement == Direction.Gauche)
-                {
-                    dx -= (this.Width / 2) + 3;
-                }
+                if (onplatform == true)
+                    {
+                        dx += (this.Width / 2) + 3;
+                        onplatform = false;
+                    }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
             }
@@ -836,7 +848,7 @@ namespace ProjectOcram
             // Obtenir la position "sous" les pieds de this.
             Vector2 pos = this.PositionPourCollisions;
             pos.Y += 1;
-
+            onplatform = true;
             // This est "debout" sur la plateforme si le pixel sous son point de collision est
             // dans la plateforme.
             return pos.X >= plateforme.Position.X - (plateforme.Width / 2) &&
