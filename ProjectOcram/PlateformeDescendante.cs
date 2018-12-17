@@ -58,7 +58,7 @@ namespace ProjectOcram
         /// Vitesse verticale de déplacement, exploitée lors des sauts et lorsque le sprite tombe dans
         /// un trou.
         /// </summary>
-        private float vitesseVerticale = 0.0f
+        private float vitesseVerticale = 0.0f;
 
         float vitessH = 0.0f;
         /// <summary>
