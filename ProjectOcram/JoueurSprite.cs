@@ -160,7 +160,7 @@ namespace ProjectOcram
         /// <summary>
         /// La vie du personnage.
         /// </summary>
-        private int playerHP = 6;
+        private int playerHP = 3;
 
         /// <summary>
         /// Instance du volume pour les Sound Effects.
@@ -422,6 +422,33 @@ namespace ProjectOcram
                 }
 
                 return new Vector2(this.Position.X + dx, this.Position.Y + dy);
+
+            }
+        }
+
+        /// <summary>
+        /// Propriété (accesseur de lecture seulement) retournant la position des pattes du sprite.
+        /// Cette position est utilisée pour déterminer si le sprite est debout sur une tuile solide.
+        /// </summary>
+        public Vector2 PositionPourCollisions2
+        {
+            get
+            {
+                int dx = 0, dy = (this.Height / 3) - 1;
+
+                //// La position considérée est celle des pattes devant le personnage,
+                //// ce qui dépend de la direction de déplacement
+                if (this.directionDeplacement == Direction.Droite)
+                {
+                    dx += (this.Width / 2) + 3;
+                }
+                else if (this.directionDeplacement == Direction.Gauche)
+                {
+                    dx -= (this.Width / 2) + 3;
+                }
+
+                return new Vector2(this.Position.X + dx, this.Position.Y + dy);
+
             }
         }
 
@@ -620,7 +647,22 @@ namespace ProjectOcram
                 //// Déterminer le déplacement maximal permis vers la nouvelle position en fonction
                 //// de la résistance des tuiles. Une résistance maximale de 0.95 est indiquée afin de
                 //// permettre au sprite de traverser les tuiles n'étant pas complètement solides.
-                this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
+                if (this.directionDeplacement == Direction.Gauche)
+                {
+                    this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
+                }
+                if (this.directionDeplacement == Direction.Droite)
+                {
+                    this.getValiderDeplacement(this.PositionPourCollisions2, ref deltaX, ref deltaY, 0.95f);
+                }
+                if (this.directionDeplacement == Direction.DashingGauche)
+                {
+                    this.getValiderDeplacement(this.PositionPourCollisions, ref deltaX, ref deltaY, 0.95f);
+                }
+                if (this.directionDeplacement == Direction.DashingDroite)
+                {
+                    this.getValiderDeplacement(this.PositionPourCollisions2, ref deltaX, ref deltaY, 0.95f);
+                }
 
                 //// Si aucun déplacement verticale n'est déterminé lors d'un saut (parce que le sprite 
                 //// a rencontré une tuile solide), indiquer que le saut est terminé.
@@ -838,12 +880,12 @@ namespace ProjectOcram
             }
             //// Afficher le rectangle.
             spriteBatch.Draw(rectTexture, rect, Color.White);
-            if (this.playerHP == 5 || this.playerHP == 6)
+            if (this.playerHP == 3)
             {
                 spriteBatch.Draw(rectTextureOnTop, rectOnTop, Color.White);
             }
 
-            if (this.playerHP == 3 || this.playerHP == 4)
+            if (this.playerHP == 2)
             {
                 //// Créer le rectangle à dessiner.
                 Rectangle rect2 = new Rectangle((int)(this.Position.X - 45), (int)(this.Position.Y - (this.Height / 2) - 23), this.Width + 55, 35);
@@ -863,7 +905,7 @@ namespace ProjectOcram
                 spriteBatch.Draw(rectTextureOnTop, rectOnTop2, Color.LimeGreen);            
             }
 
-            if (this.playerHP == 1 || this.playerHP == 2)
+            if (this.playerHP == 1)
             {
                 //// Créer le rectangle à dessiner.
                 Rectangle rect3 = new Rectangle((int)this.Position.X - 45, (int)(this.Position.Y - (this.Height / 2) - 23), this.Width + 55, 35);

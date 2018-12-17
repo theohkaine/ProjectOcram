@@ -95,10 +95,13 @@ namespace ProjectOcram
         private SoundEffect SlimeDeath;
         private SoundEffect MiroyrDeath;
         private SoundEffect DoorOpening;
+        private SoundEffect GettingHit;
+        private SoundEffect CharacterDeath;
 
         private List<Key> keys;
         private List<BoulePiqueObstacle> boulepiques;
         private List<Boss> boss;
+        private List<JumpingItem> jumpingitems;
 
 
         /// <summary>
@@ -181,6 +184,8 @@ namespace ProjectOcram
         /// </summary>
         private Color couleurMenuItemSelectionne = Color.Yellow;
 
+        private float HpHitCouldown = 0f;
+
         bool Manette;
 
         bool deadslime;
@@ -214,8 +219,7 @@ namespace ProjectOcram
         /// </summary>
         public Game()
         {
-
-
+            
             this.graphics = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
@@ -534,7 +538,7 @@ namespace ProjectOcram
 
 
 
-            this.joueur = new JoueurSprite(0,0);
+            this.joueur = new JoueurSprite(650, 1070);
 
             joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
 
@@ -552,6 +556,8 @@ namespace ProjectOcram
             this.SlimeDeath = Content.Load<SoundEffect>(@"SoundFX\SimeDeath");
             this.MiroyrDeath = Content.Load<SoundEffect>(@"SoundFX\MiryorDeath");
             this.DoorOpening = Content.Load<SoundEffect>(@"SoundFX\DoorOpening");
+            this.GettingHit = Content.Load<SoundEffect>(@"SoundFX\MainCharacterHurt");
+            this.CharacterDeath = Content.Load<SoundEffect>(@"SoundFX\MainCharacterDeath");
 
             // Paramétrer la musique de fond et la démarrer.
             MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
@@ -570,9 +576,13 @@ namespace ProjectOcram
             this.keys = new List<Key>();
             this.keys.Add(new Key(33, 1330));
 
+            JumpingItem.LoadContent(Content, this.graphics);
+            this.jumpingitems = new List<JumpingItem>();
+            this.jumpingitems.Add(new JumpingItem(740, 1097));
+
             Boss.LoadContent(Content, this.graphics);
             this.boss = new List<Boss>();
-            this.boss .Add(new Boss(1757, 1805));
+            this.boss.Add(new Boss(1757, 1805));
 
             // Créer les plateformes.
             Plateforme.LoadContent(Content, this.graphics);
@@ -832,7 +842,12 @@ namespace ProjectOcram
                 key.Update(gameTime, this.graphics);
             }
 
-            foreach(Door door in this.door)
+            foreach (JumpingItem jumpingitems in this.jumpingitems)
+            {
+                jumpingitems.Update(gameTime, this.graphics);
+            }
+
+            foreach (Door door in this.door)
             {
                 door.Update(gameTime, this.graphics);
                
@@ -846,6 +861,7 @@ namespace ProjectOcram
             //collisionEntre la cle et le Sprite
             UpdateCollisionKeyJoueur(gameTime);
             UpdateCollisionJoueurMonster(gameTime);
+            UpdateCollisionJumpingItemJoueur(gameTime);
 
             // Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
             // plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
@@ -947,7 +963,12 @@ namespace ProjectOcram
                 obus.Draw(this.camera, this.spriteBatch);
 
             }
-            
+
+            foreach (JumpingItem jumpingitems in this.jumpingitems)
+            {
+                jumpingitems.Draw(this.camera, this.spriteBatch);
+            }
+
             if (deletedKey == false)
             {
                 foreach (Key key in this.keys)
@@ -1265,22 +1286,40 @@ namespace ProjectOcram
             }
         }
 
-        protected void UpdateCollisionJoueurMonster(GameTime gameTime)
+        protected void UpdateCollisionJumpingItemJoueur(GameTime gameTime)
         {
 
-            for (int i = 0; i < slimes.Count; i++)
+            for (int i = 0; i < jumpingitems.Count; i++)
             {
 
                 //Vector2 tempPositionSlime = this.slimes[i].Position;
-                if (slimes[i].SlimeCollision.Contains(joueur.PlayerCollision))
+                if (jumpingitems[i].Collision(joueur))
                 {
-                    //float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
 
-                    this.joueur.PlayerHPP -= 1;
-                    
+                
 
+                   
                 }
             }
+        }
+
+        protected void UpdateCollisionJoueurMonster(GameTime gameTime)
+        {  
+            for (int i = 0; i < slimes.Count; i++)
+            {
+                HpHitCouldown += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (HpHitCouldown > 3f)
+                {
+                    //Vector2 tempPositionSlime = this.slimes[i].Position;
+                    if (slimes[i].SlimeCollision.Contains(joueur.PlayerCollision))
+                    {
+                        this.joueur.PlayerHPP -= 1;
+                        this.GettingHit.Play(this.volume, this.pan, this.pitch);
+                        HpHitCouldown = 0f;
+                    }
+                }
+            }
+            
             this.Reset();
         }
 
@@ -1288,6 +1327,7 @@ namespace ProjectOcram
         {
             if (this.joueur.PlayerHPP == 0 || instantdeath==true)
             {
+                this.CharacterDeath.Play(this.volume, this.pan, this.pitch);
                 instantdeath = false;
                 this.joueur.PlayerHPP = 6;
                 deadslime = false;
@@ -1313,7 +1353,7 @@ namespace ProjectOcram
                 //1746, 1280
 
                 // Créer et initialiser le sprite du joueur.
-                this.joueur = new JoueurSprite(20,20);
+                this.joueur = new JoueurSprite(60,60);
                 joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
                 this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
@@ -1335,8 +1375,11 @@ namespace ProjectOcram
                 this.keys = new List<Key>();
                 this.keys.Add(new Key(33, 1330));
 
+                this.jumpingitems = new List<JumpingItem>();
+                this.jumpingitems.Add(new JumpingItem(100, 0));
+
                 // Créer les plateformes.
-                
+
                 this.plateformes = new List<Plateforme>();
                 this.plateformes.Add(new Plateforme(1835, 1575));
                 //this.plateformes.Add(new Plateforme(200, 76));
