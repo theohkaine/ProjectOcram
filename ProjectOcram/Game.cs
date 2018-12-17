@@ -1352,6 +1352,26 @@ namespace ProjectOcram
             this.Reset();
         }
 
+
+        protected void UpdateCollisionJoueurBoulePique(GameTime gameTime)
+        {
+
+            for (int i = 0; i < boulepiques.Count; i++)
+            {
+
+                //Vector2 tempPositionSlime = this.slimes[i].Position;
+                if (boulepiques[i].Collision(joueur))
+                {
+                    //float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
+
+                    this.joueur.PlayerHPP -= 1;
+
+
+                }
+            }
+            this.Reset();
+        }
+
         private void Reset()
         {
             if (this.joueur.PlayerHPP == 0 || this.instantdeath == true)
@@ -1418,7 +1438,7 @@ namespace ProjectOcram
                 Miroyr.LoadContent(this.Content, this.graphics);
 
                 this.miroyrs = new List<Miroyr>();
-                this.miroyrs.Add(new Miroyr(600, 1120));
+                this.miroyrs.Add(new Miroyr(800, 1120));
 
                 // Configurer les ogres de sorte qu'ils ne puissent se déplacer
                 // hors de la mappe monde et initialiser la détection de collision de tuiles.
