@@ -151,15 +151,15 @@ namespace ProjectOcram
             vitesseGauche = 0.0f;
 
             // Aucune intellignece : l'ogre marche de gauche a droite aux 3 secondes
-            if ((gameTime.TotalGameTime.Seconds / 4) % 2 == 0)
+            if ((gameTime.TotalGameTime.Seconds / 3) % 2 == 0)
             {
                 this.Etat = Etats.Marche;
-                vitesseDroite = 0.5f;
+                vitesseDroite = 0.48f;
             }
             else
             {
                 this.Etat = Etats.Marche;
-                vitesseGauche = 0.5f;
+                vitesseGauche = 0.48f;
             }
 
             return true;
