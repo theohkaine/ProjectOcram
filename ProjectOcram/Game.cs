@@ -78,17 +78,17 @@ namespace ProjectOcram
         /// <summary>
         /// Render the resolution variable
         /// </summary>
-        public static RenderTarget2D nativeRenderTarget;
+        private static RenderTarget2D nativeRenderTarget;
 
         /// <summary>
         /// Changer la resolution horizontale du jeu.
         /// </summary>
-        private const int screenSizeH = 800;
+        private const int ScreenSizeH = 800;
 
         /// <summary>
         /// Changer la resolution verticale du jeu.
         /// </summary>
-        private const int screenSizeW = 1280;
+        private const int ScreenSizeW = 1280;
 
         /// <summary>
         /// Music principale du jeu.
@@ -244,29 +244,29 @@ namespace ProjectOcram
         private bool deadslime;
 
         /// <summary>
-        /// Menu.
+        /// The menu for the game(Pause and quit).
         /// </summary>
-        Texture2D Menu;
+        private Texture2D menu;
 
         /// <summary>
         /// La vie du slime.
         /// </summary>
-        private int slimeHP_1 = 5;
+        private int slimeHP1 = 5;
 
         /// <summary>
         /// La vie du slime.
         /// </summary>
-        private int slimeHP_2 = 5;
+        private int slimeHP2 = 5;
 
         /// <summary>
         /// La vie du slime.
         /// </summary>
-        private int slimeHP_3 = 5;
+        private int slimeHP3 = 5;
 
         /// <summary>
         /// La vie du slime.
         /// </summary>
-        private int slimeHP_4 = 5;
+        private int slimeHP4 = 5;
 
         /// <summary>
         /// Permet de savoir si la clé est prise par le personnage.
@@ -319,13 +319,13 @@ namespace ProjectOcram
             Content.RootDirectory = "Content";
 
             ////Resize the screen resolution
-            graphics.PreferredBackBufferWidth = screenSizeW;
-            graphics.PreferredBackBufferHeight = screenSizeH;
+            this.graphics.PreferredBackBufferWidth = ScreenSizeW;
+            this.graphics.PreferredBackBufferHeight = ScreenSizeH;
 
             ////Code to make it fullscreen
-            graphics.IsFullScreen = false;
-            graphics.PreferMultiSampling = false;
-            graphics.SynchronizeWithVerticalRetrace = true;
+            this.graphics.IsFullScreen = false;
+            this.graphics.PreferMultiSampling = false;
+            this.graphics.SynchronizeWithVerticalRetrace = true;
         }
 
         /// <summary>
@@ -459,7 +459,7 @@ namespace ProjectOcram
                     position.X <= door.Position.X + door.Width &&
                     position.Y <= door.Position.Y + door.Height)
                 {
-                    if (deletedKey == false)
+                    if (this.deletedKey == false)
                     {
                         pixColor = Color.Black;
                         break;
@@ -469,12 +469,12 @@ namespace ProjectOcram
 
             foreach (WallForMiniboss minibossWall in this.minibossWall)
             {
-                if (position.X >= minibossWall.Position.X - (minibossWall.Width) &&
+                if (position.X >= minibossWall.Position.X - minibossWall.Width &&
                     position.Y >= minibossWall.Position.Y - (minibossWall.Height - 20) &&
-                    position.X <= minibossWall.Position.X + (minibossWall.Width) &&
-                    position.Y <= minibossWall.Position.Y + (minibossWall.Height))
+                    position.X <= minibossWall.Position.X + minibossWall.Width &&
+                    position.Y <= minibossWall.Position.Y + minibossWall.Height)
                 {
-                    if (minibossdeath == false)
+                    if (this.minibossdeath == false)
                     {
                         pixColor = Color.Black;
                         break;
@@ -484,7 +484,7 @@ namespace ProjectOcram
 
             //// Extraire la couleur du pixel correspondant à la position.
             if (pixColor != Color.Black)
-
+            {
                 try
                 {
                     pixColor = this.monde.CouleurDeCollision(position);
@@ -493,18 +493,22 @@ namespace ProjectOcram
                 {
                     this.Exit();
                 }
+            }
 
             if (pixColor == Color.Red)
             {
-                instantdeath = true;
+                this.instantdeath = true;
             }
 
             //// Déterminer le niveau de résistance en fonction de la couleur.
             if (pixColor != Color.Black)
+            {
                 return 0.0f;
+            }
             else
-
+            {
                 return 1.0f;
+            }
         }
 
         /// <summary>
@@ -570,7 +574,7 @@ namespace ProjectOcram
             if (gamepadState.IsConnected)
             {
                 this.Components.Add(new ManetteService(this));
-                manette = true;
+                this.manette = true;
             }
             else
             {
@@ -603,22 +607,20 @@ namespace ProjectOcram
             //// Créer un nouveau SpriteBatch, utilisée pour dessiner les textures.
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Charger le monde.
+            //// Charger le monde.
 
             MondeOcram.LoadContent(this.Content);
             JoueurSprite.LoadContent(this.Content, this.graphics);
             JoueurObus.LoadContent(this.Content, this.graphics);
 
-
             //// Au départ, le monde de jour est exploité.
             this.monde = new MondeOcram();
-            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (screenSizeW / 3), this.monde.Hauteur + (116));
-
+            this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW / 3), this.monde.Hauteur + 116);
 
             ////1746, 1280
             ////650, 1070
             this.joueur = new JoueurSprite(650, 1070);
-            joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
+            this.joueur.PlayerCollision = new Rectangle((int)this.joueur.Position.X - (this.joueur.Width / 2), (int)this.joueur.Position.Y - (this.joueur.Height / 2), this.joueur.Width, this.joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
 
             //// Imposer la palette de collisions au déplacement du joueur.
@@ -651,7 +653,7 @@ namespace ProjectOcram
             this.minibossWall = new List<WallForMiniboss>();
             this.minibossWall.Add(new WallForMiniboss(1320, 980));
 
-            Key.LoadContent(Content, this.graphics);
+            Key.LoadContent(this.Content, this.graphics);
             this.keys = new List<Key>();
             this.keys.Add(new Key(33, 1330));
 
@@ -661,7 +663,7 @@ namespace ProjectOcram
             this.jumpingitems.Add(new JumpingItem(837, 1145));
             this.jumpingitems.Add(new JumpingItem(1250, 1145));
 
-            Boss.LoadContent(Content, this.graphics);
+            Boss.LoadContent(this.Content, this.graphics);
             this.boss = new List<Boss>();
             this.boss.Add(new Boss(1757, 1805));
 
@@ -670,18 +672,16 @@ namespace ProjectOcram
             this.plateformes = new List<Plateforme>();
             this.plateformes.Add(new Plateforme(1835, 1565));
 
-
-
             // Créer les plateformes Descendantes.
-            PlateformeDescendante.LoadContent(Content, this.graphics);
+            PlateformeDescendante.LoadContent(this.Content, this.graphics);
             this.plateformesD = new List<PlateformeDescendante>();
             this.plateformesD.Add(new PlateformeDescendante(100, 1645));
             this.plateformesD.Add(new PlateformeDescendante(400, 1765));
             this.plateformesD.Add(new PlateformeDescendante(580, 1805));
             this.plateformesD.Add(new PlateformeDescendante(780, 1830));
 
-            //Créer les BoulePiques
-            BoulePiqueObstacle.LoadContent(Content, this.graphics);
+            ////Créer les BoulePiques
+            BoulePiqueObstacle.LoadContent(this.Content, this.graphics);
 
             this.boulepiques = new List<BoulePiqueObstacle>();
             this.boulepiques.Add(new BoulePiqueObstacle(1520, 1535));
@@ -721,7 +721,7 @@ namespace ProjectOcram
                 miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
             }
 
-            Menu = this.Content.Load<Texture2D>(@"MenuImage\menuV2");
+            this.menu = this.Content.Load<Texture2D>(@"MenuImage\menuV2");
 
             //// Charger les polices
             this.policeMessages = Content.Load<SpriteFont>(@"Polices\MessagesPolice");
@@ -732,7 +732,7 @@ namespace ProjectOcram
             //// Obtenir d'abord une liste des fichiers XML de définition de menu.
             string[] fichiersDeMenu = Directory.GetFiles(Content.RootDirectory + @"\Menus\");
 
-            // Itérer pour chaque fichier XML trouvé.
+            //// Itérer pour chaque fichier XML trouvé.
 
             foreach (string nomFichier in fichiersDeMenu)
             {
@@ -802,7 +802,6 @@ namespace ProjectOcram
             return null;    // aucun menu correspondant au fourni
         }
 
-
         /// <summary>
         /// UnloadContent est invoquée une seule fois par partie et permet de
         /// libérer vos composants.
@@ -858,7 +857,6 @@ namespace ProjectOcram
                 return;
             }
 
-
             if (this.EtatJeu == Etats.Quitter)
             {
                 this.Exit();
@@ -872,10 +870,10 @@ namespace ProjectOcram
             // Recentrer la caméra sur le sprite du joueur.
             this.camera.Centrer(this.joueur.Position);
 
-            //collisionEntre la cle et le Sprite
-            UpdateCollisionKeyJoueur(gameTime);
-            UpdateCollisionJoueurMonster(gameTime);
-            UpdateCollisionJumpingItemJoueur(gameTime);
+            ////collisionEntre la cle et le Sprite
+            this.UpdateCollisionKeyJoueur(gameTime);
+            this.UpdateCollisionJoueurMonster(gameTime);
+            this.UpdateCollisionJumpingItemJoueur(gameTime);
 
             // Mettre à jour les Slimes.
             foreach (Slime slime in this.slimes)
@@ -888,7 +886,7 @@ namespace ProjectOcram
                 boss.Update(gameTime, this.graphics);
             }
 
-            if (minibossdeath == false)
+            if (this.minibossdeath == false)
             {
                 // Mettre à jour le Miroyr.
                 foreach (Miroyr miroyr in this.miroyrs)
@@ -911,7 +909,8 @@ namespace ProjectOcram
             {
                 door.Update(gameTime, this.graphics);
             }
-            if (minibossdeath == false)
+
+            if (this.minibossdeath == false)
             {
                 foreach (WallForMiniboss minibossWall in this.minibossWall)
                 {
@@ -924,11 +923,9 @@ namespace ProjectOcram
                 boulepique.Update(gameTime, this.graphics);
             }
 
-
             //// Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
             //// plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
             //// ce sprite.
-
             foreach (Plateforme plateforme in this.plateformes)
             {
                 plateforme.Update(gameTime, this.graphics);  // mettre à jour la position
@@ -939,7 +936,9 @@ namespace ProjectOcram
                     plateforme.AjouterPassager(this.joueur);
                 }
                 else
+                {
                     plateforme.RetirerPassager(this.joueur);
+                }
             }
 
             //// Mettre à jour les plateformes et déterminer si le sprite du jour est sur une
@@ -955,10 +954,12 @@ namespace ProjectOcram
                     plateforme.AjouterPassager(this.joueur);
                 }
                 else
+                {
                     plateforme.RetirerPassager(this.joueur);
+                }
             }
 
-            joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
+            this.joueur.PlayerCollision = new Rectangle((int)this.joueur.Position.X - (this.joueur.Width / 2), (int)this.joueur.Position.Y - (this.joueur.Height / 2), this.joueur.Width, this.joueur.Height);
 
             foreach (Slime slimes in this.slimes)
             {
@@ -1015,7 +1016,7 @@ namespace ProjectOcram
                 jumpingitems.Draw(this.camera, this.spriteBatch);
             }
 
-            if (deletedKey == false)
+            if (this.deletedKey == false)
             {
                 foreach (Key key in this.keys)
                 {
@@ -1023,7 +1024,7 @@ namespace ProjectOcram
                 }
             }
 
-            if (deletedKey == false)
+            if (this.deletedKey == false)
             {
                 foreach (Door door in this.door)
                 {
@@ -1031,7 +1032,7 @@ namespace ProjectOcram
                 }
             }
 
-            if (minibossdeath == false)
+            if (this.minibossdeath == false)
             {
                 foreach (WallForMiniboss minibossWall in this.minibossWall)
                 {
@@ -1057,7 +1058,6 @@ namespace ProjectOcram
                 plateforme.Draw(this.camera, this.spriteBatch);
             }
 
-
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
 
             foreach (Boss boss in this.boss)
@@ -1065,7 +1065,7 @@ namespace ProjectOcram
                 boss.Draw(this.camera, this.spriteBatch);
             }
 
-            if (deadslime == false)
+            if (this.deadslime == false)
             {
                 //// Afficher les  slimes
                 foreach (Slime slime in this.slimes)
@@ -1074,7 +1074,7 @@ namespace ProjectOcram
                 }
             }
 
-            if (minibossdeath == false)
+            if (this.minibossdeath == false)
             {
                 //// Afficher le Miroyr
                 foreach (Miroyr miroyr in this.miroyrs)
@@ -1088,8 +1088,8 @@ namespace ProjectOcram
             //// Afficher le menu courant s'il y en a un sélectionné           
             if (this.MenuCourant != null)
             {
-                spriteBatch.Draw(Menu, new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, this.graphics.GraphicsDevice.Viewport.Height), Color.White);
-                // Dessiner le menu
+                this.spriteBatch.Draw(this.menu, new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, this.graphics.GraphicsDevice.Viewport.Height), Color.White);
+                //// Dessiner le menu
                 this.MenuCourant.Draw(
                     this.spriteBatch,
                     this.policeMenuTitre,
@@ -1103,9 +1103,9 @@ namespace ProjectOcram
 
             //// Resize the game to fit the monitor's resolution
             GraphicsDevice.SetRenderTarget(null);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            spriteBatch.Draw(nativeRenderTarget, new Rectangle(0, 0, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height), Color.White);
-            spriteBatch.End();
+            this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            this.spriteBatch.Draw(nativeRenderTarget, new Rectangle(0, 0, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height), Color.White);
+            this.spriteBatch.End();
 
             base.Draw(gameTime);
         }
@@ -1181,7 +1181,7 @@ namespace ProjectOcram
 
                 Vector2 centreEcranImage = new Vector2(0, 0);
 
-                spriteBatch.Draw(this.Menu, centreEcranImage, Color.White);
+                spriteBatch.Draw(this.menu, centreEcranImage, Color.White);
                 //// Afficher le message centré à l'écran
                 spriteBatch.DrawString(
                     this.policeMessages,        // police d'affichge
@@ -1206,7 +1206,6 @@ namespace ProjectOcram
             // Ajouter l'obus à la liste des obus gérés par this.
             this.listeObus.Add(obus);
         }
-
 
         /// <summary>
         /// Routine mettant à jour les obus. Elle s'occupe de:
@@ -1238,13 +1237,11 @@ namespace ProjectOcram
 
                         this.miniBossHP--;
                         obusFini.Add(obus);
-
                         if (this.miniBossHP == 0)
                         {
                             this.miroyrDeath.Play(this.volume, this.pan, this.pitch);
                             this.minibossdeath = true;
                         }
-
                     }
                 }
             }
@@ -1254,10 +1251,10 @@ namespace ProjectOcram
 
                 if (this.slimes[0].SlimeCollision.Contains(obus.ObusCollision))
                 {
-                    this.slimeHP_1--;
+                    this.slimeHP1--;
                     obusFini.Add(obus);
 
-                    if (this.slimeHP_1 == 0)
+                    if (this.slimeHP1 == 0)
                     {
                         this.slimeDeath.Play(this.volume, this.pan, this.pitch);
                         this.slimes[0].Position = new Vector2(9999, 99999);
@@ -1266,10 +1263,10 @@ namespace ProjectOcram
 
                 if (this.slimes[1].SlimeCollision.Contains(obus.ObusCollision))
                 {
-                    this.slimeHP_2--;
+                    this.slimeHP2--;
                     obusFini.Add(obus);
 
-                    if (this.slimeHP_2 == 0)
+                    if (this.slimeHP2 == 0)
                     {
                         this.slimeDeath.Play(this.volume, this.pan, this.pitch);
                         this.slimes[1].Position = new Vector2(9999, 99999);
@@ -1278,10 +1275,10 @@ namespace ProjectOcram
 
                 if (this.slimes[2].SlimeCollision.Contains(obus.ObusCollision))
                 {
-                    this.slimeHP_3--;
+                    this.slimeHP3--;
                     obusFini.Add(obus);
 
-                    if (this.slimeHP_3 == 0)
+                    if (this.slimeHP3 == 0)
                     {
                         this.slimeDeath.Play(this.volume, this.pan, this.pitch);
                         this.slimes[2].Position = new Vector2(9999, 99999);
@@ -1290,10 +1287,10 @@ namespace ProjectOcram
 
                 if (this.slimes[3].SlimeCollision.Contains(obus.ObusCollision))
                 {
-                    this.slimeHP_4--;
+                    this.slimeHP4--;
                     obusFini.Add(obus);
 
-                    if (this.slimeHP_4 == 0)
+                    if (this.slimeHP4 == 0)
                     {
                         this.slimeDeath.Play(this.volume, this.pan, this.pitch);
                         this.slimes[3].Position = new Vector2(9999, 99999);
@@ -1312,7 +1309,6 @@ namespace ProjectOcram
             foreach (Obus obus in this.listeObus)
             {
                 obus.Update(gameTime, this.graphics);
-
             }
         }
 
@@ -1377,24 +1373,20 @@ namespace ProjectOcram
             {
                 this.joueur.PlayerHPP = 3;
             }
-
             this.Reset();
         }
 
         protected void UpdateCollisionJoueurBoulePique(GameTime gameTime)
         {
 
-            for (int i = 0; i < boulepiques.Count; i++)
+            for (int i = 0; i < this.boulepiques.Count; i++)
             {
 
-                //Vector2 tempPositionSlime = this.slimes[i].Position;
-                if (boulepiques[i].Collision(joueur))
+                ////Vector2 tempPositionSlime = this.slimes[i].Position;
+                if (this.boulepiques[i].Collision(this.joueur))
                 {
-                    //float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
-
+                    ////float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
                     this.joueur.PlayerHPP -= 1;
-
-
                 }
             }
             this.Reset();
@@ -1409,16 +1401,16 @@ namespace ProjectOcram
                 this.minibossdeath = false;
                 this.joueur.PlayerHPP = 3;
                 this.deadslime = false;
-                this.slimeHP_1 = 5;
-                this.slimeHP_2 = 5;
-                this.slimeHP_3 = 5;
-                this.slimeHP_4 = 5;
+                this.slimeHP1 = 5;
+                this.slimeHP2 = 5;
+                this.slimeHP3 = 5;
+                this.slimeHP4 = 5;
                 this.miniBossHP = 30;
                 this.deletedKey = false;
 
                 //// Au départ, le monde de jour est exploité.
                 this.monde = new MondeOcram();
-                this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (screenSizeW / 3), this.monde.Hauteur + 116);
+                this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (ScreenSizeW / 3), this.monde.Hauteur + 116);
 
                 foreach (Obus listeObus in this.listeObus)
                 {
