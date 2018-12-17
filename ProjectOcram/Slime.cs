@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Ogre.cs" company="Marco Lavoie">
-// Marco Lavoie, 2010-2016. Tous droits réservés
+// <copyright file="Slime.cs" company="Tristan Araujo & Dominik Desjardins">
+// Tristan Araujo & Dominik Desjardins, 2018. Tous droits réservés
 // 
 // L'utilisation de ce matériel pédagogique (présentations, code source 
 // et autres) avec ou sans modifications, est permise en autant que les 
@@ -38,9 +38,7 @@ namespace ProjectOcram
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-
     using IFM20884;
-
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Audio;
     using Microsoft.Xna.Framework.Content;
@@ -48,14 +46,11 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Input;
 
     /// <summary>
-    /// Classe implantant le sprite représentant un Goblin. Ce sprite animé par intelligence
-    /// artificielle peut être stationnaire, marcher et courir dans huit directions.
+    /// Classe implantant le sprite représentant un Slime. Ce sprite animé par intelligence
+    /// artificielle peut être stationnaire, marcher et courir dans deux directions.
     /// </summary>
     public class Slime : Personnage
     {
-
-       public Rectangle SlimeCollision {  get; set; }
-
         /// <summary>
         /// Attribut statique (i.e. partagé par toutes les instances) constituant une 
         /// liste de palettes à exploiter selon la direction et l'état du personnage.
@@ -82,6 +77,11 @@ namespace ProjectOcram
         }
 
         /// <summary>
+        /// Rectangle pour l'implémentassion de la collision sur la texture du slime.
+        /// </summary>
+        public Rectangle SlimeCollision { get; set; }
+
+        /// <summary>
         /// Propriété accesseur retournant la liste des palettes associées au personnage 
         /// selon son état et sa direction. Ces palettes sont stockées dans l'attribut 
         /// static palettes.
@@ -93,7 +93,7 @@ namespace ProjectOcram
 
         /// <summary>
         /// Propriété accesseur retournant la liste des effets sonores associée au personnage
-        /// selon son état. Aucun effet sonore n'est associé aux ogres. 
+        /// selon son état. Aucun effet sonore n'est associé au slime. 
         /// </summary>
         protected override List<SoundEffect> EffetsSonores
         {
@@ -107,17 +107,17 @@ namespace ProjectOcram
         protected override Palette PaletteAnimation
         {
             // Les palettes sont stockées dans la liste en groupes d'état (i.e.
-            // 8 palettes de direction pour chaque état).
+            // 2 palettes de direction pour chaque état).
             get { return this.Palettes[((int)this.Etat * 12) + (int)this.DirectionDeplacement]; }
         }
 
         /// <summary>
-        /// Charge les images associées au sprite de l'ogre. Cette fonction static invoque
+        /// Charge les images associées au sprite du slime. Cette fonction static invoque
         /// la fonction static de la classe de base qui s'occupe de charger les textures
         /// et effets sonores que devraient avoir toute classe dérivée de Personnage.
-        /// Notez l'absence d'effets sonores associés à l'ogre.
+        /// Notez l'absence d'effets sonores associés au slime.
         /// </summary>
-        /// <param name="content">Gestionnaire de contenu permettant de charger les images du vaisseau.</param>
+        /// <param name="content">Gestionnaire de contenu permettant de charger les images du slime.</param>
         /// <param name="graphics">Gestionanire de périphérique d'affichage permettant d'extraire
         /// les caractéristiques de celui-ci (p.ex. l'écran).</param>
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
@@ -125,10 +125,10 @@ namespace ProjectOcram
             LoadContent(
                 content,            // gestionnaire de contenu à utiliser
                 graphics,           // gestionnaire de périphériques à utiliser
-                Slime.palettes,      // liste où doivent être stockées les palettes de l'ogre
+                Slime.palettes,      // liste où doivent être stockées les palettes du slime
                 80,                 // largeur de chaque tuile dans les palettes
                 80,                 // hauteur de chaque tuile dans les palettes
-                @"Ennemi\Slime");  // sous-répertoire de Content où sont stockées les palettes de l'ogre
+                @"Ennemi\Slime");  // sous-répertoire de Content où sont stockées les palettes du slime
         }
 
         /// <summary>
@@ -136,7 +136,6 @@ namespace ProjectOcram
         /// artificielle pour contrôler les mouvements de l'ogre.
         /// </summary>
         /// <param name="gameTime">Indique le temps écoulé depuis la dernière invocation.</param>
-        /// <param name="vitesseVerticale">Retourne la vitesse de déplacement vers le nord.</param>
         /// <param name="vitesseDroite">Retourne la vitesse de déplacement vers le est.</param>
         /// <param name="vitesseGauche">Retourne la vitesse de déplacement vers le ouest.</param>
         /// <returns>Vrai si des vitesses furent lues; faux sinon.</returns>
@@ -146,27 +145,22 @@ namespace ProjectOcram
             out float vitesseGauche)
         {
             // Aucun périphérique d'inputs disponible, alors aucune vitesse lue.
-
             vitesseDroite = 0.0f;
             vitesseGauche = 0.0f;
-
 
             // Aucune intellignece : l'ogre marche de gauche a droite aux 3 secondes
             if ((gameTime.TotalGameTime.Seconds / 3) % 2 == 0)
             {
                 this.Etat = Etats.Marche;
                 vitesseDroite = 0.23f;
-
             }
             else
             {
                 this.Etat = Etats.Marche;
                 vitesseGauche = 0.23f;
-
             }
+
             return true;
         }
     }
-   
 }
-

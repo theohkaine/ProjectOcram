@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Key.cs" company="Tristan Araujo & Dominik Desjardins">
+// <copyright file="WallForMiniboss.cs" company="Tristan Araujo & Dominik Desjardins">
 // Tristan Araujo & Dominik Desjardins, 2018. Tous droits réservés
 // 
 // L'utilisation de ce matériel pédagogique (présentations, code source 
@@ -45,22 +45,22 @@ namespace ProjectOcram
     using Microsoft.Xna.Framework.Graphics;
 
     /// <summary>
-    /// Classe implantant une affichage d'une clé avec un Rectangle
+    /// Classe implantant une affichage d'une porte avec un Rectangle
     /// Pour sa collision
     /// </summary>
-    public class Key : Sprite
+    public class WallForMiniboss : Sprite
     {
         /// <summary>
-        /// Texture représentant la plateforme dans la console.
+        /// Texture représentant la porte dans la console.
         /// </summary>
         private static Texture2D texture;
 
         /// <summary>
         /// Constructeur paramétré recevant la position du sprite. On invoque l'autre constructeur.
         /// </summary>
-        /// <param name="position">Coordonnées initiales horizontale et verticale du sprite.</param>
-        public Key(Vector2 position)
-            : this(position.X, position.Y)
+        /// <param name="positions">Coordonnées initiales horizontale et verticale du sprite.</param>
+        public WallForMiniboss(Vector2 positions)
+            : this(positions.X, positions.Y)
         {
         }
 
@@ -69,7 +69,7 @@ namespace ProjectOcram
         /// </summary>
         /// <param name="x">Coordonnée initiale x (horizontale) du sprite.</param>
         /// <param name="y">Coordonnée initiale y (verticale) du sprite.</param>
-        public Key(float x, float y) : base(x, y)
+        public WallForMiniboss(float x, float y) : base(x, y)
         {
         }
 
@@ -83,9 +83,9 @@ namespace ProjectOcram
         }
 
         /// <summary>
-        /// Rectangle pour l'implémentassion de la collision sur la texture de la clé.
+        /// Rectangle pour l'implémentassion de la collision sur la texture de la porte.
         /// </summary>
-        public Rectangle KeyCollision { get; set; }
+        public Rectangle DoorCollision { get; set; }
 
         /// <summary>
         /// Charge l'image de la plateforme.
@@ -96,7 +96,7 @@ namespace ProjectOcram
         public static void LoadContent(ContentManager content, GraphicsDeviceManager graphics)
         {
             // Charger la texture associée à la plateforme.
-            texture = content.Load<Texture2D>(@"GameObject\Key");
+            texture = content.Load<Texture2D>(@"GameObject\BlockedWallMiniboss");
         }
 
         /// <summary>
@@ -106,8 +106,6 @@ namespace ProjectOcram
         /// <param name="graphics">Gestionnaire de périphérique d'affichage.</param>
         public override void Update(GameTime gameTime, GraphicsDeviceManager graphics)
         {
-            // Repositionner la plateforme selon le déplacement horizontal calculé.
-            this.Position = new Vector2(this.Position.X, this.Position.Y);       
         }
     }
 }

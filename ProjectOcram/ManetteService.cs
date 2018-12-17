@@ -156,6 +156,7 @@ namespace IFM20884
                 return 0.0f;
             }
         }
+
         /// <summary>
         /// Indique si le personnage doit sauter (si le bouton A de la manette est pressé). La
         /// fonction est écrite de sorte que si la touche est tenue pressée, le prochain saut
@@ -224,7 +225,6 @@ namespace IFM20884
             return this.NouvellePression(device, Buttons.A);
         }
 
-
         /// <summary>
         /// Indique si la barre d'espacement fut pressée.
         /// Le paramètre device est ignoré (un seul clavier).
@@ -237,7 +237,13 @@ namespace IFM20884
             return this.DelaiDuplicationExpire(device, Buttons.X, 300);
         }
 
-        public float DashingDroite(int device)
+        /// <summary>
+        /// Retourne 1.0f si le LeftTrigger est pressée, 0.0f sinon.
+        /// </summary>
+        /// <param name="device">Le numéro de manette à lire (1 à 4).</param>
+        /// <returns>Vitesse entre 0.0f et 1.0f.</returns>
+        public float DashingGauche(int device)
+        
         {
             if (this.etatManette[device - 1].IsButtonDown(Buttons.LeftTrigger))
             {
@@ -249,7 +255,12 @@ namespace IFM20884
             }
         }
 
-        public float DashingGauche(int device)
+        /// <summary>
+        /// Retourne 1.0f si le RightTrigger est pressée, 0.0f sinon.
+        /// </summary>
+        /// <param name="device">Le numéro de manette à lire (1 à 4).</param>
+        /// <returns>Vitesse entre 0.0f et 1.0f.</returns>
+        public float DashingDroite(int device)
         {
             if (this.etatManette[device - 1].IsButtonDown(Buttons.RightTrigger))
             {
@@ -260,7 +271,6 @@ namespace IFM20884
                 return 0.0f;
             }
         }
-
 
         /// <summary>
         /// Récupère l'état du clavier.

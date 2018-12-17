@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="MondeDarkBros.cs" company="Marco Lavoie">
-// Marco Lavoie, 2010-2016. Tous droits réservés
+// <copyright file="MondeOcram.cs" company="Tristan Araujo & Dominik Desjardins">
+// Tristan Araujo & Dominik Desjardins, 2018. Tous droits réservés
 // 
 // L'utilisation de ce matériel pédagogique (présentations, code source 
 // et autres) avec ou sans modifications, est permise en autant que les 
@@ -93,7 +93,7 @@ namespace ProjectOcram
         /// <summary>
         /// Charge les images d'affichage et de détection de collisions.
         /// </summary>
-        /// <param name="content">Gestionnaire de contenu permettant de charger les images du vaisseau.</param>
+        /// <param name="content">Gestionnaire de contenu permettant de charger les images du monde.</param>
         public static void LoadContent(ContentManager content)
         {
             // Créer les deux tableaux de textures.
@@ -103,13 +103,8 @@ namespace ProjectOcram
             // Charger les textures d'affichage, rangée par rangée
             textures[0, 0] = content.Load<Texture2D>(@"Monde\MondeOcram\map01");
            
-
-
-
             // Charger les textures de collisions, rangée par rangée
-            texturesCollisions[0, 0] = content.Load<Texture2D>(@"Monde\MondeOcram\map02");
-            
-
+            texturesCollisions[0, 0] = content.Load<Texture2D>(@"Monde\MondeOcram\map02");          
         }
     }
 }

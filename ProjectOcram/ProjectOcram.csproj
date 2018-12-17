@@ -52,11 +52,13 @@
     <Compile Include="IFM20884\Personnage.cs" />
     <Compile Include="IFM20884\ServiceHelper.cs" />
     <Compile Include="JoueurObus.cs" />
-    <Compile Include="JoueurSprite.cs" />
+    <Compile Include="JoueurSprite.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="IFM20884\Monde.cs" />
     <Compile Include="IFM20884\Palette.cs" />
+    <Compile Include="JumpingItem.cs" />
     <Compile Include="Key.cs" />
-    <Compile Include="LaserObstacle.cs" />
     <Compile Include="ManetteService.cs" />
     <Compile Include="Miroyr.cs" />
     <Compile Include="MondeOcram.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="IFM20884\Sprite.cs" />
     <Compile Include="IFM20884\SpriteAnimation.cs" />
     <Compile Include="Slime.cs" />
+    <Compile Include="WallForMiniboss.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
