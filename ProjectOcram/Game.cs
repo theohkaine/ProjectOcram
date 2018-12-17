@@ -304,11 +304,16 @@ namespace ProjectOcram
         private float pan = 0.0f;
 
         /// <summary>
+        /// Fond d'écran d'accueil.
+        /// </summary>
+        private Texture2D ecranAccueil;
+
+        /// <summary>
         /// Constructeur par défaut de la classe. Cette classe est générée automatiquement
         /// par Visual Studio lors de la création du projet.
         /// </summary>
         public Game()
-        {           
+        {
             this.graphics = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
@@ -412,7 +417,7 @@ namespace ProjectOcram
                 this.Pause = this.menuCourant != null;
             }
         }
-    
+
         /// <summary>
         /// Fonction retournant le niveau de résistance aux déplacements en fonction de la couleur du pixel de tuile
         /// à la position donnée.
@@ -476,9 +481,10 @@ namespace ProjectOcram
                     }
                 }
             }
-            
+
             //// Extraire la couleur du pixel correspondant à la position.
             if (pixColor != Color.Black)
+
                 try
                 {
                     pixColor = this.monde.CouleurDeCollision(position);
@@ -497,7 +503,8 @@ namespace ProjectOcram
             if (pixColor != Color.Black)
                 return 0.0f;
             else
-                return 1.0f; 
+
+                return 1.0f;
         }
 
         /// <summary>
@@ -575,7 +582,7 @@ namespace ProjectOcram
 
             //// Initialiser la vue de la caméra à la taille de l'écran.
             this.camera = new Camera(new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, 450));
-          
+
             //// Créer les attributs de gestion des obus.
             this.listeObus = new List<Obus>();
 
@@ -596,20 +603,24 @@ namespace ProjectOcram
             //// Créer un nouveau SpriteBatch, utilisée pour dessiner les textures.
             this.spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Charger le monde.
+
             MondeOcram.LoadContent(this.Content);
             JoueurSprite.LoadContent(this.Content, this.graphics);
             JoueurObus.LoadContent(this.Content, this.graphics);
 
+
             //// Au départ, le monde de jour est exploité.
             this.monde = new MondeOcram();
             this.camera.MondeRect = new Rectangle(0, 0, this.monde.Largeur + (screenSizeW / 3), this.monde.Hauteur + (116));
+
 
             ////1746, 1280
             ////650, 1070
             this.joueur = new JoueurSprite(650, 1070);
             joueur.PlayerCollision = new Rectangle((int)joueur.Position.X - (joueur.Width / 2), (int)joueur.Position.Y - (joueur.Height / 2), joueur.Width, joueur.Height);
             this.joueur.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
-            
+
             //// Imposer la palette de collisions au déplacement du joueur.
             this.joueur.GetValiderDeplacement = this.SpriteValiderDeplacement;
             this.joueur.GetResistanceAuMouvement = this.CalculerResistanceAuMouvement;
@@ -626,12 +637,13 @@ namespace ProjectOcram
             MediaPlayer.Volume = 0.3f;         // valeur entre 0.0 et 1.0
             MediaPlayer.IsRepeating = true;    // jouer en boucle
 
-            MediaPlayer.Play(this.music);
+            // MediaPlayer.Play(this.music);
 
             //// Associer la déléguée de gestion des obus du personnage à son sprite.
             this.joueur.GetLancerObus = this.LancerObus;
 
             Door.LoadContent(this.Content, this.graphics);
+
             this.door = new List<Door>();
             this.door.Add(new Door(1747, 1365));
 
@@ -658,14 +670,19 @@ namespace ProjectOcram
             this.plateformes = new List<Plateforme>();
             this.plateformes.Add(new Plateforme(1835, 1565));
 
-            //// Créer les plateformes.
-            PlateformeDescendante.LoadContent(this.Content, this.graphics);
-            this.plateformesD = new List<PlateformeDescendante>();
-            this.plateformesD.Add(new PlateformeDescendante(1635, 1565));
-            ////this.plateformes.Add(new Plateforme(200, 76)); 
 
-            ////Créer les BoulePiques
-            BoulePiqueObstacle.LoadContent(this.Content, this.graphics);
+
+            // Créer les plateformes Descendantes.
+            PlateformeDescendante.LoadContent(Content, this.graphics);
+            this.plateformesD = new List<PlateformeDescendante>();
+            this.plateformesD.Add(new PlateformeDescendante(100, 1645));
+            this.plateformesD.Add(new PlateformeDescendante(400, 1765));
+            this.plateformesD.Add(new PlateformeDescendante(580, 1805));
+            this.plateformesD.Add(new PlateformeDescendante(780, 1830));
+
+            //Créer les BoulePiques
+            BoulePiqueObstacle.LoadContent(Content, this.graphics);
+
             this.boulepiques = new List<BoulePiqueObstacle>();
             this.boulepiques.Add(new BoulePiqueObstacle(1520, 1535));
             this.boulepiques.Add(new BoulePiqueObstacle(1020, 1535));
@@ -678,14 +695,14 @@ namespace ProjectOcram
             this.slimes = new List<Slime>();
             this.slimes.Add(new Slime(350, 77));
             this.slimes.Add(new Slime(900, 77));
-            this.slimes.Add(new Slime(1500, 77));          
+            this.slimes.Add(new Slime(1500, 77));
             this.slimes.Add(new Slime(1200, 605));
 
             //// Créer les miroyr.
             Miroyr.LoadContent(this.Content, this.graphics);
             this.miroyrs = new List<Miroyr>();
             this.miroyrs.Add(new Miroyr(890, 1120));
-        
+
             foreach (Obus listeObus in this.listeObus)
             {
                 listeObus.ObusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
@@ -694,12 +711,13 @@ namespace ProjectOcram
             foreach (Slime slimes in this.slimes)
             {
                 slimes.SlimeCollision = new Rectangle((int)slimes.Position.X - (slimes.Width / 2), (int)slimes.Position.Y - (slimes.Height / 2), slimes.Width, slimes.Height);
+
                 slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
             }
 
             foreach (Miroyr miroyr in this.miroyrs)
             {
-                miroyr.MiroyrCollision  = new Rectangle((int)miroyr.Position.X - (miroyr.Width / 2), (int)miroyr.Position.Y - (miroyr.Height / 2), miroyr.Width, miroyr.Height);
+                miroyr.MiroyrCollision = new Rectangle((int)miroyr.Position.X - (miroyr.Width / 2), (int)miroyr.Position.Y - (miroyr.Height / 2), miroyr.Width, miroyr.Height);
                 miroyr.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
             }
 
@@ -714,7 +732,8 @@ namespace ProjectOcram
             //// Obtenir d'abord une liste des fichiers XML de définition de menu.
             string[] fichiersDeMenu = Directory.GetFiles(Content.RootDirectory + @"\Menus\");
 
-            //// Itérer pour chaque fichier XML trouvé.
+            // Itérer pour chaque fichier XML trouvé.
+
             foreach (string nomFichier in fichiersDeMenu)
             {
                 //// Créer un nouveau menu.
@@ -730,6 +749,9 @@ namespace ProjectOcram
                 //// Ajouter le nouveau menu à la liste des menus du jeu.
                 this.listeMenus.Add(menu);
             }
+
+            // Charger les fonds d'écran d'accueil et de générique.
+            this.ecranAccueil = Content.Load<Texture2D>(@"Textures\SplashDebut");
         }
 
         /// <summary>
@@ -779,6 +801,7 @@ namespace ProjectOcram
 
             return null;    // aucun menu correspondant au fourni
         }
+
 
         /// <summary>
         /// UnloadContent est invoquée une seule fois par partie et permet de
@@ -835,6 +858,7 @@ namespace ProjectOcram
                 return;
             }
 
+
             if (this.EtatJeu == Etats.Quitter)
             {
                 this.Exit();
@@ -872,7 +896,7 @@ namespace ProjectOcram
                     miroyr.Update(gameTime, this.graphics);
                 }
             }
-             
+
             foreach (Key key in this.keys)
             {
                 key.Update(gameTime, this.graphics);
@@ -885,7 +909,7 @@ namespace ProjectOcram
 
             foreach (Door door in this.door)
             {
-                door.Update(gameTime, this.graphics);          
+                door.Update(gameTime, this.graphics);
             }
             if (minibossdeath == false)
             {
@@ -900,9 +924,11 @@ namespace ProjectOcram
                 boulepique.Update(gameTime, this.graphics);
             }
 
+
             //// Mettre à jour les plateformes et déterminer si le sprite du jour est sur une 
             //// plateforme, et si c'est le cas, alors indiquer à celle-ci qu'elle transporte 
             //// ce sprite.
+
             foreach (Plateforme plateforme in this.plateformes)
             {
                 plateforme.Update(gameTime, this.graphics);  // mettre à jour la position
@@ -913,7 +939,7 @@ namespace ProjectOcram
                     plateforme.AjouterPassager(this.joueur);
                 }
                 else
-                    plateforme.RetirerPassager(this.joueur);                
+                    plateforme.RetirerPassager(this.joueur);
             }
 
             //// Mettre à jour les plateformes et déterminer si le sprite du jour est sur une
@@ -939,8 +965,9 @@ namespace ProjectOcram
                 slimes.SlimeCollision = new Rectangle((int)slimes.Position.X - (slimes.Width / 2), (int)slimes.Position.Y - (slimes.Height / 2), slimes.Width, slimes.Height);
                 slimes.BoundsRect = new Rectangle(0, 0, this.monde.Largeur, this.monde.Hauteur);
             }
-           
+
             // Configurer le monstre miroyr de sorte qu'ils ne puissent se déplacer
+
             // hors de la mappe monde et initialiser la détection de collision de tuiles.
             foreach (Miroyr miroyr in this.miroyrs)
             {
@@ -962,7 +989,7 @@ namespace ProjectOcram
         /// </summary>
         /// <param name="gameTime">Fournie un instantané du temps de jeu.</param>
         protected override void Draw(GameTime gameTime)
-        {           
+        {
             //// On débute avec un écran vierge (au cas où il y aurait des trous dans le monde de tuiles, on va les voir).
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -970,7 +997,7 @@ namespace ProjectOcram
 
             //// Activer le blending alpha (pour la transparence des sprites).
             this.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            
+
             this.monde.DrawArrierePlan(this.camera, this.spriteBatch);    // afficher le monde images
 
             if (this.EtatJeu != Etats.Quitter)
@@ -1018,6 +1045,7 @@ namespace ProjectOcram
             }
 
             //// Afficher les plateformes.
+
             foreach (Plateforme plateforme in this.plateformes)
             {
                 plateforme.Draw(this.camera, this.spriteBatch);
@@ -1029,13 +1057,14 @@ namespace ProjectOcram
                 plateforme.Draw(this.camera, this.spriteBatch);
             }
 
+
             this.joueur.Draw(this.camera, this.spriteBatch);   // afficher le sprite du joueur
 
             foreach (Boss boss in this.boss)
             {
                 boss.Draw(this.camera, this.spriteBatch);
             }
-           
+
             if (deadslime == false)
             {
                 //// Afficher les  slimes
@@ -1044,7 +1073,7 @@ namespace ProjectOcram
                     slime.Draw(this.camera, this.spriteBatch);
                 }
             }
-            
+
             if (minibossdeath == false)
             {
                 //// Afficher le Miroyr
@@ -1053,11 +1082,10 @@ namespace ProjectOcram
                     miroyr.Draw(this.camera, this.spriteBatch);
                 }
             }
-
             //// Afficher les messages selon l'état du jeu
             this.DrawMessages(this.spriteBatch);
 
-            //// Afficher le menu courant s'il y en a un sélectionné
+            //// Afficher le menu courant s'il y en a un sélectionné           
             if (this.MenuCourant != null)
             {
                 spriteBatch.Draw(Menu, new Rectangle(0, 0, this.graphics.GraphicsDevice.Viewport.Width, this.graphics.GraphicsDevice.Viewport.Height), Color.White);
@@ -1130,7 +1158,7 @@ namespace ProjectOcram
                         else
                         {
                             output = "Pause (Pressez P pour continuer...)";
-                        }                          
+                        }
                     }
 
                     break;
@@ -1179,6 +1207,7 @@ namespace ProjectOcram
             this.listeObus.Add(obus);
         }
 
+
         /// <summary>
         /// Routine mettant à jour les obus. Elle s'occupe de:
         ///   1 - Détruire les obus ayant quitté l'écran sans collision
@@ -1211,7 +1240,7 @@ namespace ProjectOcram
                         obusFini.Add(obus);
 
                         if (this.miniBossHP == 0)
-                        {                          
+                        {
                             this.miroyrDeath.Play(this.volume, this.pan, this.pitch);
                             this.minibossdeath = true;
                         }
@@ -1219,10 +1248,10 @@ namespace ProjectOcram
                     }
                 }
             }
-            
+
             foreach (Obus obus in this.listeObus)
             {
-               
+
                 if (this.slimes[0].SlimeCollision.Contains(obus.ObusCollision))
                 {
                     this.slimeHP_1--;
@@ -1232,7 +1261,7 @@ namespace ProjectOcram
                     {
                         this.slimeDeath.Play(this.volume, this.pan, this.pitch);
                         this.slimes[0].Position = new Vector2(9999, 99999);
-                    }                  
+                    }
                 }
 
                 if (this.slimes[1].SlimeCollision.Contains(obus.ObusCollision))
@@ -1247,7 +1276,7 @@ namespace ProjectOcram
                     }
                 }
 
-               if (this.slimes[2].SlimeCollision.Contains(obus.ObusCollision))
+                if (this.slimes[2].SlimeCollision.Contains(obus.ObusCollision))
                 {
                     this.slimeHP_3--;
                     obusFini.Add(obus);
@@ -1272,10 +1301,10 @@ namespace ProjectOcram
                     }
                 }
             }
-          
+
             //// Se débarasser des obus n'étant plus d'aucune utilité.
             foreach (Obus obus in obusFini)
-            {              
+            {
                 this.listeObus.Remove(obus);
             }
 
@@ -1286,11 +1315,11 @@ namespace ProjectOcram
 
             }
         }
-        
-    protected void UpdateCollisionKeyJoueur(GameTime gameTime)
-        {            
+
+        protected void UpdateCollisionKeyJoueur(GameTime gameTime)
+        {
             for (int i = 0; i < this.keys.Count; i++)
-            {                
+            {
                 ////Vector2 tempPositionSlime = this.slimes[i].Position;
                 if (this.keys[i].Collision(this.joueur))
                 {
@@ -1313,7 +1342,7 @@ namespace ProjectOcram
         }
 
         protected void UpdateCollisionJoueurMonster(GameTime gameTime)
-        {  
+        {
             for (int i = 0; i < this.slimes.Count; i++)
             {
                 this.hpHitCouldown += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -1339,7 +1368,7 @@ namespace ProjectOcram
                     {
                         this.joueur.PlayerHPP -= 1;
                         this.gettingHit.Play(this.volume, this.pan, this.pitch);
-                        this.hpHitCouldown = 0f;                   
+                        this.hpHitCouldown = 0f;
                     }
                 }
             }
@@ -1351,7 +1380,6 @@ namespace ProjectOcram
 
             this.Reset();
         }
-
 
         protected void UpdateCollisionJoueurBoulePique(GameTime gameTime)
         {
@@ -1396,7 +1424,7 @@ namespace ProjectOcram
                 {
                     listeObus.ObusCollision = new Rectangle((int)listeObus.Position.X - (listeObus.Width / 2), (int)listeObus.Position.Y - (listeObus.Height / 2), listeObus.Width, listeObus.Height);
                 }
-                
+
                 ////1746, 1280
                 //// Créer et initialiser le sprite du joueur.
                 this.joueur = new JoueurSprite(60, 60);
@@ -1433,6 +1461,7 @@ namespace ProjectOcram
                 this.slimes.Add(new Slime(350, 77));
                 this.slimes.Add(new Slime(900, 77));
                 this.slimes.Add(new Slime(1500, 77));
+
                 this.slimes.Add(new Slime(1200, 605));
 
                 Miroyr.LoadContent(this.Content, this.graphics);
