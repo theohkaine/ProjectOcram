@@ -658,7 +658,7 @@ namespace ProjectOcram
 
             // Créer les ogres.
             this.miroyrs = new List<Miroyr>();
-            this.miroyrs.Add(new Miroyr(600, 1120));
+            this.miroyrs.Add(new Miroyr(890, 1120));
 
 
 
@@ -1355,7 +1355,22 @@ namespace ProjectOcram
                     }
                 }
             }
-            
+
+            for (int i = 0; i < miroyrs.Count; i++)
+            {
+                HpHitCouldown += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (HpHitCouldown > 3f)
+                {
+                    //Vector2 tempPositionSlime = this.slimes[i].Position;
+                    if (miroyrs[i].MiroyrCollision.Contains(joueur.PlayerCollision))
+                    {
+                        this.joueur.PlayerHPP -= 1;
+                        this.GettingHit.Play(this.volume, this.pan, this.pitch);
+                        HpHitCouldown = 0f;
+                    }
+                }
+            }
+
             this.Reset();
         }
 
