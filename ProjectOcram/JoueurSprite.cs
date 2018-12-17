@@ -514,6 +514,7 @@ namespace ProjectOcram
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Right"), 39, 39));
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Left"), 39, 39));
             }
+
             //// Charger la texture servant à l’affichage du rectangle de vitalité.
             rectTexture = content.Load<Texture2D>(@"Extra\tankHP");
             rectTextureOnTop = content.Load<Texture2D>(@"Extra\hp");
@@ -780,12 +781,12 @@ namespace ProjectOcram
                             this.Etat = Etats.ShootingIdle;
                         }
                     }
-
                     this.getLancerObus(obusDroite);
                 }
             }
-
+            
             if (this.playerHP < 0)
+
             {
                 this.playerHP = 0;
             }
