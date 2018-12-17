@@ -156,7 +156,6 @@ public class Plateforme : Sprite
         {
             //// Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
 
-
             if (this.passagers.Count > 0)
             {
                 this.vitesseH = 0.25f;
