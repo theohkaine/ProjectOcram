@@ -161,7 +161,7 @@ public class Plateforme : Sprite
             // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
 
             if (passagers.Count > 0)
-                vitesseH = 0.25f;
+                vitesseH = 0.3f;
 
           
              int deltaX = -(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseH );

@@ -225,9 +225,6 @@ namespace IFM20884
         }
 
 
-
-
-
         /// <summary>
         /// Indique si la barre d'espacement fut pressée.
         /// Le paramètre device est ignoré (un seul clavier).
@@ -239,8 +236,6 @@ namespace IFM20884
             // Ralentir les répétitions de pressions (200 millisecondes de délai)
             return this.DelaiDuplicationExpire(device, Buttons.X, 300);
         }
-
-
 
         public float DashingDroite(int device)
         {

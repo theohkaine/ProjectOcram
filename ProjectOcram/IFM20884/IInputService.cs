@@ -84,6 +84,8 @@ namespace IFM20884
         /// <returns>Vrai si un obus doit être tiré; faux sinon.</returns>
         bool TirerObus(int device);
 
+       
+
         float DashingDroite(int device);
         float DashingGauche(int device);
 

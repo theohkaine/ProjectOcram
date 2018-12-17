@@ -36,6 +36,7 @@ namespace ProjectOcram
         private float vitesseVerticale = 0.0f;
 
         float vitesseV = 0.0f;
+        float vitessH = 0.0f;
 
 
 
@@ -133,20 +134,24 @@ namespace ProjectOcram
             // Faire bouger la plateforme seulement lorsque le sprite joueur est dessu.
 
             if (passagers.Count > 0)
-                vitesseV = 0.4f;
+            {
+                vitesseV = 0.2f;
+                vitessH = 0.3f;
+            }
 
 
             int deltaY = +(int)(gameTime.ElapsedGameTime.Milliseconds * vitesseV);
+            int deltaX = +(int)(gameTime.ElapsedGameTime.Milliseconds * vitessH);
 
 
             // Repositionner la plateforme selon le déplacement horizontal calculé.
-            this.Position = new Vector2(this.Position.X , this.Position.Y+ deltaY);
+            this.Position = new Vector2(this.Position.X +deltaX, this.Position.Y+ deltaY);
 
             // Déplacer aussi tous les sprites transportés par la plateforme.
             foreach (Sprite sprite in this.passagers)
             {
 
-                sprite.Position = new Vector2(sprite.Position.X , sprite.Position.Y+deltaY);
+                sprite.Position = new Vector2(sprite.Position.X + deltaX, sprite.Position.Y+deltaY);
 
 
             }

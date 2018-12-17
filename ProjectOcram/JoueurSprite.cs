@@ -403,6 +403,7 @@ namespace ProjectOcram
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Right"), 39, 39));
                 palettes.Add(new Palette(content.Load<Texture2D>(repertoire + "Sprite_Left"), 39, 39));
             }
+
             // Charger la texture servant à l’affichage du rectangle de vitalité.
             rectTexture = content.Load<Texture2D>(@"Extra\tankHP");
             rectTextureOnTop = content.Load<Texture2D>(@"Extra\hp");
@@ -667,20 +668,6 @@ namespace ProjectOcram
                     obusGauche.Source = this;
 
 
-                    //TO FIX LATER FUCK THIS SHIT
-                    //
-                    //
-                    //
-                    //
-                    if (this.Etat == Etats.Marche)
-                    {
-                        this.Etat = Etats.ShootingRunning;
-                    }
-                    if (this.Etat == Etats.Stationnaire)
-                    {
-                        this.Etat = Etats.ShootingIdle;
-
-                    }
 
                     this.getLancerObus(obusGauche);
 
@@ -692,30 +679,13 @@ namespace ProjectOcram
                     JoueurObus obusDroite = new JoueurObus(this.Position.X + (this.Width * 1.25f), this.Position.Y - (this.Width / 9), new Vector2(1.0f, 0f));
                     obusDroite.Source = this;
 
-
-                    //TO FIX LATER FUCK THIS SHIT
-                    //
-                    //
-                    //
-                    //
-                    if (this.Etat == Etats.Marche)
-                    {
-                        this.Etat = Etats.ShootingRunning;
-                    }
-                    if (deltaX == 0 && deltaY == 0)
-                    {
-                        if (this.Etat != Etats.Saut)
-                        {
-                            this.Etat = Etats.ShootingIdle;
-                        }
-                    }
-
-
                     this.getLancerObus(obusDroite);
 
                 }
 
             }
+
+           
 
             if (PlayerHP < 0)
             {
