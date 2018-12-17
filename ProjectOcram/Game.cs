@@ -1383,7 +1383,7 @@ namespace ProjectOcram
                 {
                     //float vitesseH = gameTime.ElapsedGameTime.Milliseconds * this.vitesseMarche;
 
-                    this.joueur.PlayerHP -= 1;
+                    this.joueur.PlayerHPP -= 1;
 
 
                 }
@@ -1458,7 +1458,7 @@ namespace ProjectOcram
                 Miroyr.LoadContent(this.Content, this.graphics);
 
                 this.miroyrs = new List<Miroyr>();
-                this.miroyrs.Add(new Miroyr(600, 1120));
+                this.miroyrs.Add(new Miroyr(800, 1120));
 
                 // Configurer les ogres de sorte qu'ils ne puissent se déplacer
                 // hors de la mappe monde et initialiser la détection de collision de tuiles.
