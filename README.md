@@ -15,6 +15,4 @@ The main premise of the game is to reach the end of the game without dying once.
 ## Mini Boss fight with jumpable platforms.
 ![alt-text](ReadMe_GifsFolder/3.gif)
 
-## Link for full project in action. 
-
-[The Link.](https://www.youtube.com/watch?v=0mpXRp0gaw8).
+## [Link for full project in action.] (https://www.youtube.com/watch?v=0mpXRp0gaw8)
