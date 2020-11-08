@@ -17,4 +17,4 @@ The main premise of the game is to reach the end of the game without dying once.
 
 ## Link for full project in action. 
 
-https://www.youtube.com/watch?v=0mpXRp0gaw8
+[The Link.](https://www.youtube.com/watch?v=0mpXRp0gaw8).
